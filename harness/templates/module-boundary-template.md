@@ -1,7 +1,7 @@
 # Module Boundary: [Module Name]
 
 <!--
-[Clarifies ownership within a bounded context: what crosses the boundary via interface contracts, what stays internal. Use with architecture decision records where tradeoffs appear.]
+[Clarifies ownership within a bounded context: what crosses the boundary via interface contracts, what stays internal. Use with architecture decision records where trade-offs appear.]
 -->
 
 ## Metadata

@@ -2,11 +2,11 @@
 
 Kanban maps Codex Automata to continuous flow: specifications authorize work, molds fix the acceptance shape, agents perform code casting within interface contracts, humans perform review against intent, CI/CD implements quality gates, deployment completes the loop under observation.
 
-The method invests in visible work in process (WIP), pull based movement, explicit policies, and bottleneck diagnosis rather than rituals tuned to individuals who tire or seek coordination comfort.
+The method invests in visible work in process (WIP), pull-based movement, explicit policies, and bottleneck diagnosis rather than rituals tuned to individuals who tire or seek coordination comfort.
 
 ## Why Scrum Does Not Fit This Model
 
-Scrum optimizes a human team's cadence through time boxed commitments, estimation, forecasting, and synchronizing ceremonies. Agents scale differently: they do not fatigue, they benefit weakly from standups framed around social blockers, and they rarely produce trustworthy story point forecasts when molds already define correctness.
+Scrum optimizes a human team's cadence through time boxed commitments, estimation, forecasting, and synchronizing ceremonies. Agents scale differently: they do not fatigue, they gain little from standups framed around social blockers, and they rarely produce trustworthy story point forecasts when molds already define correctness.
 
 Throughput also splits across stations. Parallel agents can inflate casting completions while specification or review stays human bound. Scrum's sprint abstraction hides those station specific queues behind a single burndown metaphor.
 
@@ -44,7 +44,7 @@ Calibrate limits to team size and risk posture; adjust using cycle time and queu
 
 Treat "unlimited" casting pragmatically when merge thrash spikes: institute soft concurrency caps tied to branches or reviewer batch size rather than pretending integration risk stays flat as branch count climbs.
 
-## Pull Based Scheduling
+## Pull-Based Scheduling
 
 Stations downstream pull only when spare capacity meets explicit readiness rules. Test molding pulls specs once writers mark them coherent enough for fixture investment. Casting pulls molded items once contracts stabilize for the slicing window merges expect. Review pulls completed casting batches once local molds and branch policy prerequisites pass. Deployment pulls merges that cleared centralized quality gates plus human approvals where required.
 

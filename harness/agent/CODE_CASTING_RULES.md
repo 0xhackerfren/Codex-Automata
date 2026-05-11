@@ -5,7 +5,7 @@ Rules for agents writing implementation during code casting.
 - You are filling a mold. Tests define shape. Success means tests pass against the specification and contracts.
 - Read the specification and tests before writing any code.
 - Stay within the bounded context of the assigned module. Do not reach into unrelated modules.
-- Use the interface contracts as defined. Do not modify them without routed human approval (see behavioral rules).
+- Use the interface contracts as defined. Do not modify them without explicit human approval (see behavioral rules).
 - If a test seems wrong, do not alter it silently. Report it and wait for guidance.
 - Make small, atomic commits. Each commit should move toward passing one or more assigned tests where possible.
 - Do not introduce dependencies not specified in architecture documents (quality gates on drift).

@@ -10,7 +10,7 @@
 
 Everything you know about building software is organized around a bottleneck that no longer exists.
 
-For sixty years, the central problem of software engineering has been the same. Translating human intent into working code is slow, expensive, and error prone. Every methodology invented since the 1960s, from Waterfall to Spiral to Agile to SAFe, has been a different answer to the same question. How do we manage the cost of writing code?
+For sixty years, the central problem of software engineering has been the same. Translating human intent into working code is slow, expensive, and error-prone. Every methodology invented since the 1960s, from Waterfall to Spiral to Agile to SAFe, has been a different answer to the same question. How do we manage the cost of writing code?
 
 Waterfall tried to get it right the first time. Agile tried to get it right iteratively. Both assumed that writing code is where the work lives, and everything else, documentation, specification, testing, exists to support that central act.
 
@@ -44,13 +44,13 @@ This separation is the correct mental model for software in the agentic era.
 
 **Tests are the mold. Code is the casting.**
 
-This sounds like test driven development, and it shares DNA with Kent Beck's original insight. Write the test first, let failure guide design. Codex Automata takes it further. TDD, as commonly practiced, is a feedback loop between a developer writing a test and the same developer writing the code that passes it. It is a conversation a person has with themselves. The test and the code evolve together, often in the same session, shaped by the same mind's biases and blind spots.
+This sounds like test-driven development, and it shares DNA with Kent Beck's original insight. Write the test first, let failure guide design. Codex Automata takes it further. TDD, as commonly practiced, is a feedback loop between a developer writing a test and the same developer writing the code that passes it. It is a conversation a person has with themselves. The test and the code evolve together, often in the same session, shaped by the same mind's biases and blind spots.
 
 When agents write the code, the dynamic changes completely. The test becomes a rigid constraint. It is a precise specification of acceptable behavior that a machine must satisfy. The test does not evolve with the code. The test stands firm, and the code must conform.
 
 This distinction matters because it changes what tests need to be. In traditional TDD, a test can be somewhat loose. It captures the developer's intent well enough because the developer is also the implementer. In Codex Automata, tests must be sharp. They must overconstrain the solution space where behavior matters and leave freedom only where freedom is deliberate.
 
-Without tests, an agent generates infinite variety. It can produce a dozen implementations of the same spec, each plausible, each slightly different, with no way to determine which is correct. The agent is simply unconstrained. Feed it a sharp mold, and the output snaps into a specific shape. The mold transforms code generation from an open ended creative act into a bounded search problem. Find an implementation such that all assertions pass.
+Without tests, an agent generates infinite variety. It can produce a dozen implementations of the same spec, each plausible, each slightly different, with no way to determine which is correct. The agent is simply unconstrained. Feed it a sharp mold, and the output snaps into a specific shape. The mold transforms code generation from an open-ended creative act into a bounded search problem. Find an implementation such that all assertions pass.
 
 Better constraints produce better results, faster.
 
@@ -66,7 +66,7 @@ If code is wrong, do not debug the implementation. Fix the spec. Fix the tests. 
 
 There is a reason Unix conquered the world and the alternatives did not.
 
-In the late 1960s, Ken Thompson and Dennis Ritchie at Bell Labs made a design choice that seemed, at the time, almost trivially obvious. Programs should do one thing well. They should communicate through simple, text based interfaces. They should compose through pipes. The result was an ecosystem of small, sharp tools that could be combined in ways their creators never anticipated. grep does not know about sort. sort does not know about uniq. But `grep pattern file | sort | uniq -c` does something none of them could do alone, and it does it reliably because each piece has one job and clear boundaries.
+In the late 1960s, Ken Thompson and Dennis Ritchie at Bell Labs made a design choice that seemed, at the time, almost trivially obvious. Programs should do one thing well. They should communicate through simple, text-based interfaces. They should compose through pipes. The result was an ecosystem of small, sharp tools that could be combined in ways their creators never anticipated. grep does not know about sort. sort does not know about uniq. But `grep pattern file | sort | uniq -c` does something none of them could do alone, and it does it reliably because each piece has one job and clear boundaries.
 
 This is an engineering law. Small, independent components compose. Large, entangled components do not. The reason is mathematical. As a system grows, the number of potential interactions between its parts grows combinatorially. A system of ten tightly coupled components has 45 pairwise interactions. A system of one hundred has 4,950. Tight coupling makes each interaction a potential failure mode, a coordination burden, and a communication channel that must be maintained.
 
@@ -78,7 +78,7 @@ In the agentic era, bounded contexts serve a second purpose that Evans could not
 
 This is the insight that makes parallelization work. Modularity is the prerequisite for agentic development. Without clean boundaries, you cannot parallelize. Without parallelization, you are running agents sequentially, which means you have expensive infrastructure reproducing the same bottleneck you had with human developers. In this way you have changed nothing.
 
-The corollary is equally important. Atomization is about making things small enough to be independently completable. A task that can be picked up by an agent, executed to completion against its own tests, and merged without coordinating with other agents, that is an atom. A task that requires mid flight coordination between agents, that is a molecule, and it will slow you down.
+The corollary is equally important. Atomization is about making things small enough to be independently completable. A task that can be picked up by an agent, executed to completion against its own tests, and merged without coordinating with other agents, that is an atom. A task that requires mid-flight coordination between agents, that is a molecule, and it will slow you down.
 
 Brooks proved in 1975 that adding people to a late project makes it later. His reasoning was precise. Communication overhead scales with the square of the team size. Ten people generate 45 communication channels. A hundred generate 4,950. The project drowns in coordination.
 
@@ -118,7 +118,7 @@ None of these assumptions apply to AI agents. Agents do not fatigue. They do not
 
 What agents need is a steady flow of well specified work, clear completion criteria, and automated quality gates. That is kanban.
 
-Toyota's manufacturing philosophy never used sprints. It used continuous flow with pull based scheduling and work in progress limits. When a downstream station finishes processing a part, it pulls the next part from the upstream buffer. Nothing is pushed forward until the downstream station signals readiness. WIP limits prevent any station from accumulating inventory that exceeds its processing capacity. The result is smooth, predictable throughput with minimal waste.
+Toyota's manufacturing philosophy never used sprints. It used continuous flow with pull-based scheduling and work in progress limits. When a downstream station finishes processing a part, it pulls the next part from the upstream buffer. Nothing is pushed forward until the downstream station signals readiness. WIP limits prevent any station from accumulating inventory that exceeds its processing capacity. The result is smooth, predictable throughput with minimal waste.
 
 This maps to agentic development with almost no translation needed.
 
@@ -172,7 +172,7 @@ Similarly, certain creative work resists upfront specification. A designer proto
 
 There is also the question of scale. A solo developer building a weekend project does not need a kanban board, formal specs, and CI/CD quality gates. The overhead would exceed the benefit. Codex Automata is designed for systems that matter. Systems that must be correct, must scale, must be maintained by more than one person or agent over time. For a throwaway script, write the script.
 
-The deepest limitation is the cold start problem. Writing good specs requires domain knowledge, architectural taste, and the hard won intuition that comes from years of building systems that failed. You cannot spec what you do not understand. Junior engineers cannot be dropped into the Spec Writing station and expected to produce sharp molds. They must first learn what good looks like, which means, paradoxically, they may need to write bad code, debug it, and internalize the failure modes before they can specify well. The methodology does not eliminate the need for experience. It concentrates experience where it matters most.
+The deepest limitation is the cold start problem. Writing good specs requires domain knowledge, architectural taste, and the hard-won intuition that comes from years of building systems that failed. You cannot spec what you do not understand. Junior engineers cannot be dropped into the Spec Writing station and expected to produce sharp molds. They must first learn what good looks like, which means, paradoxically, they may need to write bad code, debug it, and internalize the failure modes before they can specify well. The methodology does not eliminate the need for experience. It concentrates experience where it matters most.
 
 None of these limitations invalidate the approach. They define its scope. Codex Automata is a methodology for engineering production systems in an era when implementation is cheap and specification is the binding constraint. Within that scope, it is precise.
 

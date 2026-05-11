@@ -19,7 +19,7 @@ If you believe you have identified a security-relevant concern:
 
 Include affected paths (for example workflows under `.github/`), reproduction steps if applicable, and impact you assess.
 
-## What “security surface” means here
+## What "security surface" means here
 
 This repo does **not** ship executable product code intended for production runtimes under normal use. Typical concerns include:
 
@@ -30,4 +30,4 @@ If you report outdated actions or insecure patterns in workflows, cite the workf
 
 ## Response expectations
 
-Maintainers aim to acknowledge reports in a reasonable timeframe. Severity and fix timeline depend on impact and reproducibility. This repository’s risk profile is bounded by docs and harness assets; escalation paths match that scope.
+Maintainers aim to acknowledge reports in a reasonable timeframe. Severity and fix timeline depend on impact and reproducibility. This repository's risk profile is bounded by docs and harness assets; escalation paths match that scope.

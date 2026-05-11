@@ -44,7 +44,7 @@ Use ADRs when changing bounded context seams, persistence technology, interopera
 
 Record status (proposed, accepted, superseded) and cite affected specifications.
 
-## Anti Patterns
+## Anti-Patterns
 
 **Monolithic specifications.** Single giant documents obscure ownership, delay molding, inflate review entropy, collide parallel agents. Split along bounded contexts and cross cutting appendices referencing authoritative sections.
 
@@ -54,11 +54,11 @@ Record status (proposed, accepted, superseded) and cite affected specifications.
 
 **Bypassing specification for convenience.** Shortcutting ambiguity resolution by encoding truth only in molds or casts causes drift between human governance and artifacts agents optimize.
 
-Each anti pattern lengthens cycle time through rework and weakens mechanical quality gates that assume explicit contracts.
+Each anti-pattern lengthens cycle time through rework and weakens mechanical quality gates that assume explicit contracts.
 
 ## Repository Templates
 
-When bootstrapping or extending documentation, reuse the canonical templates shipped with Codex Automata style projects:
+When bootstrapping or extending documentation, reuse the canonical templates shipped with projects using Codex Automata:
 
 - `templates/architecture-decision-record.md`: capture reversible decisions affecting boundaries, storage, cryptography, interoperability, rollout, tenancy, and operational sovereignty.
 

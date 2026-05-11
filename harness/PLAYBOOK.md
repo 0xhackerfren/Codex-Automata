@@ -367,7 +367,7 @@ The pipeline is not strictly linear. Review can send work back to any earlier ph
 
 - **Back to Phase 2** if the specification is incomplete or incorrect.
 - **Back to Phase 3** if tests are insufficient or over-specified.
-- **Back to Phase 4** if the implementation diverges from the spec.
+- **Back to Phase 4** if the spec and tests are correct but the implementation diverges.
 
 The key constraint is that backward movement always starts at the specification. If code is wrong, do not debug the implementation. Fix the spec, fix the tests, recast.
 

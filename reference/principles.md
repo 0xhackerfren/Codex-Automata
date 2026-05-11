@@ -46,7 +46,7 @@ Effective decomposition aligns agent tasks with seams in the domain, not inciden
 
 **Summary.** Work moves continuously through bounded stations under WIP limits; kanban regulates flow rather than Sprint theater.
 
-**Explanation.** Continuous Flow organizes work like a production pipeline: backlog converts into specs, molds, castings, reviewed increments, integrated artifacts, deployed services, observed behavior, and iterative refinement. Stations include Spec Writing, Test Molding, Code Casting, Human Review, and deployment-related integration (see `docs/kanban.md`). Limits on work-in-progress expose bottlenecks and prevent starving downstream quality.
+**Explanation.** Continuous Flow organizes work like a production pipeline: backlog converts into specs, molds, castings, reviewed increments, integrated artifacts, deployed services, observed behavior, and iterative refinement. Stations include Spec Writing, Test Molding, Code Casting, Human Review, and deployment-related integration (see `kanban.md` in this directory). Limits on work-in-progress expose bottlenecks and prevent starving downstream quality.
 
 Pull-based sequencing matters: downstream stations pull when ready rather than maximizing local heroics upstream. Agents expand throughput where tasks are bounded; humans remain the governors of ambiguity, architecture, approvals, and policy. Flow metrics (cycle time, throughput, aging of WIP) decide process tuning, staffing, or specification investment, not guesses.
 
@@ -56,7 +56,7 @@ Pull-based sequencing matters: downstream stations pull when ready rather than m
 
 **Summary.** CI/CD pipelines enforce molds, contracts, and policy mechanically; disciplined delivery does not depend on memory or willpower.
 
-**Explanation.** Quality gates are automated checkpoints (build, lint, type checks, suites, mutation testing where warranted, licensing, SBOM scans, vulnerability policies, artifact signing, rollout policies). They embody the organization's non negotiable guarantees so every casting is measured the same before human review invests depth. Gates fail closed: regressions surface before merge rather than accumulating as silent debt.
+**Explanation.** Quality gates are automated checkpoints (build, lint, type checks, suites, mutation testing where warranted, licensing, SBOM scans, vulnerability policies, artifact signing, rollout policies). They embody the organization's non-negotiable guarantees so every casting is measured the same before human review invests depth. Gates fail closed: regressions surface before merge rather than accumulating as silent debt.
 
 Treat gates as the extrusion press that aligns individual contributor behavior with systemic standards. They complement human review rather than substitute it; humans judge intent and edge nuance gates cannot codify efficiently. Extend gates deliberately when repeating review findings signal missing automation. Contract drift and mold gaps often appear first as flaky or skipped checks; treat instability as urgent process debt.
 

@@ -14,7 +14,7 @@ Implementation matches all four behaviors in the specification. No deviations fo
 
 ## Interface Contract Compliance
 
-TaskManager uses the **Storage** **interface contract** via constructor injection. No direct storage access. Contract methods are used as defined.
+TaskManager uses the **Storage** interface contract via constructor injection. No direct storage access. Contract methods are used as defined.
 
 ## Test Coverage
 

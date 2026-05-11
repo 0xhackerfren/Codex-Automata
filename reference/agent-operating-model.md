@@ -26,7 +26,7 @@ Throughput is desirable; circumvention of specification authority is not.
 
 Agents must not silently:
 
-- Re slice architecture, rename bounded contexts, move authoritative data ownership, or alter interface contracts and versioning rules without human initiated change control.
+- Redraw architecture seams, rename bounded contexts, move authoritative data ownership, or alter interface contracts and versioning rules without human initiated change control.
 
 - Approve human review outcomes, dismiss review findings, or declare quality gate failures ignorable without a recorded waiver tied to explicit risk acceptance.
 
@@ -54,7 +54,7 @@ Every agent task records:
 
 - Acceptance criteria mapping to test cases or other measurable checks traceable to specification clauses.
 
-- Explicit non goals that bound scope.
+- Explicit non-goals that bound scope.
 
 Missing inputs halt work: agents escalate with structured questions instead of fabricating completeness.
 
@@ -66,7 +66,7 @@ Escalations follow a predictable shape:
 
 - **Ambiguity:** Quote conflicting specification sentences, propose clarifying options, request a human decision, link a backlog item when used.
 
-- **Missing specification:** Block molding or casting, request writers supply normative text; agents may attach a clearly labeled non authoritative draft.
+- **Missing specification:** Block molding or casting, request writers supply normative text; agents may attach a clearly labeled non-authoritative draft.
 
 - **Deviation:** When technical constraints prevent literal satisfaction, document the constraint, propose specification or contract amendments, propose mold updates, reference ADRs when relevant; humans decide.
 
@@ -94,7 +94,7 @@ Agent outputs pass automated quality gates before human review spends deep atten
 
 Commits should bisect cleanly; tests should be reproducible. Flaky molds are incident class debt because they erode trust in parallel casting.
 
-Generated prose must align with terminology in `docs/glossary.md` and related doctrine documents to avoid synonym sprawl that confuses later agents and reviewers.
+Generated prose must align with terminology in the project glossary and related doctrine documents to avoid synonym sprawl that confuses later agents and reviewers.
 
 Human review still judges specification fidelity, operational readiness, and cross context stories automation cannot cheaply encode.
 
@@ -110,6 +110,6 @@ Human review still judges specification fidelity, operational readiness, and cro
 
 **Security sensitive inference gaps.** Prefer conservative halts and human security review; never guess trust boundaries.
 
-Blameless postmortems should link incidents to missing specification clauses, mold gaps, gate holes, training updates, or ADR follow ups.
+Blameless postmortems should link incidents to missing specification clauses, mold gaps, gate holes, training updates, or ADR follow-ups.
 
-Companion references: `docs/principles.md`, `docs/workflow.md`, `docs/kanban.md`, `docs/architecture.md`, `docs/glossary.md`, and root `PLAYBOOK.md` for detailed phase guidance.
+Companion references: `principles.md`, `workflow.md`, `kanban.md`, `architecture.md`, and `glossary.md` in this directory, and `PLAYBOOK.md` in the harness for detailed phase guidance.

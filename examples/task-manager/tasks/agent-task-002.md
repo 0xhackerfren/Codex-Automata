@@ -6,7 +6,7 @@
 
 ## Scope
 
-Implement an in-memory storage backend that satisfies the **Storage** **interface contract**.
+Implement an in-memory storage backend that satisfies the **Storage** interface contract.
 
 ## Inputs
 

@@ -1,6 +1,6 @@
 # Agent Operating Rules
 
-Operating manual for agents executing tasks under Codex Automata: specifications are the mold, tests shape acceptance, casting produces code within strict quality gates.
+Operating manual for agents executing tasks under Codex Automata. Specifications define intent, tests are the mold, and casting produces code within strict quality gates.
 
 ## 1. Core Principles
 

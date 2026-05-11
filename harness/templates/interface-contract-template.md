@@ -58,4 +58,4 @@
 |---------|--------------------------|----------------|
 | [CT-001] | [path] | [request/response shape, errors, idempotency] |
 
-[Reference mold that guards this interface contract in the quality gate.]
+[Reference the mold that guards this interface contract in the quality gate.]

@@ -1,7 +1,7 @@
 # ADR-[NNN]: [Decision Title]
 
 <!--
-[Architecture decision records capture context and tradeoffs. Number ADRs sequentially within the repository or bounded context. Link related decisions.]
+[Architecture decision records capture context and trade-offs. Number ADRs sequentially within the repository or bounded context. Link related decisions.]
 -->
 
 ## Metadata

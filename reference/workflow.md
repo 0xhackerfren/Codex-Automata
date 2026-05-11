@@ -1,10 +1,10 @@
 # End-to-End Workflow
 
-This reference describes the Codex Automata flow from earliest intent through production observability. It ties together bounded contexts, interface contracts, agent tasks, molds, casting, human review, and quality gates. For phase-by-phase agent behavior, constraints, and checklists, see `PLAYBOOK.md` at the repository root.
+This reference describes the Codex Automata flow from earliest intent through production observability. It ties together bounded contexts, interface contracts, agent tasks, molds, casting, human review, and quality gates. For phase-by-phase agent behavior, constraints, and checklists, see `PLAYBOOK.md` (in the harness, or at project root after initialization).
 
 ## 1. Idea Intake
 
-An intake document captures the motivating problem, user outcomes, measurable signals, constraints, non goals, stakeholders, timelines, regulatory or security sensitivities, and known unknowns. The intake is deliberately not a specification: it aligns humans on direction before decomposition and commitment.
+An intake document captures the motivating problem, user outcomes, measurable signals, constraints, non-goals, stakeholders, timelines, regulatory or security sensitivities, and known unknowns. The intake is deliberately not a specification: it aligns humans on direction before decomposition and commitment.
 
 Outputs: a prioritized problem statement linked to backlog items sized for architectural discussion.
 
@@ -16,13 +16,13 @@ Outputs: architecture notes, provisional interface contracts referencing `templa
 
 ## 3. Specification Authoring Per Context
 
-For each bounded context (and cross-cutting concern), humans write specifications that enumerate behaviors, invariants, non functional targets, telemetry expectations, rollback attitudes, migrations, observability probes, adversarial assumptions, compatibility promises, error contracts, idempotency, and explicit open questions tied to backlog items never silently resolved inside agents.
+For each bounded context (and cross-cutting concern), humans write specifications that enumerate behaviors, invariants, non-functional targets, telemetry expectations, rollback attitudes, migrations, observability probes, adversarial assumptions, compatibility promises, error contracts, idempotency, and explicit open questions tied to backlog items never silently resolved inside agents.
 
 Specifications are falsifiable artifacts: every normative clause should map forward to molds and backward to rationale in review.
 
 Outputs: authoritative specifications stamped with versioning or change metadata where the project mandates it.
 
-## 4. Test Molding (Agent Task or Human Driven)
+## 4. Test Molding (Agent Task or Human-Driven)
 
 Specifications drive test planning: equivalence partitions, boundary values, concurrency cases, fuzz targets, compatibility matrices, regression harnesses mirroring defects, snapshot policies, and deterministic fixtures. Executable molds implement those plans strictly.
 
@@ -44,7 +44,7 @@ Reviewers evaluate casting against specification and intent even when tests pass
 
 Unresolved mismatches escalate to revised specifications or contracts before weakening molds or bypassing gates.
 
-Outputs: approvals, rework instructions referencing spec clauses, backlog follow ups for ambiguity removal.
+Outputs: approvals, rework instructions referencing spec clauses, backlog follow-ups for ambiguity removal.
 
 ## 7. Integration and CI/CD Gates
 
@@ -58,7 +58,7 @@ Deploy using agreed progressive strategies. Observability verifies golden signal
 
 Operational feedback informs architecture decision records capturing tradeoffs and reversibility.
 
-Outputs: dashboards, curated log queries, trace exemplars, post incident updates, specification amendments, contract revisions, mold extensions, defensive casting hardening when genuinely required.
+Outputs: dashboards, curated log queries, trace exemplars, post-incident updates, specification amendments, contract revisions, mold extensions, defensive casting hardening when genuinely required.
 
 ## Text Flow Diagram
 
@@ -92,7 +92,7 @@ Deploy / Observe ----------------------> feedback to Spec / Contracts / Architec
 
 **Review rejects casting.** Typical causes include intent drift, brittle coverage, covert coupling, leaky abstractions crossing contexts, latent security constraints, rollout hazards, ambiguity masquerading as implementation freedom. Rework routing: revise specification or contracts when the rejection reveals a latent requirement; regenerate or extend molds accordingly; resume casting rather than patching through review comments alone.
 
-**Deployment or production signals contradict intent.** Incident or SLO regressions propagate upstream: formulate a corrective specification delta, enlarge molds guarding the failure class, revisit architecture if boundaries mis sliced the causal domain. Architecture decision records codify reversible choices so future casts do not reintroduce revoked assumptions.
+**Deployment or production signals contradict intent.** Incident or SLO regressions propagate upstream: formulate a corrective specification delta, enlarge molds guarding the failure class, revisit architecture if boundaries mis-sliced the causal domain. Architecture decision records codify reversible choices so future casts do not reintroduce revoked assumptions.
 
 Avoid bypass loops where pressure forces gate weakening without specification amendment; that forfeits Mechanical Discipline emphasized in Codex Automata doctrine.
 
@@ -108,10 +108,10 @@ Operational tracking mirrors stations:
 | Human Review | Confirm casting matches specification and systemic risk posture | Human |
 | Deployment | Progressive release and verification | Humans with automation gates |
 
-Treat integration testing and CI/CD quality gates either as implicit sub stages within molding and pre deployment review lanes or explicit columns when WIP instrumentation demands finer grain. Naming remains consistent across boards: Specification, molds, casting, review, gates, rollout, observation tie back to the same vocabulary referenced in dashboards and retrospective notes.
+Treat integration testing and CI/CD quality gates either as implicit sub stages within molding and pre-deployment review lanes or explicit columns when WIP instrumentation demands finer grain. Naming remains consistent across boards: Specification, molds, casting, review, gates, rollout, observation tie back to the same vocabulary referenced in dashboards and retrospective notes.
 
-Consult `PLAYBOOK.md` when expanding any station into granular agent operating instructions, escalation patterns, tooling responsibilities, branching strategies, backlog hygiene, and risk aware batch sizing.
+Consult `PLAYBOOK.md` (in the harness) when expanding any station into granular agent operating instructions, escalation patterns, tooling responsibilities, branching strategies, backlog hygiene, and risk-aware batch sizing.
 
 ## Companion Documents
 
-For pull policies, limits, bottleneck interpretation, Toyota Production System parallels, metric guidance, consult `docs/kanban.md`. For vocabulary alignment across teams, consult `docs/glossary.md`.
+For pull policies, limits, bottleneck interpretation, Toyota Production System parallels, metric guidance, consult `kanban.md` in this directory. For vocabulary alignment across teams, consult `glossary.md` in this directory.

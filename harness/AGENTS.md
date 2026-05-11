@@ -12,9 +12,9 @@ This repository follows the Codex Automata methodology. All AI agents operating 
 ## Constraints
 
 - Do not expand scope without updating the specification first.
-- Do not silently change interfaces. Interface contracts are frozen before code casting begins.
+- Do not silently change interface contracts. Interface contracts are frozen before code casting begins.
 - Do not bypass failing tests. Fix the implementation or surface the test as incorrect.
-- Do not create duplicate abstractions. Check existing modules and interfaces before adding new ones.
+- Do not create duplicate abstractions. Check existing modules and interface contracts before adding new ones.
 - Prefer small, atomic commits traceable to specification sections.
 - Surface ambiguity instead of guessing. If the specification is unclear, stop and ask.
 - Every task must map to a specification section and at least one test case.
