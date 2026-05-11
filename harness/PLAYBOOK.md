@@ -1,0 +1,384 @@
+# Codex Automata Playbook
+
+A practical, phase-by-phase implementation guide for running a software project under the Codex Automata methodology.
+
+## Overview
+
+Every project follows the same sequence:
+
+```
+Phase 0: Idea Intake
+Phase 1: Architecture and Decomposition
+Phase 2: Specification Writing
+Phase 3: Test Molding
+Phase 4: Code Casting
+Phase 5: Review
+Phase 6: Deployment and Observation
+```
+
+The pipeline enforces a strict order: documentation first, then tests, then code. Phases may iterate (a review can send work back to specification), but they do not skip forward. You do not cast without a mold. You do not mold without a specification.
+
+For Cursor IDE users: each phase references the relevant `/skill-name` you can invoke in chat and the `.cursor/agents/` subagents available for delegation.
+
+---
+
+## Phase 0: Idea Intake
+
+**Purpose**
+
+Capture the raw project idea, its business context, constraints, and initial scope. Translate a vague request into a structured document that can be decomposed.
+
+**Inputs**
+
+- Feature request, business requirement, or problem statement
+- Stakeholder conversations and domain context
+- Existing system documentation (if applicable)
+
+**Outputs**
+
+- Completed project intake document (use `templates/project-intake-template.md`)
+- Initial scope boundary and success criteria
+- Known constraints and non-functional requirements
+- List of open questions requiring resolution
+
+**Exit Criteria**
+
+- [ ] The intake document has been reviewed and accepted by a human stakeholder.
+- [ ] The problem is understood well enough to begin architectural decomposition.
+- [ ] Ambiguities are either resolved or explicitly documented as open questions.
+- [ ] Non-functional requirements (performance, security, availability) are stated.
+
+**Human Responsibilities**
+
+- Conduct stakeholder interviews and define business context.
+- Write the intake document. This is human work; it requires judgment about what matters.
+- Define success criteria and constraints.
+- Identify and document open questions.
+
+**Agent Responsibilities**
+
+- Research the domain: prior art, related systems, terminology.
+- Help structure the intake document from raw notes or conversations.
+- Surface missing information, contradictions, or unstated assumptions.
+- Agents do not make scope decisions or define success criteria.
+
+**Cursor Integration**
+
+- Invoke `/project-intake` to use the project intake skill.
+
+---
+
+## Phase 1: Architecture and Decomposition
+
+**Purpose**
+
+Break the system into bounded contexts with clean interfaces. Define the module boundaries that will enable parallel agent execution in later phases.
+
+**Inputs**
+
+- Completed intake document from Phase 0
+- Domain knowledge and existing system constraints
+- Non-functional requirements
+
+**Outputs**
+
+- Architecture decision records (use `templates/architecture-decision-record.md`)
+- Module boundary documents (use `templates/module-boundary-template.md`)
+- Interface contracts between modules (use `templates/interface-contract-template.md`)
+- Dependency graph showing module relationships
+
+**Exit Criteria**
+
+- [ ] All bounded contexts are identified and named.
+- [ ] Every interface between contexts has a contract document.
+- [ ] No circular dependencies exist between modules.
+- [ ] Each module is small enough to be independently specifiable and testable.
+- [ ] Architecture decisions are recorded with rationale and trade-offs.
+
+**Human Responsibilities**
+
+- Make architectural decisions. This requires taste, experience, and judgment.
+- Define bounded context boundaries based on domain analysis.
+- Design interface contracts between modules.
+- Evaluate trade-offs and document the reasoning.
+
+**Agent Responsibilities**
+
+- Map the existing codebase to identify current module structure.
+- Suggest decomposition options based on the intake document.
+- Draft architecture decision records from human decisions.
+- Validate that proposed boundaries do not create circular dependencies.
+- Draft interface contract templates from human-defined boundaries.
+
+**Cursor Integration**
+
+- Use the `spec-reviewer` subagent to validate architecture documents for completeness.
+
+---
+
+## Phase 2: Specification Writing
+
+**Purpose**
+
+Write precise, testable specifications for each bounded context. The specification is the primary engineering artifact. It defines exactly what the system must do.
+
+**Inputs**
+
+- Architecture documents and module boundaries from Phase 1
+- Interface contracts between modules
+- Domain knowledge and edge case analysis
+
+**Outputs**
+
+- Specification documents for each bounded context (use `templates/spec-template.md`)
+- Updated interface contracts if spec writing reveals new integration points
+- Edge case catalog for each module
+
+**Exit Criteria**
+
+- [ ] Every behavior is specified precisely enough to derive a test.
+- [ ] Every edge case is documented with expected behavior.
+- [ ] Failure modes are specified (what happens when things go wrong).
+- [ ] Specifications are peer-reviewed by at least one other human.
+- [ ] No unresolved ambiguities remain in the specification.
+- [ ] Interface contracts are consistent across all modules that share a boundary.
+
+**Human Responsibilities**
+
+- Write specifications. This is the hardest intellectual work in the pipeline.
+- Define edge cases and failure modes from domain knowledge.
+- Peer-review specifications for completeness, precision, and testability.
+- Resolve ambiguities. If something is unclear, clarify it before it becomes a test.
+
+**Agent Responsibilities**
+
+- Draft initial specification sections from the architecture documents.
+- Identify potential edge cases by analyzing data models and interface contracts.
+- Cross-reference specifications against interface contracts for consistency.
+- Flag vague language or untestable assertions in the specification.
+- Agents do not decide what the system should do. They help express what humans have decided.
+
+**Cursor Integration**
+
+- Invoke `/spec-writing` to use the specification writing skill.
+- Use the `spec-reviewer` subagent to review completed specifications.
+
+---
+
+## Phase 3: Test Molding
+
+**Purpose**
+
+Derive comprehensive test cases from specifications. Build the mold that implementation must fill. Tests compile but fail because no implementation exists yet.
+
+**Inputs**
+
+- Specification documents from Phase 2
+- Interface contracts from Phase 1
+- Test plan template (use `templates/test-plan-template.md`)
+
+**Outputs**
+
+- Test plan document for each module
+- Executable test code (unit tests, integration tests, contract tests)
+- All tests compile and all tests fail (red state)
+
+**Exit Criteria**
+
+- [ ] Every behavior in the specification has at least one test.
+- [ ] Every edge case in the specification has a corresponding test.
+- [ ] Contract tests exist for every interface between modules.
+- [ ] All tests compile successfully.
+- [ ] All tests fail (no implementation exists to pass them).
+- [ ] Test names clearly trace back to specification sections.
+
+**Human Responsibilities**
+
+- Review test plans for completeness against the specification.
+- Validate that tests are sharp enough to constrain implementation.
+- Ensure tests do not over-specify implementation details (test behavior, not internals).
+- Approve the test plan before code casting begins.
+
+**Agent Responsibilities**
+
+- Derive test cases systematically from each specification section.
+- Write executable test code following the test plan.
+- Generate contract tests from interface contract documents.
+- Verify that all tests compile and all tests fail.
+- Flag specification sections that lack testable assertions.
+
+**Cursor Integration**
+
+- Invoke `/test-molding` to use the test molding skill.
+- Use the `test-deriver` subagent to derive tests from a specification.
+
+---
+
+## Phase 4: Code Casting
+
+**Purpose**
+
+Implement code that passes all tests. This is the phase where agents work in parallel across bounded contexts. The mold exists; now pour the casting.
+
+**Inputs**
+
+- Specification documents from Phase 2
+- Test suite in red state (compiles successfully, all tests failing) from Phase 3
+- Interface contracts from Phase 1
+- Agent task definitions (use `templates/agent-task-template.md`)
+
+**Outputs**
+
+- Implementation code for each module
+- All tests passing (green state)
+- Atomic commits traceable to specification sections
+
+**Exit Criteria**
+
+- [ ] All unit tests pass.
+- [ ] All integration tests pass.
+- [ ] All contract tests pass.
+- [ ] Code respects module boundaries (no cross-boundary imports outside contracts).
+- [ ] No interface contracts have been modified without explicit approval.
+- [ ] Each commit maps to a specification section.
+
+**Human Responsibilities**
+
+- Create agent task definitions that scope the work precisely.
+- Remain available for clarification if agents encounter ambiguity.
+- Do not write implementation code unless the task is too complex for agents.
+- Monitor agent progress and intervene if agents are stuck or diverging.
+
+**Agent Responsibilities**
+
+- Read the specification, tests, and interface contracts.
+- Write implementation code until all assigned tests pass.
+- Stay within the boundaries of the assigned module.
+- Make small, atomic commits. Each commit addresses one logical unit of work.
+- If the specification is ambiguous, stop and ask. Do not guess.
+- If a test appears incorrect, surface it. Do not modify tests without approval.
+
+**Cursor Integration**
+
+- Invoke `/code-casting` to use the code casting skill.
+- Use the `code-caster` subagent for bounded implementation tasks.
+- Multiple `code-caster` subagents can run in parallel across different modules.
+
+---
+
+## Phase 5: Review
+
+**Purpose**
+
+Verify that castings match the mold and that the mold matches the original intent. This is the second human bottleneck after specification writing.
+
+**Inputs**
+
+- Implementation code from Phase 4
+- Specification documents from Phase 2
+- Test results from Phase 4
+- Interface contracts from Phase 1
+- Human review template (use `templates/human-review-template.md`)
+
+**Outputs**
+
+- Completed review document
+- Approved or rejected status for each module
+- List of required changes (if rejected)
+
+**Exit Criteria**
+
+- [ ] Every module has been reviewed by at least one human.
+- [ ] Implementation matches the specification (no extra behavior, no missing behavior).
+- [ ] Interface contracts are honored (no silent changes).
+- [ ] Code quality meets project standards.
+- [ ] All automated quality gates pass (lint, tests, coverage).
+- [ ] Review document is completed and stored.
+
+**Human Responsibilities**
+
+- Review each module for correctness against the specification.
+- Verify that the system still makes sense as a whole (coherence check).
+- Check for interface contract violations.
+- Approve or reject with specific, actionable feedback.
+- This is judgment work. Agents assist but do not replace human review.
+
+**Agent Responsibilities**
+
+- Run automated checks: lint, test suite, coverage reports.
+- Generate a diff summary comparing implementation against the specification.
+- Flag potential deviations from the specification.
+- Flag interface contract violations.
+- Agents do not approve or reject. That is a human decision.
+
+**Cursor Integration**
+
+- Use the `spec-reviewer` subagent to generate automated review summaries.
+
+---
+
+## Phase 6: Deployment and Observation
+
+**Purpose**
+
+Ship verified code to production and confirm that production behavior matches the specification. Close the feedback loop.
+
+**Inputs**
+
+- Approved code from Phase 5
+- Deployment configuration and infrastructure
+- Monitoring and alerting requirements from the specification
+
+**Outputs**
+
+- Production deployment
+- Monitoring dashboards and alerts configured
+- Incident runbook (if applicable)
+- Post-deployment verification report
+
+**Exit Criteria**
+
+- [ ] Deployment completes successfully.
+- [ ] Smoke tests pass in production.
+- [ ] Monitoring confirms behavior matches the specification.
+- [ ] Alerting is configured for failure modes defined in the specification.
+- [ ] Rollback procedure is documented and tested.
+
+**Human Responsibilities**
+
+- Approve the deployment.
+- Monitor production behavior during the initial observation period.
+- Respond to incidents and decide whether to roll back.
+- Update specifications if production reveals gaps.
+
+**Agent Responsibilities**
+
+- Execute deployment scripts and pipelines.
+- Configure monitoring and alerting from specification requirements.
+- Run post-deployment verification (smoke tests, health checks).
+- Report anomalies and deviations from expected behavior.
+- Agents do not decide to roll back. That is a human decision.
+
+---
+
+## Iteration and Feedback
+
+The pipeline is not strictly linear. Review can send work back to any earlier phase:
+
+- **Back to Phase 2** if the specification is incomplete or incorrect.
+- **Back to Phase 3** if tests are insufficient or over-specified.
+- **Back to Phase 4** if the implementation diverges from the spec.
+
+The key constraint is that backward movement always starts at the specification. If code is wrong, do not debug the implementation. Fix the spec, fix the tests, recast.
+
+## Quick Reference
+
+| Phase | Primary Owner | Bottleneck? | Key Template |
+|-------|--------------|-------------|--------------|
+| 0: Intake | Human | No | `project-intake-template.md` |
+| 1: Architecture | Human | No | `architecture-decision-record.md` |
+| 2: Specification | Human | **Yes** | `spec-template.md` |
+| 3: Test Molding | Agent (human review) | No | `test-plan-template.md` |
+| 4: Code Casting | Agent | No | `agent-task-template.md` |
+| 5: Review | Human | **Yes** | `human-review-template.md` |
+| 6: Deployment | Human + Agent | No | N/A |

@@ -1,0 +1,44 @@
+# OS generated files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Editor and IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Build artifacts
+dist/
+build/
+out/
+*.pyc
+__pycache__/
+node_modules/
+*.o
+*.a
+*.so
+
+# Environment and secrets
+.env
+.env.*
+*.pem
+*.key
+
+# Logs
+*.log
+logs/
+
+# Coverage and test output
+coverage/
+.coverage
+htmlcov/
+.nyc_output/
+
+# Package manager locks (uncomment the one you use)
+# package-lock.json
+# yarn.lock
+# Pipfile.lock
+# poetry.lock

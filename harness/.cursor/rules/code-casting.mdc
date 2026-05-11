@@ -1,0 +1,22 @@
+---
+description: Rules for writing implementation code (the casting)
+globs: "src/**/*.*, lib/**/*.*, app/**/*.*, pkg/**/*.*"
+alwaysApply: false
+---
+
+# Code Casting Rules
+
+When writing implementation code:
+
+- You are filling a mold. The tests define the shape.
+- Read the specification and tests before writing code.
+- Stay within the assigned module boundary.
+- Use interface contracts as defined. Do not modify them.
+- If a test seems wrong, report it. Do not change it.
+- Make small, atomic commits toward passing tests.
+- Do not add behavior not required by the specification.
+- Do not introduce undocumented dependencies.
+- Prefer clarity over cleverness.
+- When all assigned tests pass, stop.
+
+See `agent/CODE_CASTING_RULES.md` for detailed guidance.

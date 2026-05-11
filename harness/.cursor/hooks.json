@@ -1,0 +1,12 @@
+{
+  "version": 1,
+  "hooks": {
+    "afterFileEdit": [
+      {
+        "type": "prompt",
+        "prompt": "A source file was just edited. Verify: (1) Does a specification exist for the module this file belongs to? (2) Do tests exist that cover the behavior being changed? If either is missing, remind the user that Codex Automata requires specifications and tests before implementation. Do not block the edit, just note the gap if one exists. Here is the edit context: $ARGUMENTS",
+        "timeout": 15
+      }
+    ]
+  }
+}

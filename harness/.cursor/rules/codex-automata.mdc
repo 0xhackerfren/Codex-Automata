@@ -1,0 +1,30 @@
+---
+description: Core Codex Automata methodology rules for all agent interactions
+alwaysApply: true
+---
+
+# Codex Automata Core Rules
+
+This project follows the Codex Automata methodology: Documentation first, Tests second, Code last.
+
+## Constraints
+
+1. Do not write implementation before the specification and tests exist.
+2. Do not expand scope without updating the specification.
+3. Do not silently change interface contracts.
+4. Do not bypass failing tests. Fix the implementation or flag the test.
+5. Prefer small, atomic commits traceable to specification sections.
+6. Surface ambiguity instead of guessing.
+7. Every task must map to a specification section and test case.
+
+## Workflow
+
+- Locate the specification before writing code.
+- Locate the test plan before implementing.
+- If spec or tests are missing, stop and report before proceeding.
+
+## Terminology
+
+Use these terms consistently: specification, mold, casting, bounded context, interface contract, quality gate, agent task, human review, flow.
+
+See `agent/AGENT_RULES.md` for the complete operating manual.
