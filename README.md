@@ -1,8 +1,10 @@
 # Codex Automata
 
-A reusable baseline harness for AI-assisted software development.
+**The hard part of software was never the code.**
 
-Copy one directory into any project and the methodology is active: specifications first, tests second, code last.
+A spec-first, test-first development methodology for the agentic era. Copy one directory into any project and the methodology is active: specifications first, tests second, code last. Documentation is the primary engineering artifact. Tests are the mold. Code is the casting.
+
+[Read the Manifesto](MANIFESTO.md) | [Browse the Playbook](harness/PLAYBOOK.md) | [MIT License](LICENSE)
 
 ## What Is This?
 
@@ -25,7 +27,7 @@ Clone this repo somewhere permanent, then initialize any project:
 git clone https://github.com/0xhackerfren/Codex-Automata.git D:\tools\Codex-Automata
 
 # Initialize a new project
-.\D:\tools\Codex-Automata\scripts\init.ps1 -TargetPath D:\projects\my-new-app
+D:\tools\Codex-Automata\scripts\init.ps1 -TargetPath D:\projects\my-new-app
 ```
 
 On Linux or macOS:
