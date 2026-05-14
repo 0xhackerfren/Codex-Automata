@@ -19,6 +19,14 @@ Types of changes: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 - Retroactive Gap Discovery section in `reference/workflow.md` feedback loops.
 - Recovery terms added to `reference/glossary.md`: contract gap, coverage erosion, gap assessment, mold gap, recovery, spec gap.
 - Recovery constraint and terminology added to `harness/.cursor/rules/codex-automata.mdc`.
+- Agentic product testing (`reference/product-testing.md`): verification layer where AI agents operate the assembled application as real users with defined profiles and goal-oriented objectives. Measures UX quality through click counts, navigation depth, backtracking, error encounters, and time budgets.
+- Product test template (`harness/templates/product-test-template.md`): structured template for defining product test scenarios with objectives, UX budgets, and specification traceability.
+- User profile template (`harness/templates/user-profile-template.md`): test fixture template for defining simulated user personas with technical literacy, domain knowledge, constraints, and behavioral tendencies.
+- Phase 5b (Product Testing) added to `harness/PLAYBOOK.md` between Review and Deployment.
+- Product test section added to `harness/templates/test-plan-template.md`.
+- Product testing terms added to `reference/glossary.md`: product test, test objective, user profile, UX budget.
+- Product testing section added to `harness/.cursor/rules/codex-automata.mdc`.
+- Product testing section added to `MANIFESTO.md` Section VI (The Machine).
 
 ## [0.1.0] - 2026-05-11
 

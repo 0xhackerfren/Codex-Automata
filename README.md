@@ -117,6 +117,7 @@ codex-automata/
 |   |-- kanban.md             Flow-based project management
 |   |-- agent-operating-model.md  How agents operate
 |   |-- recovery.md           Recovery protocol for closing gaps
+|   |-- product-testing.md    Agentic product testing reference
 |   |-- glossary.md           Terminology reference
 |
 |-- examples/                WORKED EXAMPLES (read, don't copy)
@@ -143,6 +144,17 @@ Specification --> Tests --> Code
 - **Code** is the casting. Agents pour implementation into the mold until all tests pass.
 
 If the casting is defective, fix the mold. If the mold is wrong, fix the specification. Do not debug the implementation directly.
+
+## Product Testing
+
+After the code is assembled, AI agents verify the product by operating it as real users. Each agent receives a user profile (technical literacy, domain knowledge, constraints) and a goal-oriented objective ("as a first-time user, create an account and reach the dashboard"). The agent navigates the application through the UI, and the journey produces measurable signals:
+
+- **Click count and navigation depth** measure friction.
+- **Backtracking and dead ends** measure discoverability.
+- **Error encounters** measure input guidance quality.
+- **Abandonment** flags critical usability failures.
+
+UX budgets set quantitative thresholds for each metric. Product tests run as quality gates in CI, staging, and production canaries. See `reference/product-testing.md` for the full reference.
 
 ## When Gaps Are Discovered
 

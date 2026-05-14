@@ -317,6 +317,55 @@ Verify that castings match the mold and that the mold matches the original inten
 
 ---
 
+## Phase 5b: Product Testing
+
+**Purpose**
+
+Verify the assembled product by deploying AI agents that operate the application as real users would. Product testing catches experience defects that module-level tests cannot: unusable workflows, excessive friction, confusing navigation, poor error guidance, and accessibility failures.
+
+This phase runs after review confirms the code is correct and before deployment ships it to users. It answers the question: the code works, but does the product work for the people who use it?
+
+For the full product testing reference, see the [Product Testing](https://github.com/0xhackerfren/Codex-Automata/blob/main/reference/product-testing.md) document in the Codex Automata repository.
+
+**Inputs**
+
+- Approved code from Phase 5 (assembled, running in a staging or preview environment)
+- User profile documents (use `templates/user-profile-template.md`)
+- Product test scenarios (use `templates/product-test-template.md`)
+- UX budgets from the specification (click budgets, navigation depth limits, time budgets)
+
+**Outputs**
+
+- Product test results with journey logs for each scenario
+- UX metrics: click counts, backtracking rates, navigation depth, error encounters, time to completion
+- Experience signals: hesitation points, dead ends, discovery paths, confusion indicators
+- Defect reports for failed objectives or budget violations
+
+**Exit Criteria**
+
+- [ ] All critical journey objectives pass (agent completes the objective).
+- [ ] All UX budgets are met (click count, navigation depth, time within thresholds).
+- [ ] No critical errors (crashes, data loss, security failures) during any journey.
+- [ ] Accessibility-constrained profiles complete all required objectives.
+- [ ] Journey logs are stored for trend analysis.
+
+**Human Responsibilities**
+
+- Define user profiles that represent the actual user base.
+- Set UX budgets grounded in product standards and competitive benchmarks.
+- Interpret experience signals and decide whether friction patterns warrant specification changes.
+- Product testing reveals experience defects, but humans decide which defects matter enough to fix before shipping.
+
+**Agent Responsibilities**
+
+- Operate the application through its user interface using browser tools, screen readers, or mobile emulators as the profile dictates.
+- Follow the user profile's behavioral model (technical literacy, domain knowledge, behavioral tendencies).
+- Do not use implementation knowledge. Navigate using only what is visible on screen and what the profile's user would reasonably know.
+- Record every action, observation, hesitation, error, and recovery in a journey log.
+- Report honestly when an objective cannot be completed, including where the agent got stuck and what it tried.
+
+---
+
 ## Phase 6: Deployment and Observation
 
 **Purpose**
@@ -325,7 +374,7 @@ Ship verified code to production and confirm that production behavior matches th
 
 **Inputs**
 
-- Approved code from Phase 5
+- Approved code from Phase 5b
 - Deployment configuration and infrastructure
 - Monitoring and alerting requirements from the specification
 
@@ -450,5 +499,6 @@ Batch related gaps within a single module into one recovery card. Create separat
 | 3: Test Molding | Agent (human review) | No | `test-plan-template.md` |
 | 4: Code Casting | Agent | No | `agent-task-template.md` |
 | 5: Review | Human | **Yes** | `human-review-template.md` |
+| 5b: Product Testing | Agent (human review) | No | `product-test-template.md` |
 | 6: Deployment | Human + Agent | No | N/A |
 | Recovery | Human + Agent | No | `gap-assessment-template.md` |
