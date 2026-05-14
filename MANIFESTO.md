@@ -150,7 +150,15 @@ An agent reads each spec and builds the mold. Unit tests, integration tests, con
 
 Then the cast. Five modules. Five agents. Each receives its spec, its tests, and the interface contracts of its neighbors. They work in parallel, independently, silently. They do not communicate because they do not need to. The specs and contracts contain everything. One finishes in minutes. Another takes an hour. They are not synchronized. When each agent's tests pass, the module is done.
 
-Automated gates fire. An agent reviews against the spec. A human reviews last, checking for coherence. Does the system still make sense as a whole? The pipeline runs. The code deploys. Monitoring confirms that production matches the spec. If it does not, the cycle restarts at the mold.
+Automated gates fire. An agent reviews against the spec. A human reviews last, checking for coherence. Does the system still make sense as a whole?
+
+But one verification layer remains. The modules pass their tests. The contracts hold. The code is correct. Is the product any good? A system can satisfy every unit test and still be unusable. The signup flow requires twelve clicks when three would suffice. The error message is technically accurate but incomprehensible. The navigation makes sense to the engineer who built it but bewilders the customer who needs it.
+
+Traditional testing cannot catch this. Scripted end-to-end tests verify a predetermined path: click this button, assert this text. They confirm the path works, not that a user can find it. Agentic product testing inverts the approach. Give an agent a user profile and an objective. "As a first-time visitor, create an account and reach the dashboard." The agent navigates the application the way a real user would, reading labels, clicking buttons, making mistakes, recovering from errors. If it cannot accomplish the objective, the product has a usability defect. If it takes twenty clicks when the budget is eight, the product has a friction defect. The agent's journey is measurable evidence of experience quality.
+
+This is a capability that exists only in the agentic era. No previous testing methodology could instruct a test to "figure out how to accomplish this goal" and then measure whether the experience was efficient, discoverable, and humane. Click counts, backtracking rates, dead ends, hesitation points, error recovery paths: these become quantitative signals derived from agents operating the product exactly as users would. The specification defines what the product must do. Product testing verifies that real people can actually do it.
+
+The pipeline runs. The code deploys. Monitoring confirms that production matches the spec. If it does not, the cycle restarts at the mold.
 
 Remove any piece and the machine breaks. Without specs, agents hallucinate, producing plausible code aimed at the wrong problem. Without tests, infinite variety with no definition of correct. Without modularity, agents collide in merge conflicts, contradictions, and chaos. Without flow, work pools in the wrong places. Without CI/CD, the whole arrangement depends on discipline that humans will eventually forget and agents will never have.
 

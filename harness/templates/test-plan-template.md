@@ -55,6 +55,15 @@
 |-----------|-------------|--------|----------------|-------|
 | [ ] | [latency / throughput] | [load tool, benchmark] | [ ] | [ ] |
 
+## Product Tests
+
+[Include when the specification defines user-facing behaviors. Product tests verify the assembled application by having agents operate it as real users. See `templates/product-test-template.md` and `templates/user-profile-template.md` for full templates.]
+
+| Objective | User profile | Spec reference | UX budget (clicks) | Priority |
+|-----------|-------------|----------------|---------------------|----------|
+| [goal-oriented statement] | [profile name] | [section] | [max clicks] | [critical / high / medium / low] |
+| [ ] | [ ] | [ ] | [ ] | [ ] |
+
 ## Test Environment Requirements
 
 - **Dependencies:** [services, databases, queues]

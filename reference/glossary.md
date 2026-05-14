@@ -38,6 +38,9 @@ The executable test suite and fixtures derived from a specification that define 
 **Mold Gap**  
 A gap class where behavior is documented in the specification but has no tests, or the tests are too weak to constrain the implementation meaningfully. Elaboration: the specification says what should happen, but no mold enforces it; recovery derives tests from the existing specification following standard test molding rules.
 
+**Product Test**  
+A verification scenario where an AI agent operates the assembled application as a real user, given a user profile and a goal-oriented objective. Elaboration: measures both functional completion (did the agent accomplish the goal?) and experience quality (click count, backtracking, navigation depth, error encounters, time to completion); see `product-testing.md` in this directory.
+
 **Quality Gate**  
 An automated check in the CI/CD pipeline that enforces process discipline mechanically (build, test, policy, security, signing, compatibility, performance budgets as applicable). Elaboration: failures block progression by default; waivers require explicit human risk acceptance tied to records.
 
@@ -53,8 +56,17 @@ The phase where humans produce or revise specifications and contracts; typically
 **Specification**  
 A precise, testable document defining what a module or bounded context must do, including behaviors, edge cases, non-functional expectations, and failure modes. Elaboration: the primary human authored engineering artifact that downstream molds and reviews reference.
 
+**Test Objective**  
+A goal-oriented statement of what a simulated user must accomplish during a product test, stated as an outcome rather than a script of steps. Elaboration: "create an account and reach the dashboard" is an objective; "click the signup button, fill in the email field" is a script; objectives test discoverability and usability, scripts test only a predetermined path.
+
 **Test Molding**  
 The phase where tests and fixtures are derived from specifications to build the mold. Elaboration: separates acceptance shape from implementation and enables mechanical enforcement through quality gates.
+
+**User Profile**  
+A test fixture that defines who a simulated user is during a product test, constraining agent behavior to simulate a specific class of user. Elaboration: includes technical literacy, domain knowledge, goals, constraints (accessibility, device, network), and behavioral tendencies; derived from the specification's user-facing sections; uses `templates/user-profile-template.md` in the harness.
+
+**UX Budget**  
+A quantitative threshold for acceptable user experience during a product test, such as maximum clicks, navigation depth, backtracking count, error encounters, or time to completion. Elaboration: transforms subjective experience assessments into falsifiable metrics; set per objective and per profile; calibrated from baselines and product standards.
 
 **WIP Limit**  
 A cap on work in process at a station to prevent overload, shorten feedback loops, and expose bottlenecks. Elaboration: pulling work only when capacity exists pairs with explicit definitions of ready for each station.
