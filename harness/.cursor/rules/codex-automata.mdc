@@ -16,15 +16,17 @@ This project follows the Codex Automata methodology: Documentation first, Tests 
 5. Prefer small, atomic commits traceable to specification sections.
 6. Surface ambiguity instead of guessing.
 7. Every task must map to a specification section and test case.
+8. When you discover code without a corresponding specification or tests, halt and report the gap. Do not work around it. Recommend documenting it with `templates/gap-assessment-template.md` for triage and recovery.
 
 ## Workflow
 
 - Locate the specification before writing code.
 - Locate the test plan before implementing.
-- If spec or tests are missing, stop and report before proceeding.
+- If spec or tests are missing, stop and report before proceeding. Recommend a gap assessment for triage.
+- During recovery tasks (closing gaps in existing code), derive specifications from domain knowledge and tests from specifications. Never derive specs or tests from the existing code.
 
 ## Terminology
 
-Use these terms consistently: specification, mold, casting, bounded context, interface contract, quality gate, agent task, human review, flow.
+Use these terms consistently: specification, mold, casting, bounded context, interface contract, quality gate, agent task, human review, flow, recovery, gap assessment, spec gap, mold gap, coverage erosion, contract gap.
 
 See `agent/AGENT_RULES.md` for the complete operating manual.

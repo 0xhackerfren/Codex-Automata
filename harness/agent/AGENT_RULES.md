@@ -30,6 +30,10 @@ R9. Every agent task must map to a specification section and at least one test c
 
 R10. Do not introduce external dependencies not specified in the architecture documents.
 
+R11. When you discover code without a corresponding specification or tests, halt and report the gap. Do not silently work around it, do not write tests derived from the code, and do not treat unspecified behavior as intentional. Report the gap using the gap assessment template (`templates/gap-assessment-template.md`) so a human can triage and schedule recovery.
+
+R12. During recovery tasks, follow rules R1-R11 in the context of an existing codebase. Derive specifications from domain knowledge and stakeholder intent, not from the current implementation. Derive tests from the specification, not from the code. If the specification and the code conflict, surface the conflict for human resolution.
+
 ## 3. Task Execution Protocol
 
 - Step 1: Read the agent task definition and locate the specification reference.

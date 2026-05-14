@@ -11,11 +11,20 @@ An independent partition of the system where a specific domain model applies; th
 **Casting**  
 The implementation code produced by satisfying a mold derived from a specification; treated as a commodity artifact. Elaboration: defects often indicate an underspecified mold or specification drift rather than a need for ad hoc test bending.
 
+**Contract Gap**  
+A gap class where a module boundary defined in the architecture has no contract tests despite a documented interface contract. Elaboration: the interface contract document may exist, but nothing mechanically verifies that both sides honor it; recovery writes contract tests from the interface contract and runs them against both sides.
+
+**Coverage Erosion**  
+A gap class where tests once existed but were deleted, disabled, marked as skipped, or allowed to become flaky without remediation. Elaboration: the mold has degraded over time; recovery restores or rewrites tests from the current specification, not from the original test code, since the specification may have evolved.
+
 **Code Casting**  
 The phase where agents write or refactor implementation until all relevant molds pass under the governing interface contracts. Elaboration: parallelizes across contexts when contracts and repository ownership boundaries are clear.
 
 **Flow**  
 The continuous movement of work through the pipeline, managed with kanban mechanics and WIP limits. Elaboration: measured with cycle time, throughput, and WIP age rather than sprint velocity metaphors.
+
+**Gap Assessment**  
+A structured document recording a discovered gap in specification, tests, or coverage for an existing module. Elaboration: captures the affected module, gap class, discovery trigger, severity, current and required state, recovery plan, and recurrence prevention; uses `templates/gap-assessment-template.md` in the harness.
 
 **Human Review**  
 The phase where humans verify that implementation matches specification, intent, and systemic risk expectations beyond what automated checks encode. Elaboration: may reject work and return it upstream to specification, molding, or casting with explicit rationale.
@@ -26,8 +35,17 @@ A formal agreement between bounded contexts defining the API surface, data forma
 **Mold**  
 The executable test suite and fixtures derived from a specification that define the exact shape implementation must take. Elaboration: rigid by design; changing a mold without a specification change is a process violation unless governed as an emergency fix with follow up specification alignment.
 
+**Mold Gap**  
+A gap class where behavior is documented in the specification but has no tests, or the tests are too weak to constrain the implementation meaningfully. Elaboration: the specification says what should happen, but no mold enforces it; recovery derives tests from the existing specification following standard test molding rules.
+
 **Quality Gate**  
 An automated check in the CI/CD pipeline that enforces process discipline mechanically (build, test, policy, security, signing, compatibility, performance budgets as applicable). Elaboration: failures block progression by default; waivers require explicit human risk acceptance tied to records.
+
+**Recovery**  
+The process of closing gaps in specification, tests, or coverage after code already exists. Elaboration: follows the same pipeline as forward work (specification first, then molds, then casting) but applied retroactively; recovery tasks are first-class kanban work items, not invisible background chores; see `recovery.md` in this directory for the full protocol.
+
+**Spec Gap**  
+A gap class where behavior exists in the codebase but is not documented in any specification. Elaboration: the most dangerous class because without a specification you cannot determine whether the current behavior is correct or accidental; recovery writes the specification first from domain knowledge, not from the code.
 
 **Spec Writing**  
 The phase where humans produce or revise specifications and contracts; typically the first human constrained station in the flow. Elaboration: WIP limits preserve depth and reduce ambiguous drafts that would pollute molding and casting.

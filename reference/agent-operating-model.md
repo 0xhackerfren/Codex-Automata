@@ -110,6 +110,8 @@ Human review still judges specification fidelity, operational readiness, and cro
 
 **Security sensitive inference gaps.** Prefer conservative halts and human security review; never guess trust boundaries.
 
+**Retroactive gap discovery.** During routine tasks, an agent encounters code that has no corresponding specification, no tests, disabled tests, or no contract tests at a module boundary. The agent halts the current task for the affected scope and files a structured gap report using the gap assessment template. The report includes the affected module, the class of gap (spec gap, mold gap, coverage erosion, or contract gap), how it was discovered, and what currently exists. The agent does not work around the gap, does not write tests derived from the code, and does not treat unspecified behavior as intentional. Humans triage the gap by severity and schedule recovery work on the kanban board. During recovery tasks, agents follow the forward pipeline rules (specification first, then molds, then casting) applied to the existing codebase: specifications are derived from domain knowledge, not from code; tests are derived from specifications, not from code; and conflicts between code and specification are surfaced for human resolution. See `recovery.md` in this directory for the full recovery protocol.
+
 Blameless postmortems should link incidents to missing specification clauses, mold gaps, gate holes, training updates, or ADR follow-ups.
 
-Companion references: `principles.md`, `workflow.md`, `kanban.md`, `architecture.md`, and `glossary.md` in this directory, and `PLAYBOOK.md` in the harness for detailed phase guidance.
+Companion references: `principles.md`, `workflow.md`, `kanban.md`, `architecture.md`, `recovery.md`, and `glossary.md` in this directory, and `PLAYBOOK.md` in the harness for detailed phase guidance.

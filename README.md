@@ -103,7 +103,7 @@ codex-automata/
 |   |   |-- hooks.json       Event-driven enforcement
 |   |-- .github/             GitHub CI and templates
 |   |-- agent/               Detailed agent operating rules
-|   |-- templates/           All project templates
+|   |-- templates/           All project templates (spec, test, ADR, contract, task, review, gap assessment)
 |   |-- docs/                Empty project docs directory
 |   |-- tests/               Empty project tests directory
 |   |-- tasks/               Empty agent tasks directory
@@ -116,6 +116,7 @@ codex-automata/
 |   |-- architecture.md      Architecture patterns and guidance
 |   |-- kanban.md             Flow-based project management
 |   |-- agent-operating-model.md  How agents operate
+|   |-- recovery.md           Recovery protocol for closing gaps
 |   |-- glossary.md           Terminology reference
 |
 |-- examples/                WORKED EXAMPLES (read, don't copy)
@@ -142,6 +143,20 @@ Specification --> Tests --> Code
 - **Code** is the casting. Agents pour implementation into the mold until all tests pass.
 
 If the casting is defective, fix the mold. If the mold is wrong, fix the specification. Do not debug the implementation directly.
+
+## When Gaps Are Discovered
+
+Real projects discover gaps after code exists: a production incident exposes an unspecified failure mode, a review reveals missing tests, or a new team member finds a module with no contract tests. Codex Automata defines a formal recovery protocol for these situations.
+
+Recovery follows the same pipeline as forward work, applied retroactively:
+
+1. **Audit** the gap using `templates/gap-assessment-template.md`.
+2. **Patch the spec** from domain knowledge (not from the existing code).
+3. **Patch the mold** by deriving tests from the specification.
+4. **Recast** the implementation if the new tests fail.
+5. **Re-review** the complete recovery unit.
+
+Recovery tasks are first-class kanban work items, not invisible tech debt. See `reference/recovery.md` for the full protocol.
 
 ## How Agents Operate
 

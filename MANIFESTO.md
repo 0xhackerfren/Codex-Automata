@@ -174,6 +174,14 @@ There is also the question of scale. A solo developer building a weekend project
 
 The deepest limitation is the cold start problem. Writing good specs requires domain knowledge, architectural taste, and the hard-won intuition that comes from years of building systems that failed. You cannot spec what you do not understand. Junior engineers cannot be dropped into the Spec Writing station and expected to produce sharp molds. They must first learn what good looks like, which means, paradoxically, they may need to write bad code, debug it, and internalize the failure modes before they can specify well. The methodology does not eliminate the need for experience. It concentrates experience where it matters most.
 
+There is one more fracture line, subtler than the others because it lives inside the methodology itself. The pipeline assumes that specifications and tests are written before code. In practice, even disciplined teams discover gaps after the fact. A production incident reveals a failure mode that no one specified. A coverage audit exposes a module with tests that were disabled months ago and never restored. A new engineer walks through the codebase and finds behavior that exists in code but in no specification anywhere.
+
+The instinct in these moments is to fix the immediate problem. Add a test for the failure mode. Re-enable the disabled tests. Move on. This instinct is dangerous because it inverts the pipeline. A test written to match existing code is not a mold. It is a tracing. It encodes whatever the code happens to do, correct or not, and calls it specified. The gap in the specification remains, invisible but load-bearing.
+
+The correct response is the same response the methodology prescribes for forward work, applied in reverse. When a gap is discovered, trace it back to its root. If the specification is missing, write it. If the specification exists but the mold does not, derive the tests. If the mold existed but eroded, restore it from the specification, not from the code. Then verify or recast the implementation against the repaired mold. Recovery follows the pipeline. It simply enters at a different point.
+
+This matters because recovery is not an exception. It is a permanent feature of real systems. No methodology eliminates gaps entirely. What a methodology can do is define how gaps are found, classified, and closed with the same discipline that governs forward work. A system that can only build forward is fragile. A system that can also recover is resilient. The mold must be inspected and maintained, not just built once and trusted forever.
+
 None of these limitations invalidate the approach. They define its scope. Codex Automata is a methodology for engineering production systems in an era when implementation is cheap and specification is the binding constraint. Within that scope, it is precise.
 
 ---
