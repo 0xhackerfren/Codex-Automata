@@ -96,6 +96,30 @@ Deploy / Observe ----------------------> feedback to Spec / Contracts / Architec
 
 Avoid bypass loops where pressure forces gate weakening without specification amendment; that forfeits Mechanical Discipline emphasized in Codex Automata doctrine.
 
+## Retroactive Gap Discovery
+
+The feedback loops above address gaps found during active review or production observation of recently shipped work. A separate class of discovery occurs when gaps are found in code that has already been accepted: modules with missing or incomplete specifications, behaviors with no test coverage, eroded molds from disabled or deleted tests, and module boundaries with no contract tests.
+
+These retroactive gaps follow a dedicated recovery protocol. The full protocol, including classification taxonomy, triage guidance, kanban integration, and recurrence prevention, is defined in `recovery.md` in this directory. The summary sequence is:
+
+```text
+Audit --> Spec Patch --> Mold Patch --> Recast (if needed) --> Re-review
+```
+
+**Audit.** Document the gap using the gap assessment template. Classify it as a spec gap (behavior exists without specification), mold gap (specification exists without tests), coverage erosion (tests were lost over time), or contract gap (boundary lacks contract tests).
+
+**Spec Patch.** Write or correct the specification from domain knowledge, not from the existing code. The code may be accidentally correct or silently wrong.
+
+**Mold Patch.** Derive tests from the patched specification following the same test molding rules as forward work.
+
+**Recast.** If the implementation fails the new tests, recast the affected code. If it passes, the code was correct but unverified.
+
+**Re-review.** A human reviews the complete recovery unit: spec patch, mold patch, and any recast.
+
+Recovery tasks enter the kanban board as first-class work items with a distinct card type. They flow through the same stations and count against the same WIP limits as forward work. Treating recovery as invisible background work is how gaps accumulate.
+
+Discovery triggers include production incidents, review findings, coverage audits, team walkthroughs, dependency upgrades, security scans, and agent-detected gaps during routine tasks. See `recovery.md` for the complete list and triage criteria.
+
 ## Kanban Stations Alignment
 
 Operational tracking mirrors stations:
@@ -114,4 +138,4 @@ Consult `PLAYBOOK.md` (in the harness) when expanding any station into granular 
 
 ## Companion Documents
 
-For pull policies, limits, bottleneck interpretation, Toyota Production System parallels, metric guidance, consult `kanban.md` in this directory. For vocabulary alignment across teams, consult `glossary.md` in this directory.
+For the recovery protocol covering retroactive gap discovery, classification, triage, and remediation, consult `recovery.md` in this directory. For pull policies, limits, bottleneck interpretation, Toyota Production System parallels, metric guidance, consult `kanban.md` in this directory. For vocabulary alignment across teams, consult `glossary.md` in this directory.

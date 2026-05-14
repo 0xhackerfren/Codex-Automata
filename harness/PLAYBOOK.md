@@ -371,6 +371,75 @@ The pipeline is not strictly linear. Review can send work back to any earlier ph
 
 The key constraint is that backward movement always starts at the specification. If code is wrong, do not debug the implementation. Fix the spec, fix the tests, recast.
 
+---
+
+## Recovery: Closing Gaps After the Fact
+
+The forward pipeline assumes specs and tests exist before code. When you discover they do not, recovery applies the same pipeline retroactively. Recovery is not an exception or a side project. It is first-class work that flows through the same kanban stations as forward work.
+
+For the full recovery protocol, classification taxonomy, triage guidance, and metrics, see the [Recovery Protocol](https://github.com/0xhackerfren/Codex-Automata/blob/main/reference/recovery.md) in the Codex Automata repository.
+
+### When Recovery Applies
+
+Recovery applies whenever you discover that code exists without the upstream artifacts the methodology requires:
+
+- A module has no specification, or the specification is incomplete.
+- A specification has no tests, or tests are too weak to constrain the implementation.
+- Tests were deleted, disabled, or made flaky without remediation.
+- A module boundary has no contract tests despite a defined interface contract.
+
+These gaps are discovered through production incidents, review findings, coverage audits, team walkthroughs, dependency upgrades, security scans, or agent-detected gaps during routine tasks.
+
+### Recovery Sequence
+
+Recovery mirrors the forward pipeline but starts from an existing codebase.
+
+```text
+Audit --> Spec Patch --> Mold Patch --> Recast (if needed) --> Re-review
+```
+
+**Step 1: Audit.** Document the gap using `templates/gap-assessment-template.md`. Identify the affected module, gap class, discovery trigger, severity, and current state. This is a human task; agents assist with evidence gathering.
+
+**Step 2: Spec Patch.** If the specification is missing or incomplete, write the missing sections following Phase 2 rules. Derive the specification from domain knowledge and stakeholder intent, not from the existing code. The code may be accidentally correct or silently wrong.
+
+**Step 3: Mold Patch.** Derive tests from the patched specification following Phase 3 rules. Tests must trace back to specification sections. For coverage erosion, compare against the original test intent via version control history before restoring.
+
+**Step 4: Recast (if needed).** If the existing implementation passes the new tests, no recast is needed. If it fails, recast following Phase 4 rules. Agents receive the specification, updated tests, and interface contracts.
+
+**Step 5: Re-review.** A human reviews the recovery as a unit: spec patch, mold patch, and any recast code. The review confirms spec accuracy, test traceability, implementation correctness, and that no new gaps were introduced.
+
+### Recovery Exit Criteria
+
+- [ ] The gap assessment document is complete.
+- [ ] The specification is updated and covers the previously missing behavior.
+- [ ] Tests exist for every specified behavior and trace to specification sections.
+- [ ] All tests pass.
+- [ ] A human has reviewed and approved the recovery unit.
+- [ ] The recurrence prevention section of the gap assessment is filled in.
+
+### Human Responsibilities During Recovery
+
+- Triage discovered gaps by severity and schedule them on the board.
+- Write or approve specification patches. Specification authority remains human-owned.
+- Review the complete recovery unit before closing the card.
+- Fill in the recurrence prevention section: what process gap allowed this debt to accumulate?
+
+### Agent Responsibilities During Recovery
+
+- When a gap is discovered during routine work, halt and report it using the gap assessment template. Do not silently work around gaps.
+- During recovery tasks, follow the same forward rules (R1-R10) in the context of an existing codebase.
+- Assist with evidence gathering: scan for related gaps, check version control history, surface specification sections that reference the affected behavior.
+- Derive tests from the specification, not from the existing code.
+- If the specification appears incorrect (code behavior contradicts it and the code is believed correct), surface the conflict for human resolution. Do not update the specification unilaterally.
+
+### Recovery on the Kanban Board
+
+Recovery cards use a distinct card type or tag ("Recovery" or "Gap Remediation") and flow through the same stations as forward work. They count against the same WIP limits. If a critical recovery card displaces forward work, that tradeoff is visible on the board.
+
+Batch related gaps within a single module into one recovery card. Create separate cards for separate modules to maintain bounded context independence.
+
+---
+
 ## Quick Reference
 
 | Phase | Primary Owner | Bottleneck? | Key Template |
@@ -382,3 +451,4 @@ The key constraint is that backward movement always starts at the specification.
 | 4: Code Casting | Agent | No | `agent-task-template.md` |
 | 5: Review | Human | **Yes** | `human-review-template.md` |
 | 6: Deployment | Human + Agent | No | N/A |
+| Recovery | Human + Agent | No | `gap-assessment-template.md` |

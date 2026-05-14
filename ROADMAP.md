@@ -5,6 +5,7 @@ This document sketches planned evolution of the Codex Automata methodology harne
 ## Current
 
 - **Version 0.1.0**: Baseline harness: specification doctrine, molds and casting metaphors across docs, bounded context guidance, agent task boundaries, interface contract discipline, Cursor integration (rules, skills, subagents, hooks), templates, examples, GitHub-oriented quality gate patterns.
+- **Recovery protocol**: Formal process for closing gaps in specification, tests, or coverage after code exists. Includes gap classification taxonomy, severity-based triage, recovery sequence (audit, spec patch, mold patch, recast, re-review), kanban integration, gap assessment template, recurrence prevention, and health metrics. Wired into manifesto, playbook, agent rules, Cursor rules, and glossary.
 
 ## v0.2.0 (goals)
 
