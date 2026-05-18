@@ -2,7 +2,7 @@
 
 **The hard part of software was never the code.**
 
-A spec-first, test-first development methodology for the agentic era. Copy one directory into any project and the methodology is active: specifications first, tests second, code last. Documentation is the primary engineering artifact. Tests are the mold. Code is the casting.
+A research-driven, spec-first, SDK-first, local-first development methodology for the agentic era. Copy one directory into any project and the methodology is active: research informs decisions, specifications first, SDK second, tests third, code last. Build for the smallest viable model, expand to frontier as needed. Documentation is the primary engineering artifact. The SDK is the constraint surface. Tests are the mold. Code is the casting.
 
 [Read the Manifesto](MANIFESTO.md) | [Browse the Playbook](harness/PLAYBOOK.md) | [MIT License](LICENSE)
 
@@ -10,9 +10,12 @@ A spec-first, test-first development methodology for the agentic era. Copy one d
 
 Codex Automata is a development methodology for the agentic era. It inverts the traditional pipeline:
 
-1. **Documentation comes first.** Specify the system before implementing it.
-2. **Tests come second.** Derive tests from the specification. The tests are the mold.
-3. **Code comes last.** Agents fill the mold. The code is the casting.
+1. **Research informs decisions.** Agents investigate technologies, patterns, and the landscape before specifying.
+2. **Documentation comes first.** Specify the system before implementing it.
+3. **SDK comes second.** Express the architecture as compilable building blocks. The SDK is the constraint surface.
+4. **Tests come third.** Derive tests from the specification, written against SDK interfaces. The tests are the mold.
+5. **Code comes last.** Agents fill the mold within the SDK boundary. The code is the casting.
+6. **Build local-first.** Design for the smallest viable model. Expand to frontier as needed. Constraint forces discipline.
 
 This repository contains the harness (the thing you copy into projects) and reference material (the methodology documentation you read).
 
@@ -64,6 +67,7 @@ my-project/
   agent/                 Detailed agent operating rules
   templates/             Spec, test plan, ADR, contract, task, review templates
   docs/                  Empty, ready for your project specifications
+  sdk/                   Empty, ready for SDK constraint surface (types, interfaces)
   tests/                 Empty, ready for test plans and test code
   tasks/                 Empty, ready for agent task definitions
   review/                Empty, ready for human review records
@@ -83,7 +87,7 @@ Open the project in Cursor IDE and the methodology enforces itself:
 1. Read `PLAYBOOK.md` for the phase-by-phase guide.
 2. Copy `templates/project-intake-template.md` to `docs/intake.md` and fill it in.
 3. Or type `/project-intake` in Cursor chat to start guided setup.
-4. Follow the phases: Intake, Architecture, Specification, Test Molding, Code Casting, Review, Deployment.
+4. Follow the phases: Intake, Architecture, Specification, SDK Design, Test Molding, Code Casting, Review, Deployment.
 
 ## Repository Structure
 
@@ -105,6 +109,7 @@ codex-automata/
 |   |-- agent/               Detailed agent operating rules
 |   |-- templates/           All project templates (spec, test, ADR, contract, task, review, gap assessment)
 |   |-- docs/                Empty project docs directory
+|   |-- sdk/                 Empty SDK constraint surface directory
 |   |-- tests/               Empty project tests directory
 |   |-- tasks/               Empty agent tasks directory
 |   |-- review/              Empty human review directory
@@ -135,15 +140,16 @@ Note: `.github/` exists at both the repo root (for the Codex Automata project it
 ## The Core Pipeline
 
 ```
-Specification --> Tests --> Code
-     (docs)        (mold)    (casting)
+Specification --> SDK --> Tests --> Code
+     (docs)      (constraint)  (mold)    (casting)
 ```
 
 - **Specifications** are the primary engineering artifact. They define what the system must do.
-- **Tests** are the mold. Derived from specifications, they constrain the shape of the implementation.
-- **Code** is the casting. Agents pour implementation into the mold until all tests pass.
+- **SDK** is the constraint surface. It expresses the architecture as compilable building blocks that constrain all downstream work.
+- **Tests** are the mold. Derived from specifications and written against SDK interfaces, they constrain the shape of the implementation.
+- **Code** is the casting. Agents pour implementation into the mold, within the SDK boundary, until all tests pass.
 
-If the casting is defective, fix the mold. If the mold is wrong, fix the specification. Do not debug the implementation directly.
+If the casting is defective, fix the mold. If the mold is wrong, fix the specification. If new building blocks are needed, extend the SDK through the specification pipeline. Do not debug the implementation directly.
 
 ## Product Testing
 
@@ -164,9 +170,10 @@ Recovery follows the same pipeline as forward work, applied retroactively:
 
 1. **Audit** the gap using `templates/gap-assessment-template.md`.
 2. **Patch the spec** from domain knowledge (not from the existing code).
-3. **Patch the mold** by deriving tests from the specification.
-4. **Recast** the implementation if the new tests fail.
-5. **Re-review** the complete recovery unit.
+3. **Patch the SDK** if the constraint surface lacks types for the affected behavior.
+4. **Patch the mold** by deriving tests from the specification against SDK interfaces.
+5. **Recast** the implementation if the new tests fail.
+6. **Re-review** the complete recovery unit.
 
 Recovery tasks are first-class kanban work items, not invisible tech debt. See `reference/recovery.md` for the full protocol.
 
@@ -174,12 +181,14 @@ Recovery tasks are first-class kanban work items, not invisible tech debt. See `
 
 Agents working in a Codex Automata project follow strict rules (enforced by `.cursor/rules/` and `AGENTS.md`):
 
-1. Do not write implementation before the specification and tests exist.
-2. Do not expand scope without updating the specification.
-3. Do not silently change interface contracts.
-4. Do not bypass failing tests.
-5. Prefer small, atomic commits traceable to specification sections.
-6. Surface ambiguity instead of guessing.
+1. Do not write tests or implementation before the specification and SDK exist.
+2. Do not introduce abstractions outside the SDK constraint surface.
+3. Keep context lean. Do not assume frontier capabilities or unlimited context windows.
+4. Do not expand scope without updating the specification.
+5. Do not silently change interface contracts or SDK interfaces.
+6. Do not bypass failing tests.
+7. Prefer small, atomic commits traceable to specification sections.
+8. Surface ambiguity instead of guessing.
 
 See `agent/AGENT_RULES.md` (inside the harness) for the complete operating manual.
 
@@ -189,9 +198,10 @@ Humans own the upstream work:
 
 1. **Architecture and decomposition.** Break the system into bounded contexts.
 2. **Specification writing.** Define what the system must do, precisely.
-3. **Test design.** Derive the mold from the specification.
-4. **Review.** Verify castings match the mold and intent.
-5. **Deployment decisions.** Ship and observe.
+3. **SDK design.** Express the architecture as compilable building blocks.
+4. **Test design.** Derive the mold from the specification against SDK interfaces.
+5. **Review.** Verify castings match the mold, SDK, and intent.
+6. **Deployment decisions.** Ship and observe.
 
 Read `MANIFESTO.md` for the full philosophy, or browse `reference/` for detailed methodology documentation.
 

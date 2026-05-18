@@ -16,17 +16,19 @@ Codex Automata may still schedule lightweight planning rhythms; kanban rejects s
 
 ## Stations
 
-Codex Automata aligns boards and telemetry to five canonical stations:
+Codex Automata aligns boards and telemetry to seven canonical stations (research runs continuously alongside early stations rather than as a blocking gate):
 
-1. **Spec Writing.** Humans author falsifiable specifications and interface contracts inside bounded contexts. This station establishes vocabulary downstream artifacts must reuse without drift.
+1. **Spec Writing.** Humans author falsifiable specifications and interface contracts inside bounded contexts, informed by research findings. This station establishes vocabulary downstream artifacts must reuse without drift. Research runs in parallel, feeding structured findings (landscape documents, comparison matrices, trade-off analyses) into spec and architecture work.
 
-2. **Test Molding.** Humans and agents derive executable molds and fixtures strictly from specification language. Incomplete molding upstream creates downstream false positives about readiness.
+2. **SDK Design.** Humans and agents translate specifications and interface contracts into a compilable constraint surface: types, interfaces, extension points, and compositional primitives. The SDK makes architectural decisions enforceable at the type system level and constrains what shapes are possible downstream.
 
-3. **Code Casting.** Agents write implementation constrained by molds and frozen contracts for each slicing window. Humans handle escalations around ambiguity and integration merges rather than supervising every keystroke unless policy demands spot checks.
+3. **Test Molding.** Humans and agents derive executable molds and fixtures from specification language, written against SDK interfaces. Incomplete molding upstream creates downstream false positives about readiness.
 
-4. **Review.** Humans compare casting to specification and systemic risk posture. Review amplifies diligence; automated quality gates still block merges mechanically.
+4. **Code Casting.** Agents write implementation constrained by SDK interfaces, molds, and frozen contracts for each slicing window. Humans handle escalations around ambiguity and integration merges rather than supervising every keystroke unless policy demands spot checks.
 
-5. **Deployment.** Progressive release plus verification plus operational observation with explicit rollback posture. Automation may execute most commands; the station remains real because rollout risk concentrates blast radius.
+5. **Review.** Humans compare casting to specification, SDK conformance, and systemic risk posture. Review amplifies diligence; automated quality gates still block merges mechanically.
+
+6. **Deployment.** Progressive release plus verification plus operational observation with explicit rollback posture. Automation may execute most commands; the station remains real because rollout risk concentrates blast radius.
 
 Optionally subdivide Deployment into gated substages (`Build + gates`, staging, progressive production, observation). Keep naming tethered across teams: specification, molds, casting, human review, quality gates, rollout.
 
@@ -37,6 +39,7 @@ Calibrate limits to team size and risk posture; adjust using cycle time and queu
 | Station | Guideline limit | Purpose |
 |---------|-----------------|--------|
 | Spec Writing | 2 to 3 items | Preserve depth and reduce contradictory partially drafted specs that leak ambiguity into molds |
+| SDK Design | 2 to 3 items | Requires architectural judgment; limit prevents incoherent constraint surfaces from flooding downstream |
 | Test Molding | 3 to 5 items | Allow parallel derivation while keeping deterministic fixtures tractable |
 | Code Casting | Unlimited | Computational throughput lacks a physiological ceiling at this station |
 | Human Review | 2 to 3 items | Protect thorough comparison against specification creep and checklist fatigue |
@@ -88,7 +91,7 @@ Codex Automata favors these measures over story point velocity, which mis scales
 
 Lay out columns left to right that mirror stations. Optional swim lanes group cards by bounded context or service area.
 
-`Backlog (clarified intake) → Spec Writing → Test Molding → Code Casting → Review → Deployment → Done (observed)`
+`Backlog (clarified intake) → Research + Spec Writing → SDK Design → Test Molding → Code Casting → Review → Deployment → Done (observed)`
 
 Post policies above each column: definition of ready, definition of done, escalation paths, linked ADR requirements, security review triggers, progressive delivery rules.
 

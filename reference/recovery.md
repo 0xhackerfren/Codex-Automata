@@ -1,6 +1,6 @@
 # Recovery Protocol
 
-This document defines how Codex Automata projects handle the discovery of gaps in specifications, tests, or coverage after code already exists. Recovery is not an exception to the methodology; it is the methodology applied retroactively. The same pipeline that governs forward work governs remediation: specification first, then molds, then casting.
+This document defines how Codex Automata projects handle the discovery of gaps in specifications, SDK, tests, or coverage after code already exists. Recovery is not an exception to the methodology; it is the methodology applied retroactively. The same pipeline that governs forward work governs remediation: specification first, then SDK, then molds, then casting.
 
 For phase-by-phase forward workflow, see `PLAYBOOK.md` in the harness. For the gap assessment template used during recovery, see `templates/gap-assessment-template.md` in the harness.
 

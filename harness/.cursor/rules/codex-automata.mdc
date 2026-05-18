@@ -5,25 +5,29 @@ alwaysApply: true
 
 # Codex Automata Core Rules
 
-This project follows the Codex Automata methodology: Documentation first, Tests second, Code last.
+This project follows the Codex Automata methodology: Research informs decisions. Documentation first, SDK second, Tests third, Code last. Build local-first.
 
 ## Constraints
 
-1. Do not write implementation before the specification and tests exist.
+1. Do not write tests or implementation before the specification and SDK constraint surface exist.
 2. Do not expand scope without updating the specification.
-3. Do not silently change interface contracts.
-4. Do not bypass failing tests. Fix the implementation or flag the test.
-5. Prefer small, atomic commits traceable to specification sections.
-6. Surface ambiguity instead of guessing.
-7. Every task must map to a specification section and test case.
-8. When you discover code without a corresponding specification or tests, halt and report the gap. Do not work around it. Recommend documenting it with `templates/gap-assessment-template.md` for triage and recovery.
+3. Do not silently change interface contracts or SDK interfaces.
+4. Do not introduce abstractions outside the SDK constraint surface. If you need a type, interface, or pattern not in the SDK, stop and request extension.
+5. Do not bypass failing tests. Fix the implementation or flag the test.
+6. Keep context lean. Design tasks, prompts, and specifications to be modular and retrievable in fragments. Do not assume unlimited context windows or frontier-only capabilities.
+7. Prefer small, atomic commits traceable to specification sections.
+8. Surface ambiguity instead of guessing.
+9. Every task must map to a specification section, an SDK interface, and a test case.
+10. When you discover code without a corresponding specification, SDK interface, or tests, halt and report the gap. Do not work around it. Recommend documenting it with `templates/gap-assessment-template.md` for triage and recovery.
 
 ## Workflow
 
+- When encountering technology decisions or unfamiliar domains, research first. Produce structured findings before specifying.
 - Locate the specification before writing code.
+- Locate the SDK interfaces that define the constraint surface for this task.
 - Locate the test plan before implementing.
-- If spec or tests are missing, stop and report before proceeding. Recommend a gap assessment for triage.
-- During recovery tasks (closing gaps in existing code), derive specifications from domain knowledge and tests from specifications. Never derive specs or tests from the existing code.
+- If spec, SDK, or tests are missing, stop and report before proceeding. Recommend a gap assessment for triage.
+- During recovery tasks (closing gaps in existing code), derive specifications from domain knowledge, SDK extensions from specifications, and tests from specifications against SDK interfaces. Never derive specs, SDK, or tests from the existing code.
 
 ## Product Testing
 
@@ -36,6 +40,6 @@ When the project has user-facing features, define product tests alongside module
 
 ## Terminology
 
-Use these terms consistently: specification, mold, casting, bounded context, interface contract, quality gate, agent task, human review, flow, recovery, gap assessment, spec gap, mold gap, coverage erosion, contract gap, product test, user profile, test objective, UX budget.
+Use these terms consistently: research, specification, SDK, constraint surface, building block, local-first, mold, casting, bounded context, interface contract, quality gate, agent task, human review, flow, recovery, gap assessment, spec gap, SDK gap, mold gap, coverage erosion, contract gap, product test, user profile, test objective, UX budget, SDK extension.
 
 See `agent/AGENT_RULES.md` for the complete operating manual.

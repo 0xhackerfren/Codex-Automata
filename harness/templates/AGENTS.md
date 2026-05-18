@@ -10,8 +10,8 @@ When a human asks you to create a new specification, test plan, interface contra
 
 1. **Do not edit files in `templates/`** to satisfy a one-off request. Copy the chosen template into the target project path, then fill it in there.
 2. **Preserve template sections**. Do not delete sections because they seem unused; leave them in place with honest placeholders or `N/A` only when the specification truly does not apply, and explain why briefly in brackets if needed.
-3. **Honor the Codex Automata flow**: specification first, mold (tests) second, casting (implementation) third. Templates align with interface contracts and quality gates across bounded contexts.
+3. **Honor the Codex Automata flow**: specification first, SDK (constraint surface) second, mold (tests) third, casting (implementation) fourth. Templates align with interface contracts, SDK interfaces, and quality gates across bounded contexts.
 
 ## Terminology
 
-Use consistent wording in filled-in documents: **specification**, **mold**, **casting**, **bounded context**, **interface contract**, **quality gate**, **agent task**, **human review**, **flow**.
+Use consistent wording in filled-in documents: **research**, **specification**, **SDK**, **constraint surface**, **building block**, **local-first**, **mold**, **casting**, **bounded context**, **interface contract**, **quality gate**, **agent task**, **human review**, **flow**.

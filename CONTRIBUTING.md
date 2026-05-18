@@ -13,14 +13,14 @@ Thank you for helping improve Codex Automata. This repository holds the methodol
 - **Methodology improvements**: clarifications or extensions to doctrine, playbook sections, bounded context boundaries, flow definitions, or quality gate expectations documented in specs and docs.
 - **Template improvements**: updates to reusable project templates while preserving frozen interface contracts unless the specification is updated intentionally.
 - **Documentation fixes**: typos, broken links, structural fixes, glossary alignment with specification and mold terminology.
-- **Example additions**: new worked examples that demonstrate the full pipeline (specification, mold, casting, agent task boundaries, human review touchpoints).
+- **Example additions**: new worked examples that demonstrate the full pipeline (specification, SDK, mold, casting, agent task boundaries, human review touchpoints).
 
 ## Style Guide
 
 - Do not use emojis in contributed text.
 - Do not use em dashes. Prefer commas, semicolons, colons, or parentheses for breaks and lists.
 - Use crisp, precise, technical prose. Avoid hype or startup fluff.
-- Use terminology consistently: specification, mold, casting, bounded context, interface contract, quality gate, agent task, human review, flow.
+- Use terminology consistently: research, specification, SDK, constraint surface, building block, local-first, mold, casting, bounded context, interface contract, quality gate, agent task, human review, flow.
 
 ## Pull Request Requirements
 

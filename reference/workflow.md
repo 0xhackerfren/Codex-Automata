@@ -1,18 +1,20 @@
 # End-to-End Workflow
 
-This reference describes the Codex Automata flow from earliest intent through production observability. It ties together bounded contexts, interface contracts, agent tasks, molds, casting, human review, and quality gates. For phase-by-phase agent behavior, constraints, and checklists, see `PLAYBOOK.md` (in the harness, or at project root after initialization).
+This reference describes the Codex Automata flow from earliest intent through production observability. It ties together research, bounded contexts, interface contracts, SDK constraint surfaces, agent tasks, molds, casting, human review, and quality gates. For phase-by-phase agent behavior, constraints, and checklists, see `PLAYBOOK.md` (in the harness, or at project root after initialization).
 
-## 1. Idea Intake
+## 1. Idea Intake (with Research)
 
 An intake document captures the motivating problem, user outcomes, measurable signals, constraints, non-goals, stakeholders, timelines, regulatory or security sensitivities, and known unknowns. The intake is deliberately not a specification: it aligns humans on direction before decomposition and commitment.
 
-Outputs: a prioritized problem statement linked to backlog items sized for architectural discussion.
+Concurrently, agents perform structured research: surveying existing solutions, technologies, market implementations, ecosystem maturity, and prior art relevant to the problem space. Research produces formal artifacts (landscape documents, comparison matrices, risk assessments) that feed directly into architectural decomposition and specification.
 
-## 2. Architectural Decomposition (Human Owned)
+Outputs: a prioritized problem statement linked to backlog items sized for architectural discussion, plus research artifacts covering the relevant technology landscape.
 
-Humans propose bounded contexts, candidate module boundaries, data ownership, transactional seams, synchronous versus asynchronous integrations, versioning policies, anticipated failure domains, operational ownership, and initial interface contract sketches.
+## 2. Architectural Decomposition (Human Owned, Research Informed)
 
-Outputs: architecture notes, provisional interface contracts referencing `templates/interface-contract-template.md`, and backlog slices aligned to contexts.
+Humans propose bounded contexts, candidate module boundaries, data ownership, transactional seams, synchronous versus asynchronous integrations, versioning policies, anticipated failure domains, operational ownership, and initial interface contract sketches. Architectural decisions reference research findings and cite evidence from landscape analyses rather than relying solely on prior experience or assumption.
+
+Outputs: architecture notes citing research artifacts, provisional interface contracts referencing `templates/interface-contract-template.md`, and backlog slices aligned to contexts.
 
 ## 3. Specification Authoring Per Context
 
@@ -22,23 +24,31 @@ Specifications are falsifiable artifacts: every normative clause should map forw
 
 Outputs: authoritative specifications stamped with versioning or change metadata where the project mandates it.
 
-## 4. Test Molding (Agent Task or Human-Driven)
+## 4. SDK Design (Constraint Surface)
 
-Specifications drive test planning: equivalence partitions, boundary values, concurrency cases, fuzz targets, compatibility matrices, regression harnesses mirroring defects, snapshot policies, and deterministic fixtures. Executable molds implement those plans strictly.
+Specifications and interface contracts drive SDK design: the types, interfaces, extension points, error models, event primitives, and compositional patterns that all downstream work must use. The SDK is the programmatic expression of architectural decisions, compiled before tests or implementation exist.
+
+The SDK forces abstraction by requiring every bounded context to expose its capabilities as importable building blocks. Shared concerns (error handling, identifiers, event schemas, result patterns) are defined once. Extension points are explicit, guarding against ad hoc invention by agents. The constraint surface makes modularity enforceable at the type system level.
+
+Outputs: compilable SDK packages per bounded context plus shared primitives, with no implementation behind the interfaces.
+
+## 5. Test Molding (Agent Task or Human-Driven)
+
+Specifications and SDK interfaces drive test planning: equivalence partitions, boundary values, concurrency cases, fuzz targets, compatibility matrices, regression harnesses mirroring defects, snapshot policies, and deterministic fixtures. Executable molds implement those plans strictly, written against SDK types so that tests cannot reference abstractions outside the constraint surface.
 
 Agents may synthesize scaffolding; humans adjudicate nondeterministic domains, flaky infrastructure, ambiguous ordering, statistical tests, timing windows, external systems, licensing and privacy of fixtures, performance budgets, security cases, compliance evidence, migration and dual write strategies, rollout toggles that interact with molds, and distributed behaviors (retries, backoff, jitter, timeouts, quotas, partial failure, transactional outbox patterns, saga compensation) where they apply.
 
-Outputs: committed molds that fail when behavior regresses absent an intentional specification change.
+Outputs: committed molds that fail when behavior regresses absent an intentional specification change. All molds reference SDK interfaces.
 
-## 5. Code Casting With Parallel Agents
+## 6. Code Casting With Parallel Agents
 
-With frozen interface contracts within the slicing window for a change, casting agents produce implementation constrained by molds across independent contexts concurrently. Conflict surfaces only at merges or contract checkpoints; branch policies and quality gates arbitrate merges.
+With frozen interface contracts and SDK surfaces within the slicing window for a change, casting agents produce implementation constrained by SDK interfaces and molds across independent contexts concurrently. Agents implement SDK contracts; they cannot introduce abstractions outside the constraint surface. Conflict surfaces only at merges or contract checkpoints; branch policies and quality gates arbitrate merges.
 
-Agents perform bounded edits, scaffolding, and refactors that respect interface contracts, keep builds and tests deterministic, and control randomness and time through explicit test doubles or harnesses where needed.
+Agents perform bounded edits, scaffolding, and refactors that respect interface contracts and SDK boundaries, keep builds and tests deterministic, and control randomness and time through explicit test doubles or harnesses where needed.
 
-Outputs: feature branches meeting local mold execution and static analysis policies.
+Outputs: feature branches meeting local mold execution, SDK conformance, and static analysis policies.
 
-## 6. Human Review
+## 7. Human Review
 
 Reviewers evaluate casting against specification and intent even when tests pass: security assumptions, secret handling, failure clarity for operators, rollout and rollback behavior, graceful degradation, misuse resistance, logging and telemetry quality (including cardinality discipline), compatibility across environments, and whether tests meaningfully lock the specified behavior rather than coincidentally matching it.
 
@@ -46,7 +56,7 @@ Unresolved mismatches escalate to revised specifications or contracts before wea
 
 Outputs: approvals, rework instructions referencing spec clauses, backlog follow-ups for ambiguity removal.
 
-## 7. Product Testing
+## 8. Product Testing
 
 After human review approves the casting and before deployment, AI agents verify the assembled product by operating it as real users. Each agent receives a user profile (technical literacy, domain knowledge, constraints, behavioral tendencies) and a goal-oriented objective ("as a first-time user, create an account and reach the dashboard"). The agent navigates the application through its user interface, recording every interaction, hesitation, error, and recovery.
 
@@ -60,13 +70,13 @@ Outputs: journey logs, UX metrics per scenario, pass/fail status per objective a
 
 For the full product testing reference, see `product-testing.md` in this directory.
 
-## 8. Integration and CI/CD Gates
+## 9. Integration and CI/CD Gates
 
 Merged changes proceed through centralized quality gates that bundle mold execution, static analysis, supply chain and license checks, signing and provenance where required, contract tests across bounded contexts, integration smoke suites, product test objective suites, performance and reliability budgets tied to SLOs, schema and API compatibility checks for migrations, progressive delivery controls (feature flags, canaries, rollbacks), and operational readiness checks (alert routes, runbooks, synthetic monitors) appropriate to the system class.
 
 Outputs: immutable artifacts destined for deployment with provenance appropriate to organizational policy.
 
-## 9. Deployment and Observation
+## 10. Deployment and Observation
 
 Deploy using agreed progressive strategies. Observability verifies golden signals correlated with intake metrics. Incident learning updates specifications rather than patching undocumented behavior indefinitely.
 
@@ -77,16 +87,19 @@ Outputs: dashboards, curated log queries, trace exemplars, post-incident updates
 ## Text Flow Diagram
 
 ```text
-Intake
+Intake + Research (agents survey landscape)
   |
   v
-Architecture (bounded contexts, interface contracts)
+Architecture (bounded contexts, interface contracts, research-informed)
   |
   v
 Spec Writing  <-------------------------+
   |                                     |
   v                                     |
-Test Molding                            |
+SDK Design (constraint surface)         |
+  |                                     |
+  v                                     |
+Test Molding (against SDK interfaces)   |
   |                                     |
   v                                     |
 Code Casting (parallel agent tasks)     |
@@ -99,10 +112,10 @@ Human Review ---------------------------+
 Product Testing (agents as users)
   |
   v
-CI/CD Quality Gates (molds + policy + product tests)
+CI/CD Quality Gates (molds + SDK conformance + policy + product tests)
   |
   v
-Deploy / Observe ----------------------> feedback to Spec / Contracts / Architecture (ADRs)
+Deploy / Observe ----------------------> feedback to Spec / SDK / Contracts / Architecture (ADRs)
 ```
 
 ## Feedback Loops
@@ -120,18 +133,20 @@ The feedback loops above address gaps found during active review or production o
 These retroactive gaps follow a dedicated recovery protocol. The full protocol, including classification taxonomy, triage guidance, kanban integration, and recurrence prevention, is defined in `recovery.md` in this directory. The summary sequence is:
 
 ```text
-Audit --> Spec Patch --> Mold Patch --> Recast (if needed) --> Re-review
+Audit --> Spec Patch --> SDK Patch --> Mold Patch --> Recast (if needed) --> Re-review
 ```
 
-**Audit.** Document the gap using the gap assessment template. Classify it as a spec gap (behavior exists without specification), mold gap (specification exists without tests), coverage erosion (tests were lost over time), or contract gap (boundary lacks contract tests).
+**Audit.** Document the gap using the gap assessment template. Classify it as a spec gap (behavior exists without specification), SDK gap (behavior exists without constraint surface types), mold gap (specification exists without tests), coverage erosion (tests were lost over time), or contract gap (boundary lacks contract tests).
 
 **Spec Patch.** Write or correct the specification from domain knowledge, not from the existing code. The code may be accidentally correct or silently wrong.
 
-**Mold Patch.** Derive tests from the patched specification following the same test molding rules as forward work.
+**SDK Patch.** If the SDK constraint surface lacks types or interfaces for the affected behavior, extend it from the patched specification.
 
-**Recast.** If the implementation fails the new tests, recast the affected code. If it passes, the code was correct but unverified.
+**Mold Patch.** Derive tests from the patched specification and SDK following the same test molding rules as forward work.
 
-**Re-review.** A human reviews the complete recovery unit: spec patch, mold patch, and any recast.
+**Recast.** If the implementation fails the new tests, recast the affected code against SDK interfaces. If it passes, the code was correct but unverified.
+
+**Re-review.** A human reviews the complete recovery unit: spec patch, SDK patch, mold patch, and any recast.
 
 Recovery tasks enter the kanban board as first-class work items with a distinct card type. They flow through the same stations and count against the same WIP limits as forward work. Treating recovery as invisible background work is how gaps accumulate.
 
@@ -143,9 +158,11 @@ Operational tracking mirrors stations:
 
 | Station | Responsibility | Typical Owner |
 |---------|----------------|---------------|
+| Research | Investigate landscape, technologies, prior art | Agent with human direction |
 | Spec Writing | Authoritative specifications per context | Human |
-| Test Molding | Derive molds and fixtures from specs | Agent with human adjudication |
-| Code Casting | Implement to satisfy molds within contracts | Agent |
+| SDK Design | Compile constraint surface from specs and contracts | Human + Agent |
+| Test Molding | Derive molds and fixtures from specs against SDK | Agent with human adjudication |
+| Code Casting | Implement SDK interfaces to satisfy molds | Agent |
 | Human Review | Confirm casting matches specification and systemic risk posture | Human |
 | Product Testing | Verify assembled product by agents operating as users | Agent with human interpretation |
 | Deployment | Progressive release and verification | Humans with automation gates |

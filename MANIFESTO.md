@@ -22,13 +22,15 @@ The bottleneck has moved. The entire discipline must move with it.
 
 Codex Automata inverts the pipeline. The traditional sequence runs Code, then Tests, then Documentation, with docs treated as an afterthought and frequently abandoned. We reverse it entirely.
 
-**Documentation, Tests, Code.**
+**Documentation, SDK, Tests, Code.**
 
 Documentation comes first. Before a single line of implementation exists, the system is specified. Its architecture, its interfaces, its data models, its failure modes, its edge cases. The specification is the primary engineering artifact. It is the thing that took real thought to produce.
 
-Tests come second. Derived from the specification, they define the exact shape the code must take. Every behavior in the spec has a corresponding assertion. Every edge case has a corresponding test. The tests are precise, rigid, and complete. They are the mold.
+The SDK comes second. Derived from the specification, it expresses the architecture as compilable, importable building blocks. Types, interfaces, contracts, extension points. The SDK is the constraint surface, the programmatic boundary that determines what shapes are even possible downstream. Nothing that tests or code do can escape its edges.
 
-Code comes last. An agent, or many agents working in parallel, receives the spec and the tests and writes implementation until every test passes. The code is a casting, a commodity artifact produced by pouring implementation into a prebuilt mold.
+Tests come third. Derived from the specification and written against the SDK, they define the exact shape the code must take. Every behavior in the spec has a corresponding assertion. Every edge case has a corresponding test. The tests are precise, rigid, and complete. They are the mold.
+
+Code comes last. An agent, or many agents working in parallel, receives the spec, the SDK, and the tests and writes implementation until every test passes. The code is a casting, a commodity artifact produced by pouring implementation into a prebuilt mold, constrained to the building blocks the SDK provides.
 
 The economics of the moment demand this sequence. When code is cheap and specification is expensive, you optimize for specification. You put your best people, your deepest thinking, and your most rigorous process on the thing that is hardest to get right. Then you let machines handle the rest.
 
@@ -62,7 +64,101 @@ If code is wrong, do not debug the implementation. Fix the spec. Fix the tests. 
 
 ---
 
-## III. The Anatomy of Good Work
+## III. The Constraint Surface
+
+There is a gap between a specification and a test suite that traditional methodologies leave implicit. The specification says what the system must do. The tests assert that specific behaviors hold. But neither one constrains how agents structure their work. An agent given a spec and told to write tests can invent any internal architecture it likes: novel abstractions, ad hoc helper layers, bespoke patterns that vary from module to module. The tests pass, but the system is incoherent. Every module is a snowflake. Integration becomes archaeology.
+
+The missing layer is the SDK.
+
+**The SDK is the constraint surface. It is the programmatic expression of architectural decisions, rendered as compilable code before tests or implementation exist.**
+
+In manufacturing, before the mold is cut, the tooling system is designed. Jigs, fixtures, standard interfaces between stations. These do not produce parts directly. They constrain what parts are possible. A fixture determines the orientation of every piece that passes through it. A standard interface ensures that every subassembly connects the same way. The tooling system is not the product. It is the grammar the product must speak.
+
+The SDK serves the same function for software. It defines the types, interfaces, extension points, and compositional primitives that all downstream work must use. When an agent writes tests, it writes them against SDK interfaces. When an agent writes implementation, it implements SDK contracts. The agent cannot invent new abstractions outside the SDK's vocabulary because the type system will not compile. Constraint is enforced mechanically, not by instruction.
+
+This is the critical insight for the agentic era. When code generation is cheap, the primary control mechanism is constraint. You do not control an agent by telling it what to do. You control it by defining what it is allowed to do. The SDK is that definition. It is the boundary between infinite possibility and bounded, coherent output.
+
+The pipeline becomes: **Documentation, SDK, Tests, Code.**
+
+The specification defines what the system must do. The SDK defines the building blocks available to do it. Tests assert that specific compositions of those blocks produce correct behavior. Code fills in the implementations behind the SDK's interfaces. Each layer constrains the next. Each layer is more concrete than the last. By the time an agent writes implementation, the solution space has been narrowed from infinite to tractable.
+
+This forces a level-up in abstraction that has profound consequences. When you must express your architecture as an SDK before any test or implementation exists, you are forced to think in modular building blocks. You cannot design a tangled monolith and express it as an SDK. The very act of defining importable interfaces, composable types, and extension points requires clean decomposition. The SDK makes modularity a structural requirement, not an aspiration.
+
+Consider what happens without this layer. An agent receives a spec for a payment processing module. It writes tests. It writes code. The code works. A second agent receives a spec for an invoicing module. It also writes tests and code. Both pass their respective molds. But when integrated, the two modules represent money differently, handle errors through incompatible patterns, and use conflicting concurrency models. They are individually correct and collectively incoherent. The problem is not missing tests. The problem is missing constraint. No shared vocabulary was enforced at the code level.
+
+With an SDK, both agents import the same `Money` type, implement the same `PaymentProvider` interface, use the same `Result` pattern for errors, and compose through the same event primitives. Coherence is not negotiated after the fact. It is predetermined by the constraint surface.
+
+The SDK also solves the extension problem cleanly. As the application grows, new capabilities are needed that the initial SDK does not provide. The response is not to work around the SDK or to let agents invent ad hoc solutions. The response is to return to the specification, define the new capability, extend the SDK with the new building block, then derive tests and implementation against the expanded surface. The pipeline runs forward again from the point of change. Extension is disciplined, not emergent.
+
+This mirrors how mature platform companies operate. Stripe does not let every team invent its own API patterns. AWS does not let every service define its own error model. They build SDKs, internal and external, that enforce consistency across hundreds of teams and thousands of services. The SDK is the mechanism by which architectural decisions survive contact with scale. In the agentic era, the same logic applies to AI agents. The SDK is how architectural intent survives contact with a fleet of code-generating machines that have no taste, no memory, and no loyalty to coherence.
+
+The constraint surface is not overhead. It is the thing that makes everything downstream predictable, composable, and correct by construction.
+
+---
+
+## IV. Local-First
+
+There is a seductive trap in the agentic era. Frontier models are powerful. They hold vast context windows, tolerate sloppy prompts, compensate for ambiguous instructions, and produce impressive results despite undisciplined inputs. The temptation is to build for frontier first, to assume unlimited context, infinite reasoning budget, and perfect instruction following, then worry about efficiency later.
+
+This is the same mistake the industry made with code for decades. Build it first, optimize later. It produces systems that are structurally dependent on expensive infrastructure, brittle when conditions change, and impossible to scale down without a rewrite.
+
+Codex Automata inverts this. Build local-first. Expand to frontier as needed.
+
+**A system designed to run on the smallest viable model will run better on every larger model. The reverse is never true.**
+
+The reasoning is structural. A local model has severe constraints. Limited context window. Weaker reasoning. Less tolerance for ambiguity. Slower inference. No room for bloated prompts or vague instructions. A system designed to function within these constraints must, by necessity, practice every discipline that makes AI engineering robust.
+
+Context management becomes mandatory. When the context window is small, every token matters. Specifications must be precise and modular, not because it is philosophically elegant, but because a local model cannot hold a fifty-page spec in memory. The system must retrieve the right fragment of specification at the right moment, which means specifications must be indexed, chunked, and cross-referenced with surgical precision. This is good engineering forced into existence by constraint.
+
+Prompt discipline becomes mandatory. A frontier model will produce reasonable output from a rambling, contradictory, three-thousand-token prompt. A local model will not. Building local-first forces prompts to be tight, structured, unambiguous, and minimal. Every instruction must earn its place. Every system message must carry information density that justifies its token cost. The result is a system that communicates with machines the way good specifications communicate with humans: precisely, without waste.
+
+Task decomposition becomes mandatory. A frontier model can hold an entire module in its context and reason about the whole thing at once. A local model cannot. Building local-first forces tasks to be atomized into units small enough for a constrained model to complete successfully. This is exactly the modularity and atomization that Codex Automata already demands, but local-first makes it a hard technical requirement rather than a process aspiration. If the task does not fit in the window, it is too large.
+
+Error handling becomes mandatory. Frontier models fail rarely and gracefully. Local models fail more often and less predictably. Building local-first forces the system to handle partial completions, retries, validation of outputs, and graceful degradation from the beginning. The infrastructure for reliability exists before it is needed at scale, because it was needed at small scale first.
+
+The economics reinforce the principle. Local models are cheap. They run on commodity hardware. They incur no API costs, no rate limits, no vendor dependencies. A system proven on local models can scale to frontier when the task genuinely demands it, with confidence that the system's architecture does not depend on frontier capabilities as a crutch.
+
+The expansion path is clean. Start with the smallest model that can complete the task given perfect inputs. Verify. Then relax constraints as you move to larger models: larger context windows allow fewer retrieval calls, stronger reasoning allows less prescriptive prompts, faster inference allows more ambitious single-pass generation. Each relaxation is a measured decision with a known baseline, not a dependency discovered in production when the API bill arrives or the rate limit triggers.
+
+This mirrors how serious engineering has always worked in constrained domains. Embedded systems engineers do not prototype on a server and then figure out how to fit it on a microcontroller. They design for the microcontroller first. The constraints force architectural decisions that produce efficient, reliable, well-structured systems. Then when they move to a more powerful chip, the system runs better, not differently.
+
+The inverse path, building for frontier and then trying to compress, produces systems that are architecturally dependent on capabilities they should never have assumed. Long prompts that cannot be shortened without losing critical context. Monolithic tasks that cannot be decomposed without redesigning the workflow. Implicit reliance on reasoning capabilities that smaller models lack. The system works beautifully on GPT-5 and collapses on anything less. That is not engineering. That is luck that has not yet expired.
+
+Local-first is not a performance optimization. It is an engineering discipline. It forces the practices that make AI systems robust, portable, cost-efficient, and architecturally sound. Build for the smallest viable model. Let constraint be the teacher. Expand to frontier when you have earned the right by proving the architecture does not need it.
+
+---
+
+## V. Research as Foundation
+
+There is a practice that every competent engineer performs informally and that no methodology has ever formalized as a first-class phase: research.
+
+Before writing a specification, a good engineer investigates. What solutions exist? What technologies have others used for this problem? What are the current best practices, the known pitfalls, the libraries that have matured, the approaches that have been tried and abandoned? This investigation has always happened, but it happened in the engineer's head, in browser tabs closed and forgotten, in Slack messages lost to scroll. It was invisible work that produced no artifact and left no trace in the project record.
+
+In the agentic era, this invisible work becomes visible, parallelizable, and systematic. AI agents can research technologies, compare implementations, survey market solutions, analyze trade-offs, and synthesize findings with a thoroughness and speed that no individual human can match. A single agent can review fifty open-source libraries in the time it takes a human to evaluate three. A fleet of agents can survey an entire ecosystem, cross-reference documentation, examine real-world usage patterns, and produce a structured comparison that would take a human team weeks.
+
+This capability demands formalization. Research is not a preliminary activity that happens before the methodology begins. It is the methodology's first act.
+
+**Every specification should be informed by structured research. Every architectural decision should reference the landscape it inhabits.**
+
+The traditional approach to technology decisions in software teams is tribal knowledge combined with individual experience. The senior engineer recommends PostgreSQL because she has used it successfully for a decade. The team adopts React because the last project used it. The messaging system is Kafka because someone read a blog post. These decisions are not wrong, but they are uninvestigated. They carry hidden assumptions about the problem space that were never validated against the current state of available solutions.
+
+Agentic research changes this. Before specifying a persistence layer, an agent surveys the current database landscape: performance characteristics, scaling limits, operational complexity, community health, licensing, compatibility with the existing stack, migration patterns from competitors, recent postmortems from production users. Before specifying an API design, an agent examines how comparable systems expose their capabilities: what conventions have emerged, what mistakes are commonly reported, what patterns have proven durable at scale. Before specifying an authentication flow, an agent reviews current security advisories, recent breach analyses, protocol updates, and library maturity across the target ecosystem.
+
+This is not premature optimization or analysis paralysis. It is due diligence made cheap. When research costs hours of human attention, shortcuts are rational. When research costs minutes of agent computation, shortcuts are negligent. The economics have changed. The excuse for uninvestigated decisions has evaporated.
+
+The research phase produces artifacts. Technology landscape documents. Comparison matrices. Trade-off analyses. Risk assessments grounded in real-world evidence rather than intuition. These artifacts become inputs to the specification phase, where humans make informed decisions rather than habitual ones. The specification references its research. Architectural decision records cite the landscape analysis that informed them. The chain of reasoning from investigation to decision to specification to implementation is traceable.
+
+This also changes how specifications handle novelty. When a specification encounters a problem the team has not solved before, the traditional response is either to guess, to copy what a competitor appears to have done, or to defer the decision until someone has time to investigate. The Codex Automata response is to dispatch research as a formal task. The agent produces a structured finding. The human decides based on evidence. The specification captures the decision with its rationale anchored to current reality.
+
+Research is not a one-time event at project inception. It recurs throughout the lifecycle. When a dependency publishes a breaking change, research evaluates migration paths. When a performance bottleneck appears, research surveys optimization techniques proven in comparable systems. When a security vulnerability is disclosed, research assesses exposure and patches across the ecosystem. The research capability is always available, always current, and always cheaper than ignorance.
+
+The implication for the pipeline is concrete. Research precedes specification. It may run in parallel with architecture decomposition. Its outputs feed directly into specifications and ADRs. Agents perform the investigation; humans perform the judgment. The agent reports what exists. The human decides what to use.
+
+Build on investigated ground. Let agents survey the landscape. Make decisions with evidence, not habit.
+
+---
+
+## VI. The Anatomy of Good Work
 
 There is a reason Unix conquered the world and the alternatives did not.
 
@@ -88,7 +184,7 @@ The implication is uncomfortable for engineers who take pride in writing code. T
 
 ---
 
-## IV. The Economics of Forward
+## VII. The Economics of Forward
 
 There is a deeply held instinct in software engineering that says build the minimal thing first. Start with a prototype. Get it working, then make it scale. Premature optimization is the root of all evil. Ship the simplest thing that could possibly work.
 
@@ -108,7 +204,7 @@ The traditional scaling path, build minimal then rewrite, made sense when rewrit
 
 ---
 
-## V. The Flow
+## VIII. The Flow
 
 Scrum was designed for humans. Its core assumptions are biological.
 
@@ -124,7 +220,9 @@ This maps to agentic development with almost no translation needed.
 
 The **Spec Writing** station produces specifications. It has a WIP limit, typically small because humans are the bottleneck here, and work only proceeds when a spec meets its exit criteria.
 
-The **Test Molding** station consumes specs and produces tests. Multiple agents can work this station in parallel, but a WIP limit prevents an avalanche of untested specs from piling up.
+The **SDK Design** station consumes specs and produces the constraint surface: types, interfaces, and building blocks that downstream stations must use. WIP is limited because SDK design requires architectural judgment, but the station often runs in parallel with spec writing as the architecture crystallizes.
+
+The **Test Molding** station consumes specs and the SDK, producing tests written against SDK interfaces. Multiple agents can work this station in parallel, but a WIP limit prevents an avalanche of untested specs from piling up.
 
 The **Code Casting** station has no WIP limit. This is where parallelism lives. Every module with a complete mold can be cast simultaneously. Ten modules, ten agents, one afternoon.
 
@@ -138,7 +236,7 @@ Quality gates in the pipeline encode the Codex Automata process itself. Does the
 
 ---
 
-## VI. The Machine
+## IX. The Machine
 
 Picture the system running at full speed.
 
@@ -146,7 +244,9 @@ An engineer receives a feature request. She opens a conversation, with an agent,
 
 She writes the spec. This is the hardest hour of her day. The difficulty is in the thinking. What should the system do at the boundary? What happens when the network drops mid transaction? What does "success" mean, precisely, in terms a machine can verify? The spec is challenged, revised, and frozen. It is the primary artifact, the thing that took real thought to produce.
 
-An agent reads each spec and builds the mold. Unit tests, integration tests, contract tests. The tests compile. Every one fails. No implementation exists yet. The mold is ready.
+The SDK takes shape. Types, interfaces, extension points, compositional primitives. The constraint surface compiles. It expresses the architecture as importable building blocks that every downstream agent must use. The vocabulary is fixed before a single test is written.
+
+An agent reads each spec and builds the mold against the SDK. Unit tests, integration tests, contract tests. The tests compile against SDK interfaces. Every one fails. No implementation exists yet. The mold is ready.
 
 Then the cast. Five modules. Five agents. Each receives its spec, its tests, and the interface contracts of its neighbors. They work in parallel, independently, silently. They do not communicate because they do not need to. The specs and contracts contain everything. One finishes in minutes. Another takes an hour. They are not synchronized. When each agent's tests pass, the module is done.
 
@@ -160,9 +260,9 @@ This is a capability that exists only in the agentic era. No previous testing me
 
 The pipeline runs. The code deploys. Monitoring confirms that production matches the spec. If it does not, the cycle restarts at the mold.
 
-Remove any piece and the machine breaks. Without specs, agents hallucinate, producing plausible code aimed at the wrong problem. Without tests, infinite variety with no definition of correct. Without modularity, agents collide in merge conflicts, contradictions, and chaos. Without flow, work pools in the wrong places. Without CI/CD, the whole arrangement depends on discipline that humans will eventually forget and agents will never have.
+Remove any piece and the machine breaks. Without research, decisions are uninvestigated and specifications encode assumptions instead of evidence. Without specs, agents hallucinate, producing plausible code aimed at the wrong problem. Without the SDK, agents invent incompatible architectures that cannot integrate. Without local-first discipline, the system becomes structurally dependent on expensive frontier models and collapses when conditions change. Without tests, infinite variety with no definition of correct. Without modularity, agents collide in merge conflicts, contradictions, and chaos. Without flow, work pools in the wrong places. Without CI/CD, the whole arrangement depends on discipline that humans will eventually forget and agents will never have.
 
-The principles are load bearing members in a single structure, and each assumes the others are present. Specification creates the foundation. Tests constrain the shape. Modularity enables concurrency. Flow exposes bottlenecks. CI/CD enforces integrity. Remove one, and the structure does not degrade gracefully. It collapses.
+The principles are load bearing members in a single structure, and each assumes the others are present. Research informs decisions. Specification creates the foundation. The SDK constrains the vocabulary. Local-first forces engineering discipline. Tests constrain the shape. Modularity enables concurrency. Flow exposes bottlenecks. CI/CD enforces integrity. Remove one, and the structure does not degrade gracefully. It collapses.
 
 This is why the methodology is called Codex Automata, the book of self moving things. The specifications, tests, gates, and pipelines form a machine that, once built, moves on its own. Agents fill the mold. The pipeline verifies the casting. The board reveals the flow. Humans design the machine and oversee its operation, but the machine runs.
 
@@ -170,7 +270,7 @@ The engineer's job is to build the machine that writes the code correctly.
 
 ---
 
-## VII. The Fracture Lines
+## X. The Fracture Lines
 
 Every methodology has a domain where it excels and a boundary where it breaks. Codex Automata is no different. Intellectual honesty requires mapping the fractures.
 
@@ -194,7 +294,7 @@ None of these limitations invalidate the approach. They define its scope. Codex 
 
 ---
 
-## VIII. The Engineer, Redefined
+## XI. The Engineer, Redefined
 
 If agents write the code, what becomes of the engineer?
 
@@ -216,11 +316,11 @@ The engineer of the agentic era does not write less. She writes differently. Spe
 
 ## Coda
 
-The giants of software engineering, Beck, Brooks, Martin, Evans, Fowler, the engineers at Bell Labs, NASA, Toyota, and Google, spent decades articulating the principles that Codex Automata codifies. Write the test first. Maintain conceptual integrity. Keep components small and composable. Separate concerns. Limit work in progress. Integrate continuously. Specify before you build.
+The giants of software engineering, Beck, Brooks, Martin, Evans, Fowler, the engineers at Bell Labs, NASA, Toyota, Google, Stripe, and AWS, spent decades articulating the principles that Codex Automata codifies. Write the test first. Maintain conceptual integrity. Keep components small and composable. Separate concerns. Limit work in progress. Integrate continuously. Specify before you build. Constrain before you test. Design for the weakest link first. Investigate before you decide.
 
 They were right about all of it. For decades, the industry adopted these principles imperfectly because the discipline they demanded was expensive in human time and attention. It was faster to skip the spec. It was easier to write the test after. It was more exciting to write code than documentation. The principles were honored in conference talks and violated in commit logs.
 
-AI agents do not change the principles. They change the cost of following them. When implementation is handled by machines, the spec becomes the main deliverable. Tests become the mechanism that makes production reliable. Modularity becomes the structural requirement for running ten agents in parallel. The discipline that engineers could never quite afford is now the thing they cannot afford to skip.
+AI agents do not change the principles. They change the cost of following them. When implementation is handled by machines, the spec becomes the main deliverable. The SDK becomes the enforceable boundary. Tests become the mechanism that makes production reliable. Modularity becomes the structural requirement for running ten agents in parallel. The discipline that engineers could never quite afford is now the thing they cannot afford to skip.
 
 The principles were always right. The economics finally agree.
 
@@ -228,4 +328,4 @@ The principles were always right. The economics finally agree.
 
 ---
 
-*Codex Automata Manifesto v1.0, May 2026. Harness version: see VERSION file.*
+*Codex Automata Manifesto v1.1, May 2026. Harness version: see VERSION file.*

@@ -7,16 +7,19 @@ A practical, phase-by-phase implementation guide for running a software project 
 Every project follows the same sequence:
 
 ```
-Phase 0: Idea Intake
-Phase 1: Architecture and Decomposition
+Phase 0: Idea Intake (with Research)
+Phase 1: Architecture and Decomposition (with Research)
 Phase 2: Specification Writing
-Phase 3: Test Molding
-Phase 4: Code Casting
-Phase 5: Review
-Phase 6: Deployment and Observation
+Phase 3: SDK Design
+Phase 4: Test Molding
+Phase 5: Code Casting
+Phase 6: Review
+Phase 7: Deployment and Observation
 ```
 
-The pipeline enforces a strict order: documentation first, then tests, then code. Phases may iterate (a review can send work back to specification), but they do not skip forward. You do not cast without a mold. You do not mold without a specification.
+Research runs throughout the early phases: agents investigate technologies, survey existing solutions, and produce structured findings that inform specifications and architectural decisions. Research is not a separate phase but a continuous activity that feeds Phases 0-2.
+
+The pipeline enforces a strict order: documentation first, then SDK, then tests, then code. Phases may iterate (a review can send work back to specification), but they do not skip forward. You do not cast without a mold. You do not mold without an SDK. You do not build an SDK without a specification. You do not specify without investigating.
 
 For Cursor IDE users: each phase references the relevant `/skill-name` you can invoke in chat and the `.cursor/agents/` subagents available for delegation.
 
@@ -57,10 +60,11 @@ Capture the raw project idea, its business context, constraints, and initial sco
 
 **Agent Responsibilities**
 
-- Research the domain: prior art, related systems, terminology.
+- Research the domain: prior art, related systems, terminology, current market solutions, ecosystem health.
+- Produce structured research artifacts: technology landscape summaries, comparison matrices, risk assessments.
 - Help structure the intake document from raw notes or conversations.
 - Surface missing information, contradictions, or unstated assumptions.
-- Agents do not make scope decisions or define success criteria.
+- Agents do not make scope decisions or define success criteria. They investigate; humans decide.
 
 **Cursor Integration**
 
@@ -104,9 +108,10 @@ Break the system into bounded contexts with clean interfaces. Define the module 
 
 **Agent Responsibilities**
 
+- Research technologies, patterns, and existing implementations relevant to the architectural decisions.
 - Map the existing codebase to identify current module structure.
-- Suggest decomposition options based on the intake document.
-- Draft architecture decision records from human decisions.
+- Suggest decomposition options based on the intake document and research findings.
+- Draft architecture decision records from human decisions, citing research artifacts.
 - Validate that proposed boundaries do not create circular dependencies.
 - Draft interface contract templates from human-defined boundaries.
 
@@ -165,15 +170,67 @@ Write precise, testable specifications for each bounded context. The specificati
 
 ---
 
-## Phase 3: Test Molding
+## Phase 3: SDK Design
 
 **Purpose**
 
-Derive comprehensive test cases from specifications. Build the mold that implementation must fill. Tests compile but fail because no implementation exists yet.
+Translate architectural boundaries and specifications into a compilable constraint surface: the types, interfaces, extension points, and compositional primitives that all downstream work (tests and implementation) must use. The SDK makes modularity enforceable at the code level, forces abstraction, and constrains agents to operate within predefined building blocks.
 
 **Inputs**
 
 - Specification documents from Phase 2
+- Interface contracts from Phase 1
+- Architecture decision records from Phase 1
+- Domain models and bounded context definitions
+
+**Outputs**
+
+- SDK package(s) defining types, interfaces, and contracts for each bounded context
+- Shared primitives (error types, result patterns, event contracts, extension points)
+- SDK documentation (auto-generated or hand-written) describing each building block
+- Compilation proof (the SDK compiles with no implementation behind it)
+
+**Exit Criteria**
+
+- [ ] Every bounded context has a corresponding SDK module with typed interfaces.
+- [ ] Shared types (errors, events, identifiers) are defined once in the SDK, not duplicated.
+- [ ] The SDK compiles successfully with no implementation code.
+- [ ] Extension points are explicit (where and how new building blocks may be added).
+- [ ] Interface contracts from Phase 1 are expressed as compilable SDK types.
+- [ ] The SDK enforces module boundaries (no cross-context internal access is possible through the public surface).
+- [ ] SDK documentation matches the specification intent.
+
+**Human Responsibilities**
+
+- Make abstraction decisions. What are the building blocks? What compositional patterns should agents use?
+- Define the extension model. How does the SDK grow as new capabilities are needed?
+- Review the SDK for coherence across bounded contexts.
+- Ensure the SDK does not over-constrain (leaving no freedom for implementation) or under-constrain (allowing agents to invent incompatible patterns).
+
+**Agent Responsibilities**
+
+- Draft SDK interfaces from specification documents and interface contracts.
+- Generate type definitions, trait/interface declarations, and contract signatures.
+- Verify that the SDK compiles and that no implementation leaks into the constraint surface.
+- Cross-reference SDK modules against bounded context boundaries for completeness.
+- Flag specifications that cannot be cleanly expressed as SDK building blocks (signal for spec revision).
+
+**Cursor Integration**
+
+- Use the `spec-reviewer` subagent to validate SDK interfaces against specifications.
+
+---
+
+## Phase 4: Test Molding
+
+**Purpose**
+
+Derive comprehensive test cases from specifications. Build the mold that implementation must fill. Tests are written against SDK interfaces, compile, but fail because no implementation exists yet.
+
+**Inputs**
+
+- Specification documents from Phase 2
+- SDK interfaces and types from Phase 3
 - Interface contracts from Phase 1
 - Test plan template (use `templates/test-plan-template.md`)
 
@@ -188,6 +245,7 @@ Derive comprehensive test cases from specifications. Build the mold that impleme
 - [ ] Every behavior in the specification has at least one test.
 - [ ] Every edge case in the specification has a corresponding test.
 - [ ] Contract tests exist for every interface between modules.
+- [ ] All tests are written against SDK interfaces (no out-of-band abstractions).
 - [ ] All tests compile successfully.
 - [ ] All tests fail (no implementation exists to pass them).
 - [ ] Test names clearly trace back to specification sections.
@@ -214,16 +272,17 @@ Derive comprehensive test cases from specifications. Build the mold that impleme
 
 ---
 
-## Phase 4: Code Casting
+## Phase 5: Code Casting
 
 **Purpose**
 
-Implement code that passes all tests. This is the phase where agents work in parallel across bounded contexts. The mold exists; now pour the casting.
+Implement code that passes all tests. This is the phase where agents work in parallel across bounded contexts. The mold exists; now pour the casting. Agents implement SDK interfaces and must stay within the constraint surface.
 
 **Inputs**
 
 - Specification documents from Phase 2
-- Test suite in red state (compiles successfully, all tests failing) from Phase 3
+- SDK interfaces and types from Phase 3
+- Test suite in red state (compiles successfully, all tests failing) from Phase 4
 - Interface contracts from Phase 1
 - Agent task definitions (use `templates/agent-task-template.md`)
 
@@ -238,8 +297,9 @@ Implement code that passes all tests. This is the phase where agents work in par
 - [ ] All unit tests pass.
 - [ ] All integration tests pass.
 - [ ] All contract tests pass.
+- [ ] Code implements SDK interfaces (no abstractions invented outside the constraint surface).
 - [ ] Code respects module boundaries (no cross-boundary imports outside contracts).
-- [ ] No interface contracts have been modified without explicit approval.
+- [ ] No interface contracts or SDK interfaces have been modified without explicit approval.
 - [ ] Each commit maps to a specification section.
 
 **Human Responsibilities**
@@ -251,9 +311,10 @@ Implement code that passes all tests. This is the phase where agents work in par
 
 **Agent Responsibilities**
 
-- Read the specification, tests, and interface contracts.
-- Write implementation code until all assigned tests pass.
-- Stay within the boundaries of the assigned module.
+- Read the specification, SDK interfaces, tests, and interface contracts.
+- Write implementation code that implements SDK interfaces until all assigned tests pass.
+- Stay within the boundaries of the assigned module and the SDK constraint surface.
+- Do not introduce abstractions outside the SDK. If new building blocks are needed, stop and request SDK extension.
 - Make small, atomic commits. Each commit addresses one logical unit of work.
 - If the specification is ambiguous, stop and ask. Do not guess.
 - If a test appears incorrect, surface it. Do not modify tests without approval.
@@ -266,7 +327,7 @@ Implement code that passes all tests. This is the phase where agents work in par
 
 ---
 
-## Phase 5: Review
+## Phase 6: Review
 
 **Purpose**
 
@@ -274,9 +335,10 @@ Verify that castings match the mold and that the mold matches the original inten
 
 **Inputs**
 
-- Implementation code from Phase 4
+- Implementation code from Phase 5
 - Specification documents from Phase 2
-- Test results from Phase 4
+- SDK interfaces from Phase 3
+- Test results from Phase 5
 - Interface contracts from Phase 1
 - Human review template (use `templates/human-review-template.md`)
 
@@ -317,7 +379,7 @@ Verify that castings match the mold and that the mold matches the original inten
 
 ---
 
-## Phase 5b: Product Testing
+## Phase 6b: Product Testing
 
 **Purpose**
 
@@ -329,7 +391,7 @@ For the full product testing reference, see the [Product Testing](https://github
 
 **Inputs**
 
-- Approved code from Phase 5 (assembled, running in a staging or preview environment)
+- Approved code from Phase 6 (assembled, running in a staging or preview environment)
 - User profile documents (use `templates/user-profile-template.md`)
 - Product test scenarios (use `templates/product-test-template.md`)
 - UX budgets from the specification (click budgets, navigation depth limits, time budgets)
@@ -366,7 +428,7 @@ For the full product testing reference, see the [Product Testing](https://github
 
 ---
 
-## Phase 6: Deployment and Observation
+## Phase 7: Deployment and Observation
 
 **Purpose**
 
@@ -374,7 +436,7 @@ Ship verified code to production and confirm that production behavior matches th
 
 **Inputs**
 
-- Approved code from Phase 5b
+- Approved code from Phase 6b
 - Deployment configuration and infrastructure
 - Monitoring and alerting requirements from the specification
 
@@ -415,10 +477,11 @@ Ship verified code to production and confirm that production behavior matches th
 The pipeline is not strictly linear. Review can send work back to any earlier phase:
 
 - **Back to Phase 2** if the specification is incomplete or incorrect.
-- **Back to Phase 3** if tests are insufficient or over-specified.
-- **Back to Phase 4** if the spec and tests are correct but the implementation diverges.
+- **Back to Phase 3** if the SDK constraint surface needs new building blocks or revision.
+- **Back to Phase 4** if tests are insufficient or over-specified.
+- **Back to Phase 5** if the spec, SDK, and tests are correct but the implementation diverges.
 
-The key constraint is that backward movement always starts at the specification. If code is wrong, do not debug the implementation. Fix the spec, fix the tests, recast.
+The key constraint is that backward movement always starts at the specification. If code is wrong, do not debug the implementation. Fix the spec, extend the SDK if needed, fix the tests, recast.
 
 ---
 
@@ -444,18 +507,20 @@ These gaps are discovered through production incidents, review findings, coverag
 Recovery mirrors the forward pipeline but starts from an existing codebase.
 
 ```text
-Audit --> Spec Patch --> Mold Patch --> Recast (if needed) --> Re-review
+Audit --> Spec Patch --> SDK Patch --> Mold Patch --> Recast (if needed) --> Re-review
 ```
 
 **Step 1: Audit.** Document the gap using `templates/gap-assessment-template.md`. Identify the affected module, gap class, discovery trigger, severity, and current state. This is a human task; agents assist with evidence gathering.
 
 **Step 2: Spec Patch.** If the specification is missing or incomplete, write the missing sections following Phase 2 rules. Derive the specification from domain knowledge and stakeholder intent, not from the existing code. The code may be accidentally correct or silently wrong.
 
-**Step 3: Mold Patch.** Derive tests from the patched specification following Phase 3 rules. Tests must trace back to specification sections. For coverage erosion, compare against the original test intent via version control history before restoring.
+**Step 3: SDK Patch.** If the SDK constraint surface is missing types or interfaces for the affected behavior, extend it following Phase 3 rules. SDK extensions derive from the patched specification, not from the existing implementation.
 
-**Step 4: Recast (if needed).** If the existing implementation passes the new tests, no recast is needed. If it fails, recast following Phase 4 rules. Agents receive the specification, updated tests, and interface contracts.
+**Step 4: Mold Patch.** Derive tests from the patched specification and SDK following Phase 4 rules. Tests must trace back to specification sections and use SDK interfaces. For coverage erosion, compare against the original test intent via version control history before restoring.
 
-**Step 5: Re-review.** A human reviews the recovery as a unit: spec patch, mold patch, and any recast code. The review confirms spec accuracy, test traceability, implementation correctness, and that no new gaps were introduced.
+**Step 5: Recast (if needed).** If the existing implementation passes the new tests, no recast is needed. If it fails, recast following Phase 5 rules. Agents receive the specification, SDK, updated tests, and interface contracts.
+
+**Step 6: Re-review.** A human reviews the recovery as a unit: spec patch, SDK patch, mold patch, and any recast code. The review confirms spec accuracy, SDK coherence, test traceability, implementation correctness, and that no new gaps were introduced.
 
 ### Recovery Exit Criteria
 
@@ -476,7 +541,7 @@ Audit --> Spec Patch --> Mold Patch --> Recast (if needed) --> Re-review
 ### Agent Responsibilities During Recovery
 
 - When a gap is discovered during routine work, halt and report it using the gap assessment template. Do not silently work around gaps.
-- During recovery tasks, follow the same forward rules (R1-R10) in the context of an existing codebase.
+- During recovery tasks, follow the same forward rules (R1-R13) in the context of an existing codebase.
 - Assist with evidence gathering: scan for related gaps, check version control history, surface specification sections that reference the affected behavior.
 - Derive tests from the specification, not from the existing code.
 - If the specification appears incorrect (code behavior contradicts it and the code is believed correct), surface the conflict for human resolution. Do not update the specification unilaterally.
@@ -496,9 +561,10 @@ Batch related gaps within a single module into one recovery card. Create separat
 | 0: Intake | Human | No | `project-intake-template.md` |
 | 1: Architecture | Human | No | `architecture-decision-record.md` |
 | 2: Specification | Human | **Yes** | `spec-template.md` |
-| 3: Test Molding | Agent (human review) | No | `test-plan-template.md` |
-| 4: Code Casting | Agent | No | `agent-task-template.md` |
-| 5: Review | Human | **Yes** | `human-review-template.md` |
-| 5b: Product Testing | Agent (human review) | No | `product-test-template.md` |
-| 6: Deployment | Human + Agent | No | N/A |
+| 3: SDK Design | Human + Agent | No | `interface-contract-template.md` |
+| 4: Test Molding | Agent (human review) | No | `test-plan-template.md` |
+| 5: Code Casting | Agent | No | `agent-task-template.md` |
+| 6: Review | Human | **Yes** | `human-review-template.md` |
+| 6b: Product Testing | Agent (human review) | No | `product-test-template.md` |
+| 7: Deployment | Human + Agent | No | N/A |
 | Recovery | Human + Agent | No | `gap-assessment-template.md` |

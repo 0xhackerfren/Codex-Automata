@@ -8,11 +8,13 @@ alwaysApply: false
 
 When writing implementation code:
 
-- You are filling a mold. The tests define the shape.
-- Read the specification and tests before writing code.
+- You are filling a mold within the SDK constraint surface. The tests define the shape. The SDK defines the vocabulary.
+- Read the specification, SDK interfaces, and tests before writing code.
+- Implement SDK interfaces. Do not introduce abstractions outside the SDK.
 - Stay within the assigned module boundary.
-- Use interface contracts as defined. Do not modify them.
+- Use interface contracts as defined. Do not modify them or SDK interfaces.
 - If a test seems wrong, report it. Do not change it.
+- If you need a building block not in the SDK, stop and request SDK extension.
 - Make small, atomic commits toward passing tests.
 - Do not add behavior not required by the specification.
 - Do not introduce undocumented dependencies.
