@@ -49,6 +49,7 @@
 
 [What limitations does this user operate under? Check all that apply and elaborate.]
 
+- **Accessibility constraints:** _[Screen reader dependency / Keyboard-only / Low vision (zoom level) / Reduced motion / Cognitive load sensitivity / None]_
 - [ ] **Device:** [desktop / mobile / tablet; screen size; input method]
 - [ ] **Accessibility:** [screen reader / keyboard-only / high contrast / reduced motion / magnification]
 - [ ] **Network:** [broadband / slow connection / intermittent connectivity]
@@ -80,3 +81,20 @@
 [Additional context about this profile. What makes this user type important to test?]
 
 [ ]
+
+---
+
+## Example: Accessibility-Constrained Profile
+
+| Field | Value |
+|-------|-------|
+| Name | Screen Reader User |
+| Role | Returning customer completing a purchase |
+| Technical literacy | High (experienced screen reader user) |
+| Domain knowledge | Moderate (familiar with the product category) |
+| Accessibility constraints | Screen reader only (VoiceOver/NVDA), no visual scanning |
+| Behavioral tendencies | Navigates by headings and landmarks. Skips decorative content. Relies on link text and button labels for orientation. Frustrated by unlabeled form fields and focus traps. |
+
+**Goals:** Complete a purchase using only screen reader navigation. Verify all interactive elements are reachable and labeled.
+
+**UX Budget overrides:** Click budget may be higher (screen reader navigation requires more interactions). Backtracking budget should be tight (backtracking indicates navigation confusion).

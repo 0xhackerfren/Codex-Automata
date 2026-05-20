@@ -24,6 +24,7 @@ This repository follows the Codex Automata methodology. All AI agents operating 
 - Surface ambiguity instead of guessing. If the specification is unclear, stop and ask.
 - Every task must map to a specification section, an SDK interface, and at least one test case.
 - Explain deviations. If you must deviate from the specification, document why.
+- When you discover code without a corresponding specification, SDK interface, or tests, halt and report the gap. Do not work around it or derive specs or tests from existing code. Use `templates/gap-assessment-template.md` for triage.
 
 ## Workflow
 
@@ -46,9 +47,16 @@ When given a task:
 - `review/` is for human review records.
 - `src/` is for source code (the castings, implementing SDK interfaces).
 - `templates/` contains reusable templates. Copy them into `docs/`, `tests/`, or `tasks/` as needed.
-- `agent/` contains detailed agent operating rules for each phase.
-- `.cursor/rules/` contains Cursor-native rules automatically applied to agent context.
-- `.cursor/skills/` contains invocable workflows (trigger with `/skill-name` in chat).
-- `.cursor/agents/` contains custom subagent definitions for specialized roles.
+- `agent/` contains detailed agent operating rules for each phase (spec writing, SDK design, test molding, code casting, review).
+- `scripts/` contains enforcement scripts: `divergence-gate` (slop fingerprint scanner), `spec-check` (spec-before-code gate), `commit-lint` (commit traceability). Run them locally or in CI.
+- `PLAYBOOK.md` contains the phase-by-phase methodology guide.
+
+If your project includes a `.cursor/` directory, it provides optional Cursor IDE integration only. All AI coding tools should follow this file and `agent/`.
 
 For the complete agent operating manual, see `agent/AGENT_RULES.md`.
+
+## Terminology
+
+Use these terms consistently: **research**, **specification**, **SDK**, **constraint surface**, **building block**, **local-first**, **design identity**, **design token**, **deployment checklist**, **convergence**, **divergence gate**, **slop fingerprint**, **mold**, **casting**, **bounded context**, **interface contract**, **iteration**, **quality gate**, **quick change**, **accessibility**, **action classification**, **agent task**, **brownfield**, **cost budget**, **generator**, **guardrail**, **human review**, **incident postmortem**, **invariant**, **flow**, **recovery**, **retrospective**, **gap assessment**, **spec gap**, **SDK gap**, **mold gap**, **multi-agent orchestration**, **coverage erosion**, **contract gap**, **product test**, **property-based test**, **user profile**, **test objective**, **token budget**, **UX budget**, **security audit**, **SDK extension**, **WCAG**.
+
+See `reference/glossary.md` in the methodology repository (or your project's glossary copy) for canonical definitions.

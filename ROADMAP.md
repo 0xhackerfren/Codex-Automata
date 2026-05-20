@@ -2,23 +2,55 @@
 
 This document sketches planned evolution of the Codex Automata methodology harness, templates, examples, tooling, and quality gates. Priorities may shift based on community feedback and real-world usage.
 
-## Current
+## v0.4.0 (Current)
 
-- **Version 0.1.0**: Baseline harness: specification doctrine, molds and casting metaphors across docs, bounded context guidance, agent task boundaries, interface contract discipline, Cursor integration (rules, skills, subagents, hooks), templates, examples, GitHub-oriented quality gate patterns.
-- **Recovery protocol**: Formal process for closing gaps in specification, tests, or coverage after code exists. Includes gap classification taxonomy, severity-based triage, recovery sequence (audit, spec patch, mold patch, recast, re-review), kanban integration, gap assessment template, recurrence prevention, and health metrics. Wired into manifesto, playbook, agent rules, Cursor rules, and glossary.
-- **Product testing**: Agentic verification layer where AI agents operate the assembled application as real users. Agents receive user profiles (technical literacy, domain knowledge, constraints) and goal-oriented objectives, then navigate the product through its UI. Captures UX quality metrics (click count, navigation depth, backtracking, error encounters, time budgets). Includes product test template, user profile template, Phase 5b in the playbook, and glossary terms.
+### Achieved
 
-## v0.2.0 (goals)
+- **Brownfield onboarding protocol** with audit template and worked example (`reference/brownfield-onboarding.md`, `brownfield-audit-template.md`, `examples/brownfield-api/`).
+- **Agent guardrails** with three-tier action classification (AUTO/LOG/APPROVE) (`reference/guardrails.md`, guardrail config template, playbook and agent rules integration).
+- **Property-based testing** as advanced molds (`reference/property-based-testing.md`, test molding rules, test plan template section).
+- **Cost-conscious development guide** with token budgets and model tiering (`reference/cost-awareness.md`, agent rules core principle).
+- **Accessibility** as first-class methodology concern (`reference/accessibility.md`, design identity and test plan template sections, code-casting rule).
 
-- Additional worked examples (for example REST API service, CLI tool) spanning specification, molds, casting, agent tasks, human review checkpoints, and flow documentation.
-- Refined templates informed by reuse in real repositories.
-- Community feedback folded into playbook and glossary alignment without silent interface contract churn.
+### Still planned
 
-## v0.3.0 (goals)
-
-- Language-specific starter kits (Python, TypeScript, Go) with consistent molds and casting steps.
+- Language-specific starter kits (still planned for v0.5.0 or v1.0.0).
 - Automated specification-to-test generation tooling where it respects frozen contracts and bounded context seams.
-- A reusable CI/CD quality gate library (patterns or composable workflows) suited to methodology enforcement.
+- Reusable CI/CD quality gate library beyond the current `codex-gates.yml` workflow.
+- Real worked examples with actual application code spanning molds, casting, agent tasks, and flow documentation.
+- Visual regression testing integration (screenshot diffing, layout analysis) for design identity compliance.
+- Product test runner reference implementation with browser agent orchestration and journey log capture.
+- WCAG contrast ratio validator for design token color pairings.
+- Coverage threshold configuration and enforcement scripts.
+
+## v0.3.0
+
+### Achieved
+
+- **Full skill and subagent coverage**: Nine Cursor skills (including `/quick-change`) spanning all pipeline phases; six subagents (`spec-reviewer`, `test-deriver`, `code-caster`, `sdk-designer`, `product-tester`, `security-auditor`).
+- **Quick-change workflow**: Abbreviated path for bug fixes and small changes within existing spec/SDK/test coverage (`reference/quick-change.md`, `/quick-change` skill). Available at all adoption profiles.
+- **Multi-agent orchestration guide** (`reference/multi-agent.md`): SDK-as-coordination-surface model, isolation patterns, merge protocol, scaling guidance, and anti-patterns.
+- **Iteration protocol** (`reference/iteration.md`): Structured inner/outer loops, attempt budgets, token budget guidance, stop conditions, and context state integration. Wired into `AGENT_RULES.md` and playbook.
+- **Security audit workflow**: `security-auditor` subagent, `security-audit-template.md`, and security audit as a formal discovery trigger in the recovery protocol.
+- **Four new templates**: SDK design (Phase 3), deployment checklist (Phase 7), incident postmortem, and retrospective (methodology health review). Template count now 20.
+- **Enriched worked example** (`examples/task-manager/`): Project intake, design identity, SDK types (`sdk/types.ts`), context state at Phase 5, and block registry.
+
+### Enforcement tooling (achieved)
+
+- **Divergence gate scripts** (bash + PowerShell): scan source files for slop fingerprints from the design identity's banned pattern catalog. Default catalog covers banned fonts, hardcoded colors, generic copy, structural anti-patterns. Configurable via JSON for project-specific fingerprints. CI-ready exit codes.
+- **Spec-check scripts** (bash + PowerShell): verify spec-before-code (R1) by checking that every source module has a corresponding specification document.
+- **Commit-lint scripts** (bash + PowerShell): validate commit messages for specification traceability (R7) via recognized prefixes, spec section references, or task references. Usable as git hooks or CI checks.
+- **Command-type Cursor hooks**: afterFileEdit hook warns on hardcoded visual values; preToolUse hook requires human approval for SDK/contract modifications (R3).
+- **CI quality gate workflow** (`codex-gates.yml`): GitHub Actions running spec-check, divergence gate, commit lint, and auto-detected test suite for adopter projects.
+- **SDK design rules** (`SDK_DESIGN_RULES.md`) and `/sdk-design` skill completing Phase 3 coverage.
+- **Five new Cursor skills**: `/sdk-design`, `/architecture`, `/review`, `/product-testing`, `/recovery` (9 total, full phase coverage).
+- **Profile field** added to project intake template; naming mismatches fixed in adoption profiles.
+
+## v0.2.0
+
+- **Recovery protocol**: Formal process for closing gaps in specification, SDK, tests, or coverage after code exists. Includes gap classification taxonomy (spec, SDK, mold, coverage erosion, contract), severity-based triage, six-step recovery sequence (audit, spec patch, SDK patch, mold patch, recast, re-review), kanban integration, gap assessment template, recurrence prevention, and health metrics. Wired into manifesto, playbook, agent rules, Cursor rules, and glossary.
+- **Product testing**: Agentic verification layer where AI agents operate the assembled application as real users. Agents receive user profiles (technical literacy, domain knowledge, constraints) and goal-oriented objectives, then navigate the product through its UI. Captures UX quality metrics (click count, navigation depth, backtracking, error encounters, time budgets). Includes product test template, user profile template, Phase 6b in the playbook, and glossary terms.
+- SDK as Constraint Surface, Local-First, Research as Foundation, and Intentional Divergence principles; design identity and block registry templates; context persistence; progressive adoption profiles; multi-tool `AGENTS.md` support.
 
 ## v1.0.0 (goals)
 

@@ -20,15 +20,17 @@ Codex Automata aligns boards and telemetry to seven canonical stations (research
 
 1. **Spec Writing.** Humans author falsifiable specifications and interface contracts inside bounded contexts, informed by research findings. This station establishes vocabulary downstream artifacts must reuse without drift. Research runs in parallel, feeding structured findings (landscape documents, comparison matrices, trade-off analyses) into spec and architecture work.
 
-2. **SDK Design.** Humans and agents translate specifications and interface contracts into a compilable constraint surface: types, interfaces, extension points, and compositional primitives. The SDK makes architectural decisions enforceable at the type system level and constrains what shapes are possible downstream.
+2. **SDK Design.** Translate specifications into compilable constraint surface with types, interfaces, and building blocks. The SDK makes architectural decisions enforceable at the type system level and constrains what shapes are possible downstream.
 
 3. **Test Molding.** Humans and agents derive executable molds and fixtures from specification language, written against SDK interfaces. Incomplete molding upstream creates downstream false positives about readiness.
 
 4. **Code Casting.** Agents write implementation constrained by SDK interfaces, molds, and frozen contracts for each slicing window. Humans handle escalations around ambiguity and integration merges rather than supervising every keystroke unless policy demands spot checks.
 
-5. **Review.** Humans compare casting to specification, SDK conformance, and systemic risk posture. Review amplifies diligence; automated quality gates still block merges mechanically.
+5. **Human Review.** Humans compare casting to specification, SDK conformance, and systemic risk posture. Review amplifies diligence; automated quality gates still block merges mechanically.
 
-6. **Deployment.** Progressive release plus verification plus operational observation with explicit rollback posture. Automation may execute most commands; the station remains real because rollout risk concentrates blast radius.
+6. **Product Testing.** AI agents verify assembled product by operating it as real users with profiles and objectives. Product tests run against the integrated application, not individual modules; they validate end-to-end behavior, UX budgets, and user-facing flows defined in specifications.
+
+7. **Deployment.** Progressive release plus verification plus operational observation with explicit rollback posture. Automation may execute most commands; the station remains real because rollout risk concentrates blast radius.
 
 Optionally subdivide Deployment into gated substages (`Build + gates`, staging, progressive production, observation). Keep naming tethered across teams: specification, molds, casting, human review, quality gates, rollout.
 
@@ -43,13 +45,14 @@ Calibrate limits to team size and risk posture; adjust using cycle time and queu
 | Test Molding | 3 to 5 items | Allow parallel derivation while keeping deterministic fixtures tractable |
 | Code Casting | Unlimited | Computational throughput lacks a physiological ceiling at this station |
 | Human Review | 2 to 3 items | Protect thorough comparison against specification creep and checklist fatigue |
+| Product Testing | 3 to 5 items | Allow parallel agent-driven product verification while keeping profiles and objectives tractable |
 | Deployment | 1 to 2 items | Limit concurrent rollout experiments that correlate failures during attribution |
 
 Treat "unlimited" casting pragmatically when merge thrash spikes: institute soft concurrency caps tied to branches or reviewer batch size rather than pretending integration risk stays flat as branch count climbs.
 
 ## Pull-Based Scheduling
 
-Stations downstream pull only when spare capacity meets explicit readiness rules. Test molding pulls specs once writers mark them coherent enough for fixture investment. Casting pulls molded items once contracts stabilize for the slicing window merges expect. Review pulls completed casting batches once local molds and branch policy prerequisites pass. Deployment pulls merges that cleared centralized quality gates plus human approvals where required.
+Stations downstream pull only when spare capacity meets explicit readiness rules. Test molding pulls specs once writers mark them coherent enough for fixture investment and the SDK constraint surface exists for the module. Casting pulls molded items once contracts and SDK interfaces stabilize for the slicing window merges expect. Human review pulls completed casting batches once local molds and branch policy prerequisites pass. Product testing pulls integrated builds once review clears and user profiles, test objectives, and UX budgets are defined. Deployment pulls merges that cleared centralized quality gates, product tests where required, and human approvals where policy demands them.
 
 Block push behavior that floods partially groomed cards into molding or casting to "keep agents busy"; idle agents should signal starvation upstream specifications or contracts deserve attention sooner.
 
@@ -61,7 +64,9 @@ Queues visualize systemic starvation, not anecdotes about effort.
 
 When specifications age in Spec Writing relative to molding demand, throughput is bounded by human specification work even if agents later idle sporadically at casting.
 
-Casting buildup ahead of Review usually signals insufficient reviewer capacity, overloaded review scopes, fuzzy exit criteria for review cards, or low trust in molds that forces exhaustive manual archaeology.
+Casting buildup ahead of Human Review usually signals insufficient reviewer capacity, overloaded review scopes, fuzzy exit criteria for review cards, or low trust in molds that forces exhaustive manual archaeology.
+
+Product testing buildup often signals missing user profiles or test objectives, unstable staging environments, or assemblies not yet ready for end-to-end verification.
 
 Test molding buildup often signals unresolved specification ambiguity, flaky environments, reluctant contract freezes, or missing scaffolding shared across bounded contexts.
 
@@ -77,7 +82,7 @@ Operational metrics reinforce flow hygiene:
 
 **Cycle Time.** Interval from clarified intake or refined backlog readiness through observable production effect (choose one definition per program and stay consistent).
 
-**Throughput.** Completed items exiting Review or Deployment per interval aligned to organizational policy on what counts as done.
+**Throughput.** Completed items exiting Human Review, Product Testing, or Deployment per interval aligned to organizational policy on what counts as done.
 
 **WIP Age.** Elapsed time in each station; highlights stale casting branches, orphaned molds, drifting contracts, stalled reviews.
 
@@ -91,7 +96,7 @@ Codex Automata favors these measures over story point velocity, which mis scales
 
 Lay out columns left to right that mirror stations. Optional swim lanes group cards by bounded context or service area.
 
-`Backlog (clarified intake) → Research + Spec Writing → SDK Design → Test Molding → Code Casting → Review → Deployment → Done (observed)`
+`Backlog (clarified intake) → Research + Spec Writing → SDK Design → Test Molding → Code Casting → Human Review → Product Testing → Deployment → Done (observed)`
 
 Post policies above each column: definition of ready, definition of done, escalation paths, linked ADR requirements, security review triggers, progressive delivery rules.
 

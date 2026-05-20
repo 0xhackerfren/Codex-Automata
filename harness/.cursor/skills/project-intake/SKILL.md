@@ -25,7 +25,17 @@ Follow this workflow to begin a new project. The Codex Automata harness has alre
 
 1. Create a spec file for each bounded context using `templates/spec-template.md`.
 2. The user writes the specifications (invoke `/spec-writing` for guidance).
-3. After specs are complete, invoke `/test-molding` for the next phase.
+
+## Step 4: SDK Design
+
+1. For each bounded context, translate specifications and interface contracts into a compilable SDK constraint surface: types, interfaces, building blocks, and extension points.
+2. Place SDK artifacts under `sdk/` per project layout.
+3. Invoke `/sdk-design` for guidance if available, or follow `agent/` SDK design rules.
+4. After the SDK constraint surface is complete for a module, proceed to test molding for that module.
+
+## Step 5: Test Molding
+
+1. After specs and SDK exist for a module, invoke `/test-molding` to derive executable molds from specification language, written against SDK interfaces.
 
 ## Reference
 

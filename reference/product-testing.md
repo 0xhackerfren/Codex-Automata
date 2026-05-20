@@ -83,11 +83,11 @@ Code Casting --> Review --> Product Testing --> Deployment and Observation
 
 ### Relationship to Existing Phases
 
-**Phase 3 (Test Molding)** produces module-level molds: unit, integration, contract tests. These run against code. Product test objectives are defined alongside module molds in the test plan but are not executable until the product is assembled.
+**Phase 4 (Test Molding)** produces module-level molds: unit, integration, contract tests. These run against code. Product test objectives are defined alongside module molds in the test plan but are not executable until the product is assembled.
 
-**Phase 5 (Review)** verifies that castings match the specification. Product testing extends this verification to the assembled product's user experience.
+**Phase 6 (Review)** verifies that castings match the specification. Product testing extends this verification to the assembled product's user experience.
 
-**Phase 6 (Deployment and Observation)** includes smoke tests and monitoring. Product tests can serve as pre-deployment smoke tests (does the critical user journey still work?) and post-deployment verification (does the journey work in production?).
+**Phase 7 (Deployment and Observation)** includes smoke tests and monitoring. Product tests can serve as pre-deployment smoke tests (does the critical user journey still work?) and post-deployment verification (does the journey work in production?).
 
 Product testing does not replace any existing phase. It adds a verification layer that no existing phase covers: the experience of operating the assembled product as a user.
 
@@ -194,7 +194,7 @@ Product tests depend on all other test types passing first. If unit tests fail, 
 Product test results are a primary input to specification revision. When a product test reveals a UX defect:
 
 1. **Diagnose.** Is the defect in the specification (the spec said to build it this way), the implementation (the code does not match the spec), or the design (the spec needs to change)?
-2. **Route.** Specification defects go back to Phase 2. Implementation defects go back to Phase 4. Design defects require human judgment about whether and how to revise the specification.
+2. **Route.** Specification defects go back to Phase 2. Implementation defects go back to Phase 5. Design defects require human judgment about whether and how to revise the specification.
 3. **Update budgets.** If a journey consistently uses fewer interactions than its budget, tighten the budget to lock in the improvement. If a justified design change increases interactions, update the budget with rationale.
 
 Product test feedback is the primary mechanism by which user experience quality enters the specification-first pipeline. Without it, specifications define what the system does but not whether it is good to use.

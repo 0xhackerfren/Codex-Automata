@@ -12,6 +12,7 @@
 | Requester | [ ] |
 | Date | [YYYY-MM-DD] |
 | Priority | [Low / Medium / High / Critical] |
+| Profile | [Essential / Standard / Complete] |
 
 ## Problem Statement
 

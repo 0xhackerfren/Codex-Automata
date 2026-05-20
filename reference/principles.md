@@ -1,6 +1,6 @@
 # Core Principles
 
-This document defines the nine foundational principles of Codex Automata. Together they constrain how research, specification, SDK, local-first design, molds, casting, bounded contexts, flow, agents, humans, interface contracts, and quality gates interact throughout the lifecycle of a software system.
+This document defines the ten foundational principles of Codex Automata. Together they constrain how research, specification, SDK, local-first design, molds, casting, bounded contexts, flow, identity, agents, humans, interface contracts, and quality gates interact throughout the lifecycle of a software system.
 
 ## 1. Specification First
 
@@ -97,3 +97,17 @@ Pull-based sequencing matters: downstream stations pull when ready rather than m
 Treat gates as the extrusion press that aligns individual contributor behavior with systemic standards. They complement human review rather than substitute it; humans judge intent and edge nuance gates cannot codify efficiently. Extend gates deliberately when repeating review findings signal missing automation. Contract drift and mold gaps often appear first as flaky or skipped checks; treat instability as urgent process debt.
 
 **Connections.** Gates validate outputs of Tests as Molds continuously. They protect Code Casting merges into shared trunk or protected branches. They enforce interface contracts and visibility rules across Bounded Contexts. They sustain Continuous Flow by making station completion objective. Specification First remains authoritative: when gates and spec clash, escalate to specification resolution instead of weakening gates casually.
+
+## 10. Intentional Divergence
+
+**Summary.** Every human-perceptible surface of the product reflects deliberate design decisions documented in the specification, not the statistical defaults of the agent's training data; identity is specified upstream, constrained by the SDK, and verified by quality gates that detect convergence.
+
+**Explanation.** AI agents optimize for the statistical mode of their training data. Without constraint, every output regresses toward the mean. For frontends this produces the recognizable AI aesthetic: Inter font at default weights, purple-to-blue gradients, three-column feature grids, hero-features-pricing-FAQ page structures. For copy it produces "Unlock the power of..." filler. For naming it produces `utils.ts` and `helpers.ts`. For architecture it produces the same popular stack regardless of domain fit. The output passes every mold and honors every contract while remaining indistinguishable from every other AI-generated product.
+
+This convergence has a structural cause. Reinforcement learning from human feedback rewards safe, median outputs. Training corpora skew toward popular frameworks and starter templates. Vague instructions without explicit identity constraints guarantee generic results. The agent is not producing bad work. It is producing the average of its training data, which is indistinguishable from every other agent producing the average of the same training data.
+
+Intentional Divergence counters this through three enforcement layers. First, the specification: a design identity document captures deliberate aesthetic, tonal, and structural choices before any casting begins. It defines what this product looks and sounds like, what it must never look or sound like, and which reference targets anchor its identity. Second, the SDK constraint surface: design tokens (colors, typography, spacing, shadows, radii), naming registries, copy voice guides, and pattern catalogs become building blocks that agents must use. Hardcoded values and ad hoc defaults become compilation failures. Third, quality gates: divergence gates detect known AI-default patterns (slop fingerprints) and flag or block castings that fail to diverge from training-data means.
+
+A human-perceptible surface is anything a user, customer, or reviewer sees and judges: visual design, microcopy, error messages, naming conventions, API endpoints, documentation tone. Intentional Divergence applies to all of them. The scope is not limited to frontends.
+
+**Connections.** Specification First supplies the identity decisions that Intentional Divergence enforces. SDK as Constraint Surface provides the mechanical enforcement layer through design tokens and vocabulary registries. Research as Foundation informs what the training-data default looks like for a given domain, making divergence measurable rather than subjective. Local-First benefits because constrained models are even more prone to defaulting, making explicit identity constraints essential at every model tier. Tests as Molds can include visual regression and copy tone checks. Code as Casting is bounded by both structural constraints (SDK) and identity constraints (design tokens, banned patterns). Quality Gates run divergence detection alongside mold execution, contract checks, and policy enforcement. Continuous Flow gains identity review as a dimension of the Review station without adding a new station.

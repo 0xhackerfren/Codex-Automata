@@ -64,6 +64,33 @@
 | [goal-oriented statement] | [profile name] | [section] | [max clicks] | [critical / high / medium / low] |
 | [ ] | [ ] | [ ] | [ ] | [ ] |
 
+## Property-Based Tests
+
+[Derive properties from specification invariants. Each property must hold for any valid input. Properties are written before implementation (red state). Use fast-check (TypeScript), Hypothesis (Python), or the appropriate PBT framework for your language.]
+
+| Property | Spec Reference | Generator Strategy | Expected Invariant | Priority |
+|----------|---------------|-------------------|-------------------|----------|
+| _[e.g., "Valid title always creates task"]_ | _[spec section]_ | _[e.g., "Arbitrary string, length 1-200"]_ | _[e.g., "createTask succeeds and returned task has matching title"]_ | _[Must / Should / Could]_ |
+
+## Accessibility Tests
+
+[For user-facing modules. Define accessibility checks that run as quality gates. Use automated tools (axe-core, pa11y, Lighthouse) for mechanical verification and product test profiles for experiential verification.]
+
+### Automated Accessibility Checks
+
+| Check | WCAG Criterion | Tool | Scope | Priority |
+|-------|---------------|------|-------|----------|
+| _[e.g., "Color contrast"]_ | _[e.g., "1.4.3 Contrast (Minimum)"]_ | _[e.g., "axe-core"]_ | _[e.g., "All text elements"]_ | _[Must / Should]_ |
+| _[e.g., "Keyboard operability"]_ | _[e.g., "2.1.1 Keyboard"]_ | _[e.g., "Manual + pa11y"]_ | _[e.g., "All interactive elements"]_ | _[Must]_ |
+| _[e.g., "Alt text present"]_ | _[e.g., "1.1.1 Non-text Content"]_ | _[e.g., "axe-core"]_ | _[e.g., "All images"]_ | _[Must]_ |
+
+### Accessibility Product Test Profiles
+
+| Profile | Constraints | Key Objectives |
+|---------|-----------|----------------|
+| _[e.g., "Screen reader user"]_ | _[e.g., "VoiceOver, no visual"]_ | _[e.g., "Complete purchase, navigate settings"]_ |
+| _[e.g., "Keyboard-only user"]_ | _[e.g., "No mouse, Tab/Enter only"]_ | _[e.g., "All critical journeys"]_ |
+
 ## Test Environment Requirements
 
 - **Dependencies:** [services, databases, queues]

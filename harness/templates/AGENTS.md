@@ -14,4 +14,4 @@ When a human asks you to create a new specification, test plan, interface contra
 
 ## Terminology
 
-Use consistent wording in filled-in documents: **research**, **specification**, **SDK**, **constraint surface**, **building block**, **local-first**, **mold**, **casting**, **bounded context**, **interface contract**, **quality gate**, **agent task**, **human review**, **flow**.
+Use consistent wording in filled-in documents: **research**, **specification**, **SDK**, **constraint surface**, **building block**, **local-first**, **design identity**, **design token**, **convergence**, **divergence gate**, **slop fingerprint**, **mold**, **casting**, **bounded context**, **interface contract**, **quality gate**, **agent task**, **human review**, **flow**, **recovery**, **gap assessment**, **spec gap**, **SDK gap**, **mold gap**, **coverage erosion**, **contract gap**, **product test**, **user profile**, **test objective**, **UX budget**, **SDK extension**.

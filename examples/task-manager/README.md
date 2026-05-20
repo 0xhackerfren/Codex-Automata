@@ -10,7 +10,7 @@ Tasks support CRUD operations: create, list, complete (status change), and delet
 
 ## What The Example Demonstrates
 
-The **Docs to Tests to Code** pipeline: specification drives the mold (tests); code is casting that fits the mold. This repository holds only specifications, architecture notes, interface contracts, a test plan, agent tasks, and a sample human review. No runnable application code ships here.
+The **Docs to Tests to Code** pipeline: specification drives the mold (tests); code is casting that fits the mold. This repository holds specifications, architecture notes, intake and design identity, SDK constraint surface types, context state, block registry, interface contracts, a test plan, agent tasks, and a sample human review. No runnable application code ships here.
 
 ## Directory Structure
 
@@ -18,9 +18,14 @@ The **Docs to Tests to Code** pipeline: specification drives the mold (tests); c
 |------|---------|
 | `AGENTS.md` | Nested agent instructions for this example reference |
 | `README.md` | This overview |
+| `block-registry.md` | SDK building block index |
+| `context-state.md` | Project state at Phase 5 (Code Casting) |
+| `docs/intake.md` | Filled project intake |
+| `docs/design-identity.md` | Naming and copy voice identity |
 | `docs/spec.md` | Specification for Task Manager Core |
 | `docs/architecture.md` | Bounded context, modules, decisions |
 | `docs/interface-contracts.md` | TaskManager and Storage interface contracts |
+| `sdk/types.ts` | SDK constraint surface (TypeScript interfaces) |
 | `tests/test-plan.md` | Test plan derived from the specification |
 | `tasks/agent-task-001.md` | Agent task: implement TaskManager |
 | `tasks/agent-task-002.md` | Agent task: implement InMemoryStorage |
@@ -28,7 +33,7 @@ The **Docs to Tests to Code** pipeline: specification drives the mold (tests); c
 
 ## Using This Example For Your Own Project
 
-1. Read the documents in order: specification, architecture, interface contracts, test plan.
+1. Read the documents in order: intake, specification, architecture, design identity, interface contracts, SDK types, test plan, block registry, context state.
 2. Compare how each quality gate (spec, contracts, tests) constrains agent tasks.
 3. To start your own project, run `scripts/init.ps1` (or `init.sh`) from the Codex Automata repo, or manually copy `harness/` contents into your project root.
 

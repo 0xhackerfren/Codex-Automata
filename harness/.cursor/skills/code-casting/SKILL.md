@@ -20,12 +20,13 @@ Follow this workflow to implement a module.
 1. Confirm the specification exists and is approved.
 2. Confirm the tests exist and are in red state (compiling but failing).
 3. Confirm interface contracts are frozen.
-4. If any precondition is not met, stop and report.
+4. For user-facing modules, confirm the design identity document exists and design tokens are available in the SDK. If no design identity exists, stop and report the gap.
+5. If any precondition is not met, stop and report.
 
 ## Step 3: Implement
 
 1. Start with the simplest failing test.
-2. Write the minimal code to make it pass.
+2. Write the minimal code to make it pass. For user-facing code, reference design tokens for all visual values and follow the design identity's aesthetic direction and banned patterns.
 3. Commit when a test passes (atomic commits).
 4. Move to the next failing test.
 5. Repeat until all assigned tests pass.

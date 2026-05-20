@@ -56,6 +56,20 @@ Record status (proposed, accepted, superseded) and cite affected specifications.
 
 Each anti-pattern lengthens cycle time through rework and weakens mechanical quality gates that assume explicit contracts.
 
+## Design Identity in the Constraint Surface
+
+For projects with user-facing surfaces, the SDK constraint surface extends beyond types and interfaces to include design tokens and identity vocabulary. The design identity document feeds into the SDK the same way the system specification feeds into it: identity decisions are translated into importable, enforceable building blocks.
+
+**Design tokens as SDK building blocks.** Colors, typography sizes, spacing values, shadows, border radii, and motion timing become named tokens in the constraint surface. Agents reference tokens, not raw values. If a casting contains a hardcoded hex color, pixel value, or font-family declaration that does not trace to a token, it is a constraint surface violation, the same category as inventing an ad hoc type outside the SDK.
+
+**Pattern catalogs.** The design identity document defines explicitly permitted and banned patterns for the project. Permitted patterns are the compositional primitives agents may use for layout, navigation, component structure, and interaction. Banned patterns are slop fingerprints: known AI-default patterns that the project must not exhibit. The catalog is project-specific because different products have different identity requirements.
+
+**Naming registries.** Module names, route names, API endpoint names, and user-facing terminology follow project-specific conventions defined in the design identity document. Generic names like `utils`, `helpers`, `service`, and `handler` are banned unless the design identity explicitly permits them. The naming registry is part of the SDK vocabulary the same way type names are.
+
+**Copy voice guides.** Tone, vocabulary constraints, banned phrases, error message style, and CTA patterns are documented in the design identity and enforced during casting and review. Agents do not invent copy. They compose within the voice guide's vocabulary.
+
+**Divergence gates in CI/CD.** Quality gates check castings for slop fingerprints cataloged in the design identity. Divergence detection runs alongside mold execution and contract checks. Fingerprint matching is objective and measurable: does the casting use a banned font, a default color value, a cataloged boilerplate layout, a banned copy phrase? Flagged matches require human review. The gate does not judge aesthetics. It detects convergence.
+
 ## Repository Templates
 
 When bootstrapping or extending documentation, reuse the canonical templates shipped with projects using Codex Automata:
@@ -65,5 +79,7 @@ When bootstrapping or extending documentation, reuse the canonical templates shi
 - `templates/module-boundary-template.md`: state scope, invariants, authoritative data ownership, ingress and egress dependencies, molding layout, onboarding notes for casting agents, operators, reviewers.
 
 - `templates/interface-contract-template.md`: articulate versioned schemas, behavioral obligations, temporal guarantees, error taxonomy, quotas, observability facets, compatibility promises, SLA relevant commitments, deprecation windows tied to rollout policy.
+
+- `templates/design-identity-template.md`: define aesthetic direction, typography system, color system, spatial system, motion philosophy, copy voice, naming conventions, anti-patterns, reference targets, and slop fingerprints for projects with user-facing surfaces.
 
 Adapt fields to project policy without diluting contractual clarity across contexts.

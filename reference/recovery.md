@@ -2,6 +2,8 @@
 
 This document defines how Codex Automata projects handle the discovery of gaps in specifications, SDK, tests, or coverage after code already exists. Recovery is not an exception to the methodology; it is the methodology applied retroactively. The same pipeline that governs forward work governs remediation: specification first, then SDK, then molds, then casting.
 
+For systematic adoption of the methodology on an existing codebase (brownfield onboarding), see `reference/brownfield-onboarding.md`. Brownfield onboarding applies the recovery protocol at scale: every existing module goes through recovery to establish specifications, SDK types, and tests retroactively.
+
 For phase-by-phase forward workflow, see `PLAYBOOK.md` in the harness. For the gap assessment template used during recovery, see `templates/gap-assessment-template.md` in the harness.
 
 ## Why Recovery Needs a Protocol
@@ -30,9 +32,11 @@ Gaps surface through predictable channels. Teams should treat these as detection
 
 **Agent-detected gaps.** During routine tasks, agents encounter code without a corresponding specification or tests. Per agent operating rules, they halt and report rather than working around the gap.
 
+**Security audits.** Dedicated security reviews, whether performed by human auditors, automated scanning tools, or security audit agents, identify vulnerabilities and security gaps that should be routed through the recovery pipeline. Use the security audit template (`templates/security-audit-template.md`) to document findings.
+
 ## Gap Classification
 
-Every discovered gap falls into one of four categories. Classification determines the recovery sequence.
+Every discovered gap falls into one of five categories. Classification determines the recovery sequence.
 
 ### Spec Gap
 
@@ -57,6 +61,12 @@ Tests once existed but were deleted, disabled, marked as skipped, or allowed to 
 A module boundary defined in the architecture has no contract tests. The interface contract document may exist, but nothing mechanically verifies that both sides honor it.
 
 **Recovery sequence:** Write contract tests from the interface contract document, run them against both sides of the boundary, and remediate any failures.
+
+### SDK Gap
+
+Behavior exists in the codebase but has no corresponding types or interfaces in the SDK constraint surface. The implementation bypassed the constraint surface, meaning architectural decisions are not mechanically enforced for this code.
+
+**Recovery sequence:** Write the missing SDK types and interfaces from the specification (not from the code), then derive or update tests against the new SDK surface, then verify or recast the implementation to use the SDK types.
 
 ## Triage
 
@@ -83,7 +93,7 @@ When multiple gaps are discovered simultaneously (common after an incident or a 
 Recovery follows the forward pipeline but starts from an existing codebase. The sequence is:
 
 ```text
-Audit --> Spec Patch --> Mold Patch --> Recast (if needed) --> Re-review
+Audit --> Spec Patch --> SDK Patch --> Mold Patch --> Recast (if needed) --> Re-review
 ```
 
 ### Step 1: Audit
@@ -91,7 +101,7 @@ Audit --> Spec Patch --> Mold Patch --> Recast (if needed) --> Re-review
 Document the gap using the gap assessment template (`templates/gap-assessment-template.md`). Identify:
 
 - Which module is affected.
-- What class of gap it is (spec, mold, coverage erosion, contract).
+- What class of gap it is (spec, SDK, mold, coverage erosion, contract).
 - How it was discovered.
 - What currently exists (partial spec? weak tests? nothing?).
 - What should exist according to the methodology.
@@ -102,15 +112,23 @@ The audit is a human task. Agents assist by scanning for related gaps in adjacen
 
 If the specification is missing or incomplete, write the missing sections. This follows the same rules as Phase 2 (Specification Writing) in the forward pipeline. The specification describes intended behavior, edge cases, and failure modes.
 
-If the specification exists and is correct, skip to Step 3.
+If the specification exists and is correct, skip to Step 2b.
 
 If the specification exists but is wrong (the code does something different, and the code is correct), update the specification to match intended behavior and document the rationale for the change.
 
 The critical constraint: do not derive the specification from the code. Derive the specification from domain knowledge, stakeholder intent, and architectural requirements. The code may be accidentally correct, or it may be wrong. The specification must reflect what the system should do, not what it happens to do.
 
+### Step 2b: SDK Patch
+
+If the SDK constraint surface is missing types or interfaces for the specified behavior, extend the SDK following the same rules as Phase 3 (SDK Design) in the forward pipeline. The SDK extension derives from the specification, not from the existing code.
+
+If the SDK already covers the behavior, skip to Step 3.
+
+If the SDK exists but the implementation bypasses it (uses ad hoc types instead of SDK types), note this for Step 4 (Recast).
+
 ### Step 3: Mold Patch
 
-Derive tests from the patched specification. This follows the same rules as Phase 3 (Test Molding) in the forward pipeline. Tests must trace back to specification sections. Tests must be sharp enough to constrain implementation.
+Derive tests from the patched specification. This follows the same rules as Phase 4 (Test Molding) in the forward pipeline. Tests must trace back to specification sections. Tests must be sharp enough to constrain implementation.
 
 For mold gaps, verify that new tests fail against known-bad inputs before relying on them.
 
@@ -120,7 +138,7 @@ For coverage erosion, compare restored tests against the original test intent (v
 
 If the existing implementation passes the new tests, recasting is unnecessary. The code was correct; it was just unverified.
 
-If the existing implementation fails the new tests, recast the affected code. This follows Phase 4 (Code Casting) rules. Agents receive the specification, the updated test suite, and the interface contracts. They modify the implementation until all tests pass.
+If the existing implementation fails the new tests, recast the affected code. This follows Phase 5 (Code Casting) rules. Agents receive the specification, the updated test suite, and the interface contracts. They modify the implementation until all tests pass.
 
 Do not patch the implementation to pass tests without reading the specification. The specification, not the test, is the source of truth. The test encodes the specification mechanically; the implementation satisfies both.
 
@@ -149,6 +167,7 @@ Recovery cards flow through the same stations as forward work:
 | Station | Recovery Activity |
 |---------|-------------------|
 | Spec Writing | Write or patch the missing specification sections |
+| SDK Design | Extend the SDK constraint surface from the specification |
 | Test Molding | Derive or restore tests from the specification |
 | Code Casting | Recast if the implementation fails new tests |
 | Human Review | Review the complete recovery unit |
@@ -191,7 +210,7 @@ Track recovery as a system health indicator, not a shame metric.
 
 **Recovery cycle time.** How long from gap discovery to closed recovery card? Long cycle times indicate that recovery work is being deprioritized or blocked.
 
-**Gap class distribution.** Which classes of gap (spec, mold, erosion, contract) appear most frequently? Persistent patterns in one class indicate a systemic weakness in the corresponding pipeline phase.
+**Gap class distribution.** Which classes of gap (spec, SDK, mold, erosion, contract) appear most frequently? Persistent patterns in one class indicate a systemic weakness in the corresponding pipeline phase.
 
 **Recurrence rate.** Are the same classes of gap reappearing after recovery? If so, the recurrence prevention measures are not working.
 
@@ -205,3 +224,5 @@ Track recovery as a system health indicator, not a shame metric.
 - `principles.md` in this directory for the foundational principles recovery enforces.
 - `PLAYBOOK.md` in the harness for phase-by-phase execution guidance including the recovery procedure.
 - `templates/gap-assessment-template.md` in the harness for the structured gap documentation template.
+- `brownfield-onboarding.md` in this directory for systematic adoption on existing codebases.
+- `templates/brownfield-audit-template.md` in the harness for codebase inventory and prioritization.

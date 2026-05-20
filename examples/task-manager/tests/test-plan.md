@@ -41,6 +41,19 @@ This **test plan** is the mold derived from the specification. Tests should exis
 | `test_storage_delete` | Save then delete; `find_by_id` returns null. |
 | `test_storage_filter_by_status` | Save mixed statuses; filtered `find_all` returns correct subset. |
 
+## Property-Based Tests
+
+| Property | Spec Reference | Generator Strategy | Expected Invariant | Priority |
+|----------|---------------|-------------------|-------------------|----------|
+| Valid title always creates task | Behaviors 1 | Arbitrary non-empty string, length 1-200 | createTask succeeds, returned task.title matches input | Must |
+| Empty title rejects | Behaviors 1, Edge Cases | Empty string | createTask throws InvalidTaskInputError | Must |
+| Over-length title rejects | Behaviors 1, Edge Cases | Arbitrary string, length 201-10000 | createTask throws InvalidTaskInputError | Must |
+| List always returns subset | Behaviors 2 | Arbitrary set of 0-100 tasks | listTasks result is subset of created tasks | Must |
+| Filter by status is consistent | Behaviors 2 | Arbitrary set of tasks, random status filter | listTasks(filter).every(t => t.status === filter.status) | Must |
+| Complete sets completed_at | Behaviors 3 | Any pending task | After completeTask, task.completed_at is not null | Must |
+| Delete removes from list | Behaviors 4 | Any existing task | After deleteTask(id), listTasks does not contain id | Must |
+| Create-then-find roundtrip | Behaviors 1, 2 | Any valid CreateTaskInput | After createTask, findById returns matching task | Should |
+
 ## Exit Criteria
 
 All listed tests compile and **fail** (red) before casting begins. After casting, they pass as the quality gate for the corresponding agent tasks.

@@ -10,6 +10,9 @@ Operating manual for agents executing tasks under Codex Automata. Specifications
 - Build local-first. Assume the smallest viable model. Keep context lean, tasks atomic, and prompts structured.
 - Tests are the acceptance criteria. Passing tests define done for an agent task.
 - Code is the output, not the goal. Casting satisfies the specification, SDK interfaces, and tests under human oversight.
+- Identity is specified, not defaulted. Human-perceptible surfaces reflect deliberate design decisions, not training-data defaults.
+- Context is persistent. Maintain project state across sessions using the context state file (`context-state.md`, from `templates/context-state-template.md`).
+- Be cost-conscious. Prefer smaller context, shorter sessions, and cheaper models when the task permits. Include only relevant specification sections, not entire documents. Use checkpoint-based re-dispatch rather than accumulating conversation context.
 
 ## 2. Behavioral Rules (Strict)
 
@@ -39,11 +42,13 @@ R12. Keep context lean. Do not assume unlimited context windows or frontier-mode
 
 R13. When you discover code without a corresponding specification, SDK interface, or tests, halt and report the gap. Do not silently work around it, do not write tests derived from the code, and do not treat unspecified behavior as intentional. Report the gap using the gap assessment template (`templates/gap-assessment-template.md`) so a human can triage and schedule recovery.
 
-R14. During recovery tasks, follow rules R1-R13 in the context of an existing codebase. Derive specifications from domain knowledge and stakeholder intent, not from the current implementation. Derive SDK extensions from specifications. Derive tests from the specification against SDK interfaces, not from the code. If the specification and the code conflict, surface the conflict for human resolution.
+R14. Do not use training-data default patterns for human-perceptible surfaces when the design identity document or SDK design tokens specify alternatives. All visual values must trace to design tokens; hardcoded hex, px, rem, or font-family values are casting defects. If a project has user-facing surfaces but no design identity document exists, halt and report the gap.
+
+R15. During recovery tasks, follow rules R1-R14 in the context of an existing codebase. Derive specifications from domain knowledge and stakeholder intent, not from the current implementation. Derive SDK extensions from specifications. Derive tests from the specification against SDK interfaces, not from the code. If the specification and the code conflict, surface the conflict for human resolution.
 
 ## 3. Task Execution Protocol
 
-- Step 1: Read the agent task definition and locate the specification reference.
+- Step 1: Read the agent task definition, locate the specification reference, and review the context state file (`context-state.md`) for current project status.
 - Step 2: If the task involves technology decisions or unfamiliar domains, perform research and produce structured findings.
 - Step 3: Read the relevant specification sections.
 - Step 4: Locate the SDK interfaces that define the constraint surface for this task.
@@ -53,10 +58,44 @@ R14. During recovery tasks, follow rules R1-R13 in the context of an existing co
 - Step 8: Verify all assigned tests pass.
 - Step 9: Run any available linters and quality gates.
 - Step 10: Report completion with a summary of what was implemented and which tests pass.
+- Step 10b: Update the context state file with session results, completed work, Session History, and the Checkpoint for the next session.
 
-## 4. Communication Protocol
+## 4. Iteration Protocol
+
+When a quality gate fails (test fails, review rejects, linter errors), iterate within the current phase:
+
+- Read the failure, read the relevant specification and SDK interfaces, attempt a fix.
+- Bound inner-loop attempts: after 3 failed attempts at the same problem, escalate to human.
+- Log each attempt in the context state Session History.
+- If the fix requires specification or SDK changes, escalate to the appropriate phase rather than continuing inner-loop attempts.
+
+When review sends work back to an earlier phase, follow the outer loop:
+
+- Specification change cascades through SDK (if affected), then tests (if affected), then casting.
+- Each phase runs its own inner loop before advancing.
+- The context state Checkpoint tracks which phase the outer loop is in.
+
+For quick changes (single bounded context, existing spec/SDK/tests, no new interfaces), use the abbreviated quick-change workflow instead of the full pipeline. See `reference/quick-change.md`.
+
+For multi-agent work, coordinate through artifacts (shared SDK, frozen interface contracts), not through direct communication. See `reference/multi-agent.md`.
+
+## 5. Communication Protocol
 
 - When blocked: report what you need and why progress is blocked.
 - When ambiguous: quote the unclear specification section and suggest plausible interpretations without choosing one arbitrarily.
 - When deviating: explain the deviation, its justification, and request alignment in human review.
 - When complete: summarize changes, test results, and notes for the reviewer.
+
+## 6. Guardrails
+
+Agent actions are classified by risk tier. Respect the classification for each action:
+
+- **AUTO:** Proceed without approval. Reading specifications, SDK, tests, context state. Running tests and linters.
+- **LOG:** Proceed and record. Writing code within SDK boundary, adding tests, making atomic commits, updating context state.
+- **APPROVE:** Halt and request human approval. Modifying SDK interfaces, modifying interface contracts, deleting tests, changing specifications, deploying, creating new bounded contexts, adding external dependencies.
+
+If the project has a guardrail configuration (`templates/guardrail-config-template.md`), follow project-specific overrides. Otherwise, use the methodology defaults.
+
+When an action's classification is unclear, treat it as APPROVE. It is safer to ask than to act.
+
+See `reference/guardrails.md` for the full classification table and customization guidance.

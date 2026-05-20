@@ -37,7 +37,15 @@ For each interface contract the module participates in:
 1. Write tests that verify the contract from both sides.
 2. Test normal operations and error conditions.
 
-## Step 5: Verify Red State
+## Step 5: Derive Properties (if applicable)
+
+1. Review each specification section for input constraints, data transformations, and invariants.
+2. For each invariant, define a property-based test: the property statement, generator strategy, and expected invariant.
+3. Add properties to the test plan's "Property-Based Tests" section.
+4. Properties are red-state: they define what must hold before implementation exists.
+5. At Complete profile, every spec section with input constraints must have at least one property. At Standard, properties are recommended. At Essential, optional.
+
+## Step 6: Verify Red State
 
 1. Confirm all tests compile.
 2. Confirm all tests fail (no implementation exists yet).
@@ -47,3 +55,4 @@ For each interface contract the module participates in:
 
 - Template: `templates/test-plan-template.md`
 - Rules: `agent/TEST_MOLDING_RULES.md`
+- Property-based testing: `reference/property-based-testing.md` (in methodology repo; or project copy of reference docs)

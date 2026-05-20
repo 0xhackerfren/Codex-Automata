@@ -22,6 +22,7 @@
 - [ ] **Mold gap:** behavior is documented in the specification but has no tests, or tests are too weak.
 - [ ] **Coverage erosion:** tests existed but were deleted, disabled, or made flaky without remediation.
 - [ ] **Contract gap:** a module boundary has no contract tests despite a defined interface contract.
+- [ ] **SDK gap:** behavior exists in code but has no corresponding types or interfaces in the SDK constraint surface.
 
 ## Discovery Trigger
 
@@ -60,9 +61,10 @@
 [Specific tasks to close this gap. Each task should map to a recovery sequence step.]
 
 1. **Spec patch:** [ ]
-2. **Mold patch:** [ ]
-3. **Recast (if needed):** [ ]
-4. **Re-review:** [ ]
+2. **SDK patch:** [ ]
+3. **Mold patch:** [ ]
+4. **Recast (if needed):** [ ]
+5. **Re-review:** [ ]
 
 **Estimated effort:** [ ]
 
@@ -94,6 +96,7 @@ Common root causes and remediation:
 | Date closed | [YYYY-MM-DD] |
 | Reviewed by | [ ] |
 | Spec patch commit/PR | [ ] |
+| SDK patch commit/PR | [ ] |
 | Mold patch commit/PR | [ ] |
 | Recast commit/PR | [N/A or link] |
 | Review approval | [ ] |

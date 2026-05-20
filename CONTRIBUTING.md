@@ -1,6 +1,6 @@
 # Contributing to Codex Automata
 
-Thank you for helping improve Codex Automata. This repository holds the methodology, templates, examples, and agent guidance for specification-first, test-driven workflows.
+Thank you for helping improve Codex Automata. This repository holds the methodology, templates, examples, and agent guidance for specification-first, SDK-constrained, test-molded workflows.
 
 ## How to Contribute
 

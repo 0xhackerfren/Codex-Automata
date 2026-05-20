@@ -14,6 +14,7 @@ Phase 3: SDK Design
 Phase 4: Test Molding
 Phase 5: Code Casting
 Phase 6: Review
+Phase 6b: Product Testing
 Phase 7: Deployment and Observation
 ```
 
@@ -22,6 +23,55 @@ Research runs throughout the early phases: agents investigate technologies, surv
 The pipeline enforces a strict order: documentation first, then SDK, then tests, then code. Phases may iterate (a review can send work back to specification), but they do not skip forward. You do not cast without a mold. You do not mold without an SDK. You do not build an SDK without a specification. You do not specify without investigating.
 
 For Cursor IDE users: each phase references the relevant `/skill-name` you can invoke in chat and the `.cursor/agents/` subagents available for delegation.
+
+---
+
+## Quick Changes
+
+Not every change requires the full pipeline. Bug fixes, configuration tweaks, copy corrections, and small behavioral adjustments that touch a single bounded context with existing specifications, SDK interfaces, and tests can use the abbreviated quick-change workflow.
+
+**Criteria (all must be true):** The change touches a single bounded context. An approved specification covers the behavior. SDK interfaces exist. Tests exist. No new SDK types, interfaces, or specs are needed. No interface contracts are modified.
+
+**Sequence:** Read existing spec, SDK, and tests. Make the change within the constraint surface. Verify all tests pass. Self-review against a checklist. Commit referencing the spec section.
+
+**When to escalate:** If any criterion fails, if you discover a spec gap, if you need a new SDK type, or if the change affects multiple contexts, escalate to the full pipeline starting at the appropriate phase.
+
+Quick-change is available at all adoption profiles. Use `/quick-change` in Cursor. See `reference/quick-change.md` for the full protocol.
+
+---
+
+## Guardrails
+
+Every agent action in the pipeline is classified by risk: AUTO (proceed), LOG (proceed and record), or APPROVE (halt for human). This classification applies across all phases.
+
+**Phase-specific guidance:**
+
+| Phase | Typical AUTO | Typical LOG | Typical APPROVE |
+|-------|-------------|-------------|-----------------|
+| 0-1: Intake/Architecture | Reading codebase, researching | Producing structured findings | Finalizing architecture decisions |
+| 2: Specification | Reading existing docs | Writing spec sections | Approving completed specification |
+| 3: SDK Design | Reading specs and contracts | Defining types and interfaces | Freezing SDK surface for casting |
+| 4: Test Molding | Reading spec and SDK | Writing test cases | N/A (tests are additive) |
+| 5: Code Casting | Reading spec/SDK/tests | Writing code, making commits | Modifying SDK or contracts |
+| 6: Review | Reading all artifacts | Producing review notes | Approving or rejecting the casting |
+| 6b: Product Testing | Running product tests | Recording journey metrics | Changing UX budgets |
+| 7: Deployment | Running smoke tests | Executing deploy steps | Triggering production deploy |
+
+Teams customize classification using the guardrail config template. See `reference/guardrails.md`.
+
+---
+
+## Brownfield Adoption
+
+Most real-world projects aren't greenfield. To adopt Codex Automata on an existing codebase, use the brownfield onboarding protocol rather than the forward pipeline.
+
+**Sequence:** Install the harness, audit the codebase using the brownfield audit template, classify modules by risk and change frequency, then onboard modules one at a time using the recovery protocol. Start with the Essential profile on the highest-risk module. Expand outward as modules are onboarded.
+
+**Key principle:** Recovery IS onboarding. Every brownfield module goes through the recovery sequence: write the spec from domain knowledge (not code), extract SDK types, derive tests, verify or recast the implementation.
+
+**Quality gates are incremental.** Gate new PRs immediately. Retroactively gate existing code as modules are onboarded through recovery. Do not require full coverage on day one.
+
+Use `/brownfield-onboarding` in Cursor. See `reference/brownfield-onboarding.md` for the full protocol.
 
 ---
 
@@ -90,6 +140,7 @@ Break the system into bounded contexts with clean interfaces. Define the module 
 - Module boundary documents (use `templates/module-boundary-template.md`)
 - Interface contracts between modules (use `templates/interface-contract-template.md`)
 - Dependency graph showing module relationships
+- Design identity document for projects with user-facing surfaces (use `templates/design-identity-template.md`)
 
 **Exit Criteria**
 
@@ -98,6 +149,7 @@ Break the system into bounded contexts with clean interfaces. Define the module 
 - [ ] No circular dependencies exist between modules.
 - [ ] Each module is small enough to be independently specifiable and testable.
 - [ ] Architecture decisions are recorded with rationale and trade-offs.
+- [ ] For projects with user-facing surfaces, the design identity document is complete with aesthetic direction, anti-patterns, and reference targets.
 
 **Human Responsibilities**
 
@@ -105,6 +157,7 @@ Break the system into bounded contexts with clean interfaces. Define the module 
 - Define bounded context boundaries based on domain analysis.
 - Design interface contracts between modules.
 - Evaluate trade-offs and document the reasoning.
+- For user-facing projects, author the design identity document: aesthetic direction, typography, color system, spatial system, motion philosophy, copy voice, naming conventions, banned patterns.
 
 **Agent Responsibilities**
 
@@ -117,6 +170,7 @@ Break the system into bounded contexts with clean interfaces. Define the module 
 
 **Cursor Integration**
 
+- Invoke `/architecture` to use the architecture skill.
 - Use the `spec-reviewer` subagent to validate architecture documents for completeness.
 
 ---
@@ -138,6 +192,7 @@ Write precise, testable specifications for each bounded context. The specificati
 - Specification documents for each bounded context (use `templates/spec-template.md`)
 - Updated interface contracts if spec writing reveals new integration points
 - Edge case catalog for each module
+- For user-facing modules, design tokens derived from the design identity document as SDK building blocks
 
 **Exit Criteria**
 
@@ -217,6 +272,7 @@ Translate architectural boundaries and specifications into a compilable constrai
 
 **Cursor Integration**
 
+- Invoke `/sdk-design` to use the SDK design skill.
 - Use the `spec-reviewer` subagent to validate SDK interfaces against specifications.
 
 ---
@@ -312,12 +368,20 @@ Implement code that passes all tests. This is the phase where agents work in par
 **Agent Responsibilities**
 
 - Read the specification, SDK interfaces, tests, and interface contracts.
+- For user-facing modules, read the design identity document and reference design tokens from the SDK.
 - Write implementation code that implements SDK interfaces until all assigned tests pass.
 - Stay within the boundaries of the assigned module and the SDK constraint surface.
+- For user-facing code, all visual values must reference design tokens. Do not use hardcoded hex, px, rem, or font-family values. Do not use known AI-default patterns when the design identity specifies alternatives.
 - Do not introduce abstractions outside the SDK. If new building blocks are needed, stop and request SDK extension.
 - Make small, atomic commits. Each commit addresses one logical unit of work.
 - If the specification is ambiguous, stop and ask. Do not guess.
 - If a test appears incorrect, surface it. Do not modify tests without approval.
+
+**Enforcement Scripts**
+
+- Run `scripts/divergence-gate.sh` (or `.ps1`) to scan for slop fingerprints before submitting for review. Use `--config divergence.json` if the project has a custom fingerprint catalog derived from the design identity.
+- Run `scripts/spec-check.sh` (or `.ps1`) to verify every source module has a corresponding specification.
+- Use `scripts/commit-lint.sh` (or `.ps1`) as a git commit-msg hook or CI check to enforce spec-traceable commits (R7).
 
 **Cursor Integration**
 
@@ -354,7 +418,8 @@ Verify that castings match the mold and that the mold matches the original inten
 - [ ] Implementation matches the specification (no extra behavior, no missing behavior).
 - [ ] Interface contracts are honored (no silent changes).
 - [ ] Code quality meets project standards.
-- [ ] All automated quality gates pass (lint, tests, coverage).
+- [ ] All automated quality gates pass (lint, tests, coverage, divergence checks).
+- [ ] For user-facing modules, divergence gate confirms no slop fingerprints from the design identity's banned patterns list.
 - [ ] Review document is completed and stored.
 
 **Human Responsibilities**
@@ -362,12 +427,15 @@ Verify that castings match the mold and that the mold matches the original inten
 - Review each module for correctness against the specification.
 - Verify that the system still makes sense as a whole (coherence check).
 - Check for interface contract violations.
+- For user-facing modules, verify design identity compliance: do visual values trace to tokens? Are banned patterns absent? Does the casting match the aesthetic direction?
 - Approve or reject with specific, actionable feedback.
 - This is judgment work. Agents assist but do not replace human review.
 
 **Agent Responsibilities**
 
 - Run automated checks: lint, test suite, coverage reports.
+- Run `scripts/divergence-gate.sh` (or `.ps1`) and include results in the review summary.
+- Run `scripts/spec-check.sh` (or `.ps1`) to verify spec coverage.
 - Generate a diff summary comparing implementation against the specification.
 - Flag potential deviations from the specification.
 - Flag interface contract violations.
@@ -375,6 +443,7 @@ Verify that castings match the mold and that the mold matches the original inten
 
 **Cursor Integration**
 
+- Invoke `/review` to use the review skill.
 - Use the `spec-reviewer` subagent to generate automated review summaries.
 
 ---
@@ -425,6 +494,11 @@ For the full product testing reference, see the [Product Testing](https://github
 - Do not use implementation knowledge. Navigate using only what is visible on screen and what the profile's user would reasonably know.
 - Record every action, observation, hesitation, error, and recovery in a journey log.
 - Report honestly when an objective cannot be completed, including where the agent got stuck and what it tried.
+
+**Cursor Integration**
+
+- Invoke `/product-testing` to use the product testing skill.
+- Use the `product-tester` subagent to execute product test scenarios.
 
 ---
 
@@ -485,6 +559,34 @@ The key constraint is that backward movement always starts at the specification.
 
 ---
 
+## Context Persistence
+
+Agents start each session without memory of prior work. Context rot — the progressive loss of decisions, progress, and trade-offs across sessions — is mitigated by a structured context state file maintained as part of normal project operations.
+
+Each project maintains a `context-state.md` file (initialized from `templates/context-state-template.md`) as the navigation layer for agent sessions. It answers "where are we?" so agents can find and prioritize the right artifacts quickly without re-reading the entire project.
+
+For the full context persistence methodology, health checks, and update protocol, see the [Context Persistence](https://github.com/0xhackerfren/Codex-Automata/blob/main/reference/context-persistence.md) document in the Codex Automata repository.
+
+### Agent Responsibilities
+
+- Read `context-state.md` at session start before other project artifacts.
+- Update `context-state.md` at session end and after significant milestones (phase transitions, bounded context completion, gap filing, recovery closure).
+- Keep the Checkpoint section current: Resume from, Prerequisites met, and Next action must reflect the exact handoff point for the next session.
+- Append Session History entries; move completed work to Recently Completed; update Current Work in place.
+
+### Human Responsibilities
+
+- Review `context-state.md` periodically for drift (staleness, phase mismatch, stale Open Decisions).
+- Resolve Open Decisions that have been open for more than two sessions.
+- Verify Active Phase accuracy during phase reviews and kanban walkthroughs.
+- Create `context-state.md` from the template when starting a new project if agents have not yet done so.
+
+### Quality Gate
+
+Context state must be updated before a phase transition is considered complete. An agent or human moving work to the next phase without an updated context state file has not finished the current phase's operational closure.
+
+---
+
 ## Recovery: Closing Gaps After the Fact
 
 The forward pipeline assumes specs and tests exist before code. When you discover they do not, recovery applies the same pipeline retroactively. Recovery is not an exception or a side project. It is first-class work that flows through the same kanban stations as forward work.
@@ -541,10 +643,15 @@ Audit --> Spec Patch --> SDK Patch --> Mold Patch --> Recast (if needed) --> Re-
 ### Agent Responsibilities During Recovery
 
 - When a gap is discovered during routine work, halt and report it using the gap assessment template. Do not silently work around gaps.
-- During recovery tasks, follow the same forward rules (R1-R13) in the context of an existing codebase.
+- During recovery tasks, follow the same forward rules (R1-R14) in the context of an existing codebase.
 - Assist with evidence gathering: scan for related gaps, check version control history, surface specification sections that reference the affected behavior.
 - Derive tests from the specification, not from the existing code.
 - If the specification appears incorrect (code behavior contradicts it and the code is believed correct), surface the conflict for human resolution. Do not update the specification unilaterally.
+
+**Cursor Integration**
+
+- Invoke `/recovery` to use the recovery skill.
+- The recovery skill walks through all six steps with template references.
 
 ### Recovery on the Kanban Board
 
