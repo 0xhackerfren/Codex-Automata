@@ -262,7 +262,7 @@ The pipeline runs. The code deploys. Monitoring confirms that production matches
 
 Remove any piece and the machine breaks. Without research, decisions are uninvestigated and specifications encode assumptions instead of evidence. Without specs, agents hallucinate, producing plausible code aimed at the wrong problem. Without the SDK, agents invent incompatible architectures that cannot integrate. Without local-first discipline, the system becomes structurally dependent on expensive frontier models and collapses when conditions change. Without tests, infinite variety with no definition of correct. Without modularity, agents collide in merge conflicts, contradictions, and chaos. Without flow, work pools in the wrong places. Without CI/CD, the whole arrangement depends on discipline that humans will eventually forget and agents will never have.
 
-The principles are load bearing members in a single structure, and each assumes the others are present. Research informs decisions. Specification creates the foundation. The SDK constrains the vocabulary. Local-first forces engineering discipline. Tests constrain the shape. Modularity enables concurrency. Flow exposes bottlenecks. CI/CD enforces integrity. Intentional divergence gives the product identity. Remove one, and the structure does not degrade gracefully. It collapses.
+The principles are load bearing members in a single structure, and each assumes the others are present. Research informs decisions. Specification creates the foundation. The SDK constrains the vocabulary. Local-first forces engineering discipline. Tests constrain the shape. Modularity enables concurrency. Flow exposes bottlenecks. CI/CD enforces integrity. Intentional divergence gives the product identity. Assembly pressure validates that the parts compose under real conditions. Remove one, and the structure does not degrade gracefully. It collapses.
 
 This is why the methodology is called Codex Automata, the book of self moving things. The specifications, tests, gates, and pipelines form a machine that, once built, moves on its own. Agents fill the mold. The pipeline verifies the casting. The board reveals the flow. Humans design the machine and oversee its operation, but the machine runs.
 
@@ -294,11 +294,35 @@ Gating means divergence detection. Quality gates check for known AI-default patt
 
 The economics are the same as every other Codex Automata principle. The cost of specifying identity is near zero when specification is what humans already do in this methodology. The cost of not specifying it is a product that looks, sounds, and feels like every other product built by the same models. In a market where every competitor has access to the same AI, the products that stand out are the ones whose humans made deliberate choices about identity and encoded those choices as constraints that agents cannot override.
 
-Identity is not decoration. It is specification. Specify it, constrain it, gate it.
+There is a subtler form of convergence that extends beyond what users see. Code structure itself regresses toward the training-data mean. Over-abstraction, redundant service layers, cargo-cult design patterns applied without the problem they solve, speculative error handling for impossible edge cases, filler documentation that restates what the code already says. These are not incorrect. They are average. They sit at the bell curve center of all code the model has seen. In the agentic era, "good" is trivially achievable. The differentiator is statistical divergence from the mean: being on the higher side of the distribution through deliberate engineering choices, deeper research, and rigorous application of principles that push every output, code included, away from the most probable tokens.
+
+Identity is not decoration. It is specification. Specify it, constrain it, gate it. And the principle applies to every output surface, not only the ones users see.
 
 ---
 
-## XI. The Fracture Lines
+## XI. The Alpha Loop
+
+There is one more failure mode that the machine as described does not address, and it is arguably the most expensive one.
+
+Every building block passes its mold. Every contract holds at its boundary. Every divergence gate confirms identity. The code is reviewed, approved, and correct. Then the blocks are assembled into a running system for the first time, and nothing works the way anyone expected.
+
+Performance cliffs appear when three individually correct modules interact in ways no unit test anticipated. User journeys that traverse multiple bounded contexts produce friction that no single module's product test could detect. Data consistency assumptions that held in isolation fail when realistic volume and timing combine. The system is correct in parts and broken as a whole.
+
+This failure mode existed before the agentic era, but the economics were different. When a human spent a week writing a module, pressure-testing the assembly after every module was prohibitively expensive. Teams accumulated unvalidated increments and discovered integration failures late, when context had evaporated and correction cost was highest. The cost structure made late assembly testing a rational, if painful, tradeoff.
+
+The agentic era inverts that cost structure. Agents cast a module in minutes. Assembly can be exercised after every increment. The constraint that made late integration testing rational has disappeared, but the practice persists by inertia.
+
+Assembly Pressure is the principle that replaces it. After each meaningful cast increment, the running system is exercised under realistic conditions. Not once before deployment. Continuously throughout the buildout.
+
+The loop is simple. Cast a building block. Assemble it into the running system. Apply realistic pressure: real data volumes, real user journeys, real failure conditions, real concurrent load. Learn what breaks. Feed the discoveries back to specifications, SDK, or molds. Cast the next block. The system is always runnable, always under pressure, always generating feedback.
+
+This is the highest-leverage engineering activity in the agentic era. Not writing the code, which is trivially cheap. Not writing the spec, which is amortized across many casts. Subjecting the assembled system to conditions that expose integration failures early, while the cost of correction is low and the context of the original decisions is still fresh.
+
+The principle complements Phase 6b Product Testing but is distinct from it. Product Testing is a formal verification gate before deployment. Assembly Pressure is an incremental feedback loop during development. Product Testing asks "does the assembled product meet UX budgets?" Assembly Pressure asks "does the assembly even hold together under realistic conditions?" Product Testing runs against a finished assembly. Assembly Pressure runs against every intermediate assembly as the system grows.
+
+---
+
+## XII. The Fracture Lines
 
 Every methodology has a domain where it excels and a boundary where it breaks. Codex Automata is no different. Intellectual honesty requires mapping the fractures.
 
@@ -324,7 +348,7 @@ None of these limitations invalidate the approach. They define its scope. Codex 
 
 ---
 
-## XII. The Engineer, Redefined
+## XIII. The Engineer, Redefined
 
 If agents write the code, what becomes of the engineer?
 

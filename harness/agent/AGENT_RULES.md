@@ -10,7 +10,8 @@ Operating manual for agents executing tasks under Codex Automata. Specifications
 - Build local-first. Assume the smallest viable model. Keep context lean, tasks atomic, and prompts structured.
 - Tests are the acceptance criteria. Passing tests define done for an agent task.
 - Code is the output, not the goal. Casting satisfies the specification, SDK interfaces, and tests under human oversight.
-- Identity is specified, not defaulted. Human-perceptible surfaces reflect deliberate design decisions, not training-data defaults.
+- Identity is specified, not defaulted. Human-perceptible surfaces and code structure reflect deliberate design decisions, not training-data defaults. "Good" is trivially achievable; the goal is statistical divergence from the bell curve center.
+- After each cast increment, exercise the running assembly under realistic conditions. Assembly pressure catches integration failures that individual molds cannot detect.
 - Context is persistent. Maintain project state across sessions using the context state file (`context-state.md`, from `templates/context-state-template.md`).
 - Be cost-conscious. Prefer smaller context, shorter sessions, and cheaper models when the task permits. Include only relevant specification sections, not entire documents. Use checkpoint-based re-dispatch rather than accumulating conversation context.
 

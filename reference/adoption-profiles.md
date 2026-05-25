@@ -4,7 +4,7 @@ Codex Automata is designed to be adopted incrementally. Not every project needs 
 
 ## Why Profiles Exist
 
-The full Codex Automata pipeline includes ten principles, eight phases, dozens of templates, agent rules, quality gates, and specialized workflows like recovery and product testing. For a solo developer building a side project, this is overwhelming. For a regulated enterprise building a payments platform, it may not be enough.
+The full Codex Automata pipeline includes eleven principles, eight phases, dozens of templates, agent rules, quality gates, and specialized workflows like recovery and product testing. For a solo developer building a side project, this is overwhelming. For a regulated enterprise building a payments platform, it may not be enough.
 
 Profiles solve this by defining three tiers of adoption. Each profile specifies which phases run, which templates are required, which rules are enforced, and which quality gates apply. Projects declare their profile at intake (Phase 0) and can upgrade at any phase boundary.
 
@@ -46,7 +46,9 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 
 **Accessibility:** Developer's judgment call. No required accessibility molds or product test profiles.
 
-**What you skip:** SDK constraint surface, bounded context decomposition, interface contracts, kanban flow management, product testing, design identity, recovery protocol, context persistence.
+**Assembly Pressure:** After each cast, run smoke tests against the assembled system. No formal product test suite required, but the assembly should be exercised under basic conditions to catch integration failures early.
+
+**What you skip:** SDK constraint surface, bounded context decomposition, interface contracts, kanban flow management, formal product testing, design identity, recovery protocol, context persistence.
 
 **When to upgrade:** When the project grows beyond a single bounded context, when multiple agents or developers work on it simultaneously, or when you need interface contracts between modules.
 
@@ -170,6 +172,7 @@ Downgrades are not recommended. Removing artifacts that exist creates orphaned d
 | Interface contracts | Skip | Required | Required |
 | Architecture decomposition | Skip | Required | Required |
 | Human review | Self-review | Full review | Full review |
+| Assembly pressure | Smoke tests | Smoke + journey checks | Smoke + journey + load |
 | Product testing | Skip | Optional | Required |
 | Design identity | Skip | If user-facing | Required for user-facing |
 | Recovery protocol | Skip | Active | Active |

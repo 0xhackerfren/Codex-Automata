@@ -389,6 +389,22 @@ Implement code that passes all tests. This is the phase where agents work in par
 - Use the `code-caster` subagent for bounded implementation tasks.
 - Multiple `code-caster` subagents can run in parallel across different modules.
 
+### Assembly Pressure Checkpoint
+
+After each bounded context is cast and its molds pass, assemble the running system and apply realistic pressure before proceeding to formal review. This is not Phase 6b Product Testing (which runs the full suite before deployment). It is an incremental validation that the newly cast block integrates with the existing assembly under realistic conditions.
+
+**Checkpoint sequence:**
+
+1. Assemble the running system with the newly cast block included.
+2. Run critical-path smoke tests against the assembled system.
+3. If the project has product test objectives defined, run the subset that touches the newly cast context.
+4. Apply realistic data volumes, concurrency, and failure injection where applicable.
+5. Route any discovered integration failures back as gap assessments: specification gaps (the spec did not account for this interaction), SDK gaps (the constraint surface lacks types for cross-context behavior), or mold gaps (no test covers the assembly-level behavior).
+
+**When to skip:** If the cast block is purely internal (no user-facing surface, no integration surface) and has no cross-context dependencies, the checkpoint may be deferred to the next block that does integrate. Document the deferral in the context state file.
+
+**At all profiles:** Essential profile runs smoke tests only. Standard runs smoke tests plus critical journey checks. Complete runs smoke tests, journey checks, and load profiles.
+
 ---
 
 ## Phase 6: Review

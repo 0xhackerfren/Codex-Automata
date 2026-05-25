@@ -77,3 +77,28 @@ jobs:
           else
             echo "No recognized project type. Skipping test run."
           fi
+
+  spec-check-windows:
+    name: Spec-before-code (Windows)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify specs exist for modules
+        shell: pwsh
+        run: |
+          & scripts/spec-check.ps1 -SrcDir src -SpecDir docs
+
+  divergence-gate-windows:
+    name: Divergence gate (Windows)
+    runs-on: windows-latest
+    if: hashFiles('src/**') != '' || hashFiles('app/**') != '' || hashFiles('lib/**') != ''
+    steps:
+      - uses: actions/checkout@v4
+      - name: Scan for slop fingerprints
+        shell: pwsh
+        run: |
+          if (Test-Path 'divergence.json') {
+            & scripts/divergence-gate.ps1 -Config divergence.json
+          } else {
+            & scripts/divergence-gate.ps1
+          }

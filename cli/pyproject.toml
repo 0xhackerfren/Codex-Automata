@@ -1,0 +1,35 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "codex-automata"
+version = "0.5.0"
+description = "Codex Automata: a spec-first, SDK-constrained, test-molded development methodology for the agentic era"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.9"
+authors = [
+    { name = "Codex Automata Contributors" },
+]
+keywords = ["methodology", "spec-driven", "agentic", "development", "cursor", "ai"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Topic :: Software Development",
+]
+
+[project.scripts]
+codex-automata = "codex_automata.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/0xhackerfren/Codex-Automata"
+Repository = "https://github.com/0xhackerfren/Codex-Automata"
+
+[tool.hatch.build.targets.wheel]
+packages = ["codex_automata"]
+
+[tool.hatch.build.targets.wheel.force-include]
+"../harness" = "codex_automata/_harness"

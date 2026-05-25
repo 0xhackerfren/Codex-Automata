@@ -16,13 +16,32 @@ Codex Automata is a development methodology for the agentic era. It inverts the 
 4. **Tests come third.** Derive tests from the specification, written against SDK interfaces. The tests are the mold.
 5. **Code comes last.** Agents fill the mold within the SDK boundary. The code is the casting.
 
-The methodology rests on [ten core principles](reference/principles.md): Specification First, SDK as Constraint Surface, Local-First, Research as Foundation, Tests as Molds, Code as Casting, Modularity and Bounded Contexts, Continuous Flow, Quality Gates, and Intentional Divergence. Build local-first: design for the smallest viable model, expand to frontier as needed.
+The methodology rests on [eleven core principles](reference/principles.md): Specification First, SDK as Constraint Surface, Local-First, Research as Foundation, Tests as Molds, Code as Casting, Modularity and Bounded Contexts, Continuous Flow, Quality Gates, Intentional Divergence, and Assembly Pressure. Build local-first: design for the smallest viable model, expand to frontier as needed.
 
 This repository contains the harness (the thing you copy into projects) and reference material (the methodology documentation you read).
 
 ## Quickstart
 
-### Option 1: Init script (recommended)
+### Option 1: Python CLI (recommended)
+
+Install the CLI once, then initialize any project:
+
+```powershell
+# Install with uv (recommended)
+uv tool install codex-automata --from git+https://github.com/0xhackerfren/Codex-Automata.git --subdirectory cli
+
+# Or with pip
+pip install git+https://github.com/0xhackerfren/Codex-Automata.git#subdirectory=cli
+
+# Initialize a new project
+codex-automata init D:\projects\my-new-app
+codex-automata init D:\projects\my-new-app --profile essential
+codex-automata init D:\projects\my-new-app --profile complete --agent claude
+```
+
+The CLI handles platform detection automatically (PowerShell hooks on Windows, bash on Unix). See [`cli/README.md`](cli/README.md) for `update` and `verify` commands.
+
+### Option 2: Init script
 
 Clone this repo somewhere permanent, then initialize any project:
 
@@ -30,7 +49,7 @@ Clone this repo somewhere permanent, then initialize any project:
 # Clone once
 git clone https://github.com/0xhackerfren/Codex-Automata.git D:\tools\Codex-Automata
 
-# Initialize a new project
+# Initialize a new project (Windows)
 D:\tools\Codex-Automata\scripts\init.ps1 -TargetPath D:\projects\my-new-app
 ```
 
@@ -41,7 +60,17 @@ git clone https://github.com/0xhackerfren/Codex-Automata.git ~/tools/Codex-Autom
 ~/tools/Codex-Automata/scripts/init.sh ~/projects/my-new-app
 ```
 
-### Option 2: Manual copy
+### Option 3: GitHub template (planned)
+
+Once this repository is configured as a GitHub template, you can create a new project directly from GitHub:
+
+```powershell
+gh repo create my-app --template 0xhackerfren/Codex-Automata --clone
+cd my-app
+# The harness is pre-wired; trim to your profile if needed
+```
+
+### Option 4: Manual copy
 
 Copy the contents of `harness/` into your project root:
 
@@ -129,7 +158,7 @@ codex-automata/
 |   |-- src/                 Empty source code directory
 |
 |-- reference/               METHODOLOGY DOCS (read, don't copy)
-|   |-- principles.md        Ten core principles explained
+|   |-- principles.md        Eleven core principles explained
 |   |-- adoption-profiles.md Essential, Standard, and Complete adoption profiles
 |   |-- workflow.md           End-to-end workflow reference
 |   |-- architecture.md      Architecture patterns and guidance
@@ -150,6 +179,11 @@ codex-automata/
 |-- examples/                WORKED EXAMPLES (read, don't copy)
 |   |-- task-manager/        Greenfield example: spec, tests, tasks, review, design identity, SDK types, context state, block registry
 |   |-- brownfield-api/      Brownfield example: Express.js bookmarks API—audit, retroactive spec, SDK extraction, tests, gap assessment
+|
+|-- cli/                     PYTHON CLI PACKAGE
+|   |-- pyproject.toml       Package config (pip/uv installable)
+|   |-- codex_automata/      CLI source: init, update, verify commands
+|   |-- README.md            CLI usage docs
 |
 |-- scripts/                 AUTOMATION
 |   |-- init.ps1             PowerShell init script

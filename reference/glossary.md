@@ -6,6 +6,12 @@ Definitions use Codex Automata terminology consistently across specifications, S
 
 
 
+**Assembly Pressure**  
+
+The principle that after each cast increment, the running assembly is exercised under realistic conditions to reveal integration failures that individual molds cannot detect. Elaboration: distinct from Product Testing (formal verification gate before deployment); Assembly Pressure is an incremental feedback loop during development. Each cast triggers assembly validation: smoke tests, critical journey checks, load profiles. Discoveries route to the recovery protocol as gap assessments.
+
+
+
 **Agent Task**  
 
 A bounded unit of work assigned to an AI agent with explicit inputs, outputs, and acceptance criteria. Elaboration: must cite an authoritative specification or interface contract section, include a backlog identifier where the process uses one, and stop with a structured escalation when prerequisites are missing.

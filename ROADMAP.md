@@ -2,7 +2,30 @@
 
 This document sketches planned evolution of the Codex Automata methodology harness, templates, examples, tooling, and quality gates. Priorities may shift based on community feedback and real-world usage.
 
-## v0.4.0 (Current)
+## v0.5.0 (Current)
+
+### Achieved
+
+- **Assembly Pressure principle** (Principle 11): after each cast increment, exercise the running assembly under realistic conditions. Incremental alpha checkpoints in the playbook, distinct from Phase 6b formal product testing.
+- **Expanded Intentional Divergence** (Principle 10): broadened from human-perceptible surfaces to all output surfaces including code structure, covering over-abstraction, cargo-cult patterns, and speculative generality. Core thesis: "good" is trivially achievable; the differentiator is statistical divergence from the bell-curve center.
+- **Python CLI** (`cli/`): `codex-automata init`, `update`, and `verify` commands. Installable via pip or uv. Cross-platform with automatic Windows/Unix detection.
+- **Windows parity**: PowerShell equivalents for all Cursor hooks (`.cursor/hooks/*.ps1`), platform-aware hooks.json patching in init scripts, `windows-latest` CI jobs in shipped workflow.
+- **Principle ordering consistency**: root `AGENTS.md` principle list aligned with `reference/principles.md` canonical order.
+
+### Still planned
+
+- Language-specific starter kits (planned for v1.0.0).
+- PyPI/npm package publication (currently install from git).
+- GitHub template repository for one-click project creation.
+- Automated specification-to-test generation tooling where it respects frozen contracts and bounded context seams.
+- Reusable CI/CD quality gate library beyond the current `codex-gates.yml` workflow.
+- Real worked examples with actual application code spanning molds, casting, agent tasks, and flow documentation.
+- Visual regression testing integration (screenshot diffing, layout analysis) for design identity compliance.
+- Product test runner reference implementation with browser agent orchestration and journey log capture.
+- WCAG contrast ratio validator for design token color pairings.
+- Coverage threshold configuration and enforcement scripts.
+
+## v0.4.0
 
 ### Achieved
 
@@ -11,17 +34,6 @@ This document sketches planned evolution of the Codex Automata methodology harne
 - **Property-based testing** as advanced molds (`reference/property-based-testing.md`, test molding rules, test plan template section).
 - **Cost-conscious development guide** with token budgets and model tiering (`reference/cost-awareness.md`, agent rules core principle).
 - **Accessibility** as first-class methodology concern (`reference/accessibility.md`, design identity and test plan template sections, code-casting rule).
-
-### Still planned
-
-- Language-specific starter kits (still planned for v0.5.0 or v1.0.0).
-- Automated specification-to-test generation tooling where it respects frozen contracts and bounded context seams.
-- Reusable CI/CD quality gate library beyond the current `codex-gates.yml` workflow.
-- Real worked examples with actual application code spanning molds, casting, agent tasks, and flow documentation.
-- Visual regression testing integration (screenshot diffing, layout analysis) for design identity compliance.
-- Product test runner reference implementation with browser agent orchestration and journey log capture.
-- WCAG contrast ratio validator for design token color pairings.
-- Coverage threshold configuration and enforcement scripts.
 
 ## v0.3.0
 

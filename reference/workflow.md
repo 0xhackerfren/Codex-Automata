@@ -48,6 +48,14 @@ Agents perform bounded edits, scaffolding, and refactors that respect interface 
 
 Outputs: feature branches meeting local mold execution, SDK conformance, and static analysis policies.
 
+### Assembly Pressure (Incremental)
+
+After each bounded context is cast and its molds pass, the running assembly is exercised under realistic conditions before formal review. This incremental validation catches integration failures that module-level molds cannot: performance cliffs from module interactions, UX friction across bounded context boundaries, and data consistency issues that emerge only at realistic scale.
+
+The checkpoint runs smoke tests and critical journey checks against the assembled system. Discoveries route to gap assessments. The checkpoint does not replace Product Testing (which runs the full suite before deployment); it provides continuous integration-level feedback during buildout.
+
+At Essential profile, this is a smoke test only. At Standard, it includes critical journey checks. At Complete, it adds load profiles and full journey validation.
+
 ## 7. Human Review
 
 Reviewers evaluate casting against specification and intent even when tests pass: security assumptions, secret handling, failure clarity for operators, rollout and rollback behavior, graceful degradation, misuse resistance, logging and telemetry quality (including cardinality discipline), compatibility across environments, and whether tests meaningfully lock the specified behavior rather than coincidentally matching it.
@@ -103,6 +111,9 @@ Test Molding (against SDK interfaces)   |
   |                                     |
   v                                     |
 Code Casting (parallel agent tasks)     |
+  |                                     |
+  v                                     |
+Assembly Pressure (incremental)         |
   |                                     |
   v                                     |
 Human Review ---------------------------+

@@ -21,19 +21,20 @@ You are in the Codex Automata methodology repository itself. The methodology har
    - Phase 6b: Product Testing
    - Phase 7: Deployment and Observation
 
-4. **The ten principles are:**
+4. **The eleven principles are:**
    1. Specification First
-   2. Tests as Molds
-   3. Code as Casting
-   4. Modularity and Bounded Contexts
-   5. Continuous Flow
-   6. Quality Gates
-   7. SDK as Constraint Surface
-   8. Local-First
-   9. Research as Foundation
+   2. SDK as Constraint Surface
+   3. Local-First
+   4. Research as Foundation
+   5. Tests as Molds
+   6. Code as Casting
+   7. Modularity and Bounded Contexts
+   8. Continuous Flow
+   9. Quality Gates
    10. Intentional Divergence
+   11. Assembly Pressure
 
-5. **Terminology:** Use the glossary at `reference/glossary.md` for canonical definitions. Key terms: specification, SDK, constraint surface, building block, mold, casting, bounded context, interface contract, iteration, quality gate, quick change, accessibility, action classification, agent task, brownfield, cost budget, generator, guardrail, human review, invariant, flow, recovery, gap assessment, design identity, design token, deployment checklist, divergence gate, slop fingerprint, product test, property-based test, user profile, test objective, token budget, UX budget, multi-agent orchestration, security audit, incident postmortem, retrospective, WCAG.
+5. **Terminology:** Use the glossary at `reference/glossary.md` for canonical definitions. Key terms: specification, SDK, constraint surface, building block, mold, casting, bounded context, interface contract, iteration, quality gate, quick change, accessibility, action classification, agent task, assembly pressure, brownfield, cost budget, generator, guardrail, human review, invariant, flow, recovery, gap assessment, design identity, design token, deployment checklist, divergence gate, slop fingerprint, product test, property-based test, user profile, test objective, token budget, UX budget, multi-agent orchestration, security audit, incident postmortem, retrospective, WCAG.
 
 6. **When editing harness files:** Ensure changes propagate to all files that reference the modified concept. Use the following as cross-reference anchors:
    - Principles: `reference/principles.md`

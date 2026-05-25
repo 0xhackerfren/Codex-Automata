@@ -124,6 +124,14 @@ if (Test-Path $ScriptsSrc) {
     Copy-Item -Path (Join-Path $ScriptsSrc '*') -Destination $ScriptsDest -Force
 }
 
+# Patch hooks.json for Windows: replace .sh hook commands with .ps1 equivalents
+$HooksJson = Join-Path $TargetPath '.cursor' 'hooks.json'
+if (Test-Path $HooksJson) {
+    $hooksContent = Get-Content $HooksJson -Raw
+    $hooksContent = $hooksContent -replace '\.cursor/hooks/([^"]+)\.sh', '.cursor/hooks/$1.ps1'
+    Set-Content -Path $HooksJson -Value $hooksContent -NoNewline
+}
+
 Write-Host ''
 Write-Host "Codex Automata harness initialized at: $TargetPath"
 Write-Host "Adoption profile: $Profile"
