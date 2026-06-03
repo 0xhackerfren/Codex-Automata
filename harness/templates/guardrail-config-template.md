@@ -21,6 +21,8 @@
 |--------|-------------|-------------|-----------|
 | _[e.g., "Database migrations"]_ | _[LOG]_ | _[APPROVE]_ | _[e.g., "Production data at risk"]_ |
 | _[e.g., "Feature flag changes"]_ | _[LOG]_ | _[APPROVE]_ | _[e.g., "User-facing impact"]_ |
+| _[e.g., "Pipeline configuration changes"]_ | _[APPROVE]_ | _[APPROVE]_ | _[e.g., "Default per R17; delivery infrastructure"]_ |
+| _[e.g., "Release tag creation"]_ | _[APPROVE]_ | _[APPROVE]_ | _[e.g., "Default per R18; affects reproducibility"]_ |
 
 ## Additional APPROVE Actions
 

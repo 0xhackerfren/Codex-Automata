@@ -35,6 +35,13 @@
 - **Gaps:** [behaviors without tests]
 - **Contract tests:** [present / missing for each frozen contract]
 
+## Commit and Branch Discipline
+
+- **Commit hygiene:** [commits atomic and traceable to specification sections? (R7)]
+- **Branch discipline:** [branch follows naming convention and originates from correct base? (R16)]
+- **Pipeline config:** [if pipeline files modified, changes have spec traceability and approval? (R17)]
+- **Release tags:** [for release-bound reviews: tags annotated and follow convention? (R18)]
+
 ## Code Quality
 
 - **Readability:** [ ]

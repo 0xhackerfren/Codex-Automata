@@ -129,7 +129,7 @@ Downgrading profiles after brownfield work has begun is discouraged; orphaned SD
 
 ## Integration with Existing CI/CD
 
-Brownfield adoption succeeds when it augments existing pipelines rather than replacing them on day one.
+Pipeline as First Citizen (Principle 12) applies to brownfield adoption incrementally. Brownfield adoption succeeds when it augments existing pipelines rather than replacing them on day one.
 
 **Honor existing tests.** If tests assert behavior that matches the new specification, keep them. Add spec-traced tests where coverage is thin. If tests only characterize current code (asserting implementation details without domain intent), flag them for review during mold patch; they may encode bugs as expected behavior.
 

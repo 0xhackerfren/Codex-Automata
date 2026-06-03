@@ -44,6 +44,17 @@ Use ADRs when changing bounded context seams, persistence technology, interopera
 
 Record status (proposed, accepted, superseded) and cite affected specifications.
 
+## Pipeline Design as Architectural Concern
+
+Pipeline as First Citizen (Principle 12) elevates CI/CD pipeline design to an architecture-time decision. During Phase 1, the architecture specification should document:
+
+- **Branch strategy.** How branches are named, how merges are ordered, what protections apply to shared branches, and how multi-agent parallel execution coordinates through sequential merges or integration branches.
+- **Pipeline stages.** Which quality gates run at which points (push, pull request, merge to main, release tag), and how they map to the project's mold, contract, and policy requirements.
+- **Deployment strategy.** Progressive delivery approach (canary, blue-green, feature flags), rollback automation, and how deployment cadence aligns with bounded context independence.
+- **Pipeline configuration ownership.** Pipeline configuration files live in version control alongside application code and follow the same specification-first flow. Changes to pipeline configuration are architecture events that require review and traceability.
+
+Pipeline tooling decisions (CI platform, container registry, artifact storage, deployment targets) benefit from the same structured research (Principle 4) applied to application technology choices. Record these decisions in ADRs.
+
 ## Anti-Patterns
 
 **Monolithic specifications.** Single giant documents obscure ownership, delay molding, inflate review entropy, collide parallel agents. Split along bounded contexts and cross cutting appendices referencing authoritative sections.

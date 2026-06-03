@@ -10,6 +10,15 @@ Types of changes: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 
 ### Added
 
+- **Pipeline as First Citizen (Principle 12):** CI/CD pipeline and git workflow elevated to a first-class engineering artifact designed at architecture time. Pipeline configuration is version-controlled and follows the same specification-first flow as application code. Git operations (branch strategy, commit discipline, merge policy, tagging) are intentional design decisions documented in the architecture specification.
+  - Agent rules R16 (branch strategy), R17 (pipeline config as constrained artifact), R18 (release tagging) added to `harness/agent/AGENT_RULES.md`.
+  - Glossary terms: pipeline as first citizen, branch strategy, pipeline configuration.
+  - Pipeline design added as Phase 1 output and exit criterion in `harness/PLAYBOOK.md`.
+  - Pipeline configuration, force-push, and release tags added to APPROVE tier in guardrails.
+  - Cross-references added to `reference/architecture.md` (Pipeline Design as Architectural Concern), `reference/workflow.md` (Sections 6 and 9), `reference/kanban.md`, `reference/brownfield-onboarding.md`, `reference/multi-agent.md`, `reference/agent-operating-model.md`, `reference/product-testing.md`, `reference/iteration.md`, `reference/quick-change.md`.
+  - Branch discipline and pipeline config checks added to `harness/agent/REVIEW_RULES.md` and `harness/agent/CODE_CASTING_RULES.md`.
+  - Pipeline design step added to `/architecture` skill; R16-R18 wired into `/code-casting`, `/review`, `/recovery` skills and `code-caster` subagent.
+  - Deployment checklist, brownfield audit, ADR, human review, and guardrail config templates updated with P12 references.
 - **Enforcement tooling (closes critical methodology gaps):**
   - Divergence gate scripts (`harness/scripts/divergence-gate.sh`, `.ps1`): scan source files for slop fingerprints (banned fonts, hardcoded colors, generic copy, structural anti-patterns). Configurable via JSON catalog or default fingerprint set. CI-ready with non-zero exit on violations.
   - Divergence config example (`harness/scripts/divergence-config-example.json`): reference configuration for project-specific fingerprint catalogs derived from the design identity document.
@@ -59,6 +68,8 @@ Types of changes: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 
 ### Changed
 
+- Principle count increased to 12 (up from 11).
+- Agent rules count increased to 18 (R1-R18, up from R1-R15).
 - Reference document count increased to 18 (up from 13).
 - Template count increased to 22+ (up from 20).
 - Cursor skill count increased to 10 (up from 9).
@@ -75,6 +86,8 @@ Types of changes: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 
 ### Fixed
 
+- Pre-existing principle numbering errors: `reference/property-based-testing.md` (P2/P6 corrected to P5/P9), `reference/cost-awareness.md` (P8 corrected to P3).
+- Recovery rule references updated from R1-R14 to R1-R14 and R16-R18 in `AGENT_RULES.md` and `PLAYBOOK.md`.
 - Template naming mismatches in `reference/adoption-profiles.md`: `specification-template.md` corrected to `spec-template.md`, `interface-contracts-template.md` corrected to `interface-contract-template.md`, `architecture-template.md` split into `architecture-decision-record.md` + `module-boundary-template.md`.
 - Profile field missing from `project-intake-template.md` despite being referenced in adoption profiles documentation.
 

@@ -16,7 +16,7 @@ When invoked:
 Implementation protocol:
 
 - Start with the simplest failing test. Write the minimal code to pass it.
-- Make small, atomic commits. Each commit addresses one logical unit.
+- Make small, atomic commits traceable to specification sections (R7). Follow the project's branch strategy (R16).
 - After each commit, run all tests to verify progress and catch regressions.
 - Stay within your assigned module boundary. Do not reach into other modules.
 - Implement SDK interfaces as defined in the constraint surface. Use interface contracts for cross-module boundaries. Do not modify SDK interfaces or contracts.

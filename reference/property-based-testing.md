@@ -130,7 +130,7 @@ When PBT is required, the test plan's Property-Based Tests section must be fille
 
 ## Companion Documents
 
-- [principles.md](principles.md) — Principle 2: Tests as Molds; Principle 6: Quality Gates
+- [principles.md](principles.md) — Principle 5: Tests as Molds; Principle 9: Quality Gates
 - [adoption-profiles.md](adoption-profiles.md) — Profile-specific PBT requirements
 - [glossary.md](glossary.md) — Mold, casting, quality gate, specification
 - [product-testing.md](product-testing.md) — User-facing verification (complements module-level PBT)

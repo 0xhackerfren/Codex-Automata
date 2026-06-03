@@ -1,3 +1,6 @@
+# Codex Automata Quality Gates
+# Implements Principle 9 (Quality Gates) and Principle 12 (Pipeline as First Citizen).
+# Gates: spec-check (R1), divergence gate (P10), commit-lint (R7/P12), test suite.
 name: Codex Automata Quality Gates
 
 on:

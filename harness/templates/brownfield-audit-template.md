@@ -97,7 +97,10 @@ Priority = Risk Level x Change Frequency. Critical modules that change frequentl
 
 ## CI/CD Integration Plan
 
+Pipeline as First Citizen (Principle 12) applies incrementally to brownfield adoption. Augment existing pipelines rather than replacing them. See `reference/brownfield-onboarding.md` and `reference/architecture.md` (Pipeline Design as Architectural Concern).
+
 | Gate | When to Activate | Scope |
 |------|-----------------|-------|
 | _[e.g., "Spec required for new modules"]_ | _[e.g., "Immediately"]_ | _[e.g., "New PRs only"]_ |
 | _[e.g., "Test coverage threshold"]_ | _[e.g., "After Phase 1"]_ | _[e.g., "Onboarded modules"]_ |
+| _[e.g., "Branch strategy enforcement"]_ | _[e.g., "After Phase 1"]_ | _[e.g., "All new branches"]_ |

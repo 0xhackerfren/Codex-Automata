@@ -39,16 +39,27 @@ Follow this workflow to decompose a system into bounded contexts with interface 
 2. Define: aesthetic direction, banned patterns (slop fingerprints), typography, color system, spatial system, motion philosophy, copy voice.
 3. This document feeds into the SDK as design tokens during Phase 3.
 
-## Step 6: Validate and Report
+## Step 6: Pipeline Design (Pipeline as First Citizen, Principle 12)
+
+1. Document the branch strategy: naming convention, base branches, merge policy (rebase vs merge commit), branch protections.
+2. Define CI/CD pipeline stages: which quality gates run at push, pull request, merge, and release tag.
+3. Specify the deployment strategy: progressive delivery approach (canary, blue-green, feature flags), rollback automation.
+4. Record pipeline tooling decisions in an ADR (CI platform, container registry, deployment targets).
+5. Pipeline configuration files will be version-controlled and follow the same spec-first flow as application code (R17).
+
+## Step 7: Validate and Report
 
 1. Every module has a boundary document.
 2. Every boundary has an interface contract.
 3. No circular dependencies.
 4. ADRs recorded for significant decisions.
 5. Design identity complete (if user-facing).
-6. Report readiness for specification writing.
+6. Branch strategy and pipeline stages documented (P12).
+7. Report readiness for specification writing.
 
 ## Reference
 
 - Templates: `templates/module-boundary-template.md`, `templates/interface-contract-template.md`, `templates/architecture-decision-record.md`, `templates/design-identity-template.md`
 - Playbook: `PLAYBOOK.md` (Phase 1)
+- Principles: `reference/principles.md` (Pipeline as First Citizen, Principle 12)
+- Architecture: `reference/architecture.md` (Pipeline Design as Architectural Concern)

@@ -57,7 +57,7 @@ Isolation prevents conflicts and semantic drift.
 
 ### Git worktree per agent
 
-Give each agent its own working directory (git worktree or separate clone). Agents do not share uncommitted working tree state. Each worktree runs its own test suite before proposing merge.
+Give each agent its own working directory (git worktree or separate clone) following the project's declared branch strategy (Pipeline as First Citizen, Principle 12; R16). Agents do not share uncommitted working tree state. Each worktree runs its own test suite before proposing merge.
 
 ### One bounded context per agent
 
@@ -69,7 +69,7 @@ All agents read the same SDK version from the integration branch. Agents do not 
 
 ### Sequential merges
 
-Never merge two agent branches in parallel. Merge one PR at a time into the integration branch. After each merge, other agents **pull/rebase** and run tests before continuing. Parallel merges multiply conflict resolution cost and hide contract violations.
+Never merge two agent branches in parallel. Merge one PR at a time into the integration branch following the merge policy declared in the architecture (Pipeline as First Citizen, Principle 12). After each merge, other agents **pull/rebase** and run tests before continuing. Parallel merges multiply conflict resolution cost and hide contract violations.
 
 ## Coordination Through Artifacts
 
@@ -111,7 +111,7 @@ Research and field experience suggest **two to four parallel implementers** is t
 
 ## Merge Protocol
 
-Follow this sequence for every agent completion. Do not shortcut human review on contract-touching or security-sensitive work.
+Follow this sequence for every agent completion. The merge protocol operationalizes Pipeline as First Citizen (Principle 12) and branch strategy (R16) for multi-agent work. Do not shortcut human review on contract-touching or security-sensitive work.
 
 1. **Complete work in worktree.** All assigned tests pass; linters and quality gates clear for that agent’s scope.
 2. **Open a PR** against the integration branch (not directly to main unless that is your single integration line). PR description references spec sections and bounded context.
@@ -141,10 +141,11 @@ Session History should note agent identity (human or tool label) and context own
 
 ## Companion Documents
 
-- [architecture.md](architecture.md) — Bounded contexts, decomposition, and interface boundaries
+- [principles.md](principles.md) — Pipeline as First Citizen (Principle 12) governs branch strategy and merge policy for multi-agent work
+- [architecture.md](architecture.md) — Bounded contexts, decomposition, interface boundaries, and pipeline design
 - [context-persistence.md](context-persistence.md) — Context state, checkpoint, and session handoff for parallel work
 - [PLAYBOOK.md](../harness/PLAYBOOK.md) — Phase dependencies when pipeline parallelism is used
-- [AGENT_RULES.md](../harness/agent/AGENT_RULES.md) — Agent halt conditions, contract freeze, and gap reporting
+- [AGENT_RULES.md](../harness/agent/AGENT_RULES.md) — Agent halt conditions, contract freeze, gap reporting, and branch strategy (R16-R18)
 - [adoption-profiles.md](adoption-profiles.md) — Profile capabilities for architecture and contracts
 - [kanban.md](kanban.md) — WIP limits and flow when multiple agents pull work
 - [iteration.md](iteration.md) — Inner and outer loops when agents retry after failed gates

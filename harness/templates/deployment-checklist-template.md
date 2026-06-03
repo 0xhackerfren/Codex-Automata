@@ -1,7 +1,7 @@
 # Deployment Checklist: [Release / Version]
 
 <!--
-[Use this template during Phase 7 (Deployment and Observation) to verify readiness, execute deployment, and confirm success. Every item must be checked before proceeding to the next section.]
+[Use this template during Phase 7 (Deployment and Observation) to verify readiness, execute deployment, and confirm success. Deployment executes through the CI/CD pipeline designed at architecture time (Pipeline as First Citizen, Principle 12). Every item must be checked before proceeding to the next section.]
 -->
 
 ## Metadata
@@ -26,6 +26,8 @@
 - [ ] Divergence gates pass (no slop fingerprints, if design identity is active)
 - [ ] Security audit findings addressed (no open Critical or High)
 - [ ] Code coverage meets project thresholds
+- [ ] Pipeline configuration matches Phase 1 architecture specification
+- [ ] Commit-lint and spec-check gates green on release branch
 
 ### Review and Approval
 
@@ -33,6 +35,7 @@
 - [ ] Interface contracts frozen and verified
 - [ ] Specification changes documented and approved
 - [ ] CHANGELOG updated
+- [ ] Release tagged in version control following project tagging convention (R18)
 - [ ] Context state file reflects deployment-ready status
 
 ### Environment Readiness

@@ -1,7 +1,7 @@
 # ADR-[NNN]: [Decision Title]
 
 <!--
-[Architecture decision records capture context and trade-offs. Number ADRs sequentially within the repository or bounded context. Link related decisions.]
+[Architecture decision records capture context and trade-offs. Number ADRs sequentially within the repository or bounded context. Link related decisions. Pipeline decisions (CI platform, branch strategy, deployment strategy, progressive delivery approach) are ADR-worthy per Pipeline as First Citizen (Principle 12).]
 -->
 
 ## Metadata

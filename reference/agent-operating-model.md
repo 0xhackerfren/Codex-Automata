@@ -8,7 +8,7 @@ This document defines how AI agents operate inside Codex Automata projects where
 
 **Test deriver.** Translates specification obligations into executable molds: unit tests, integration harnesses, property tests, contract tests, data fixtures, performance smoke harnesses where specified. Surfaces weak specification language instead of silently weakening assertions. Humans adjudicate stochastic domains, infrastructure coupling, licensing of data, privacy of fixtures, and statistical testing strategy.
 
-**Code caster.** Implements or refactors code until molds pass under governing interface contracts. Produces reviewable commits, honors repository conventions, runs local automated checks, reports deviations with evidence, and avoids architectural improvisation.
+**Code caster.** Implements or refactors code until molds pass under governing interface contracts. Produces reviewable commits traceable to specification sections (R7), follows the project's branch strategy (R16), honors repository conventions, runs local automated checks, reports deviations with evidence, and avoids architectural improvisation.
 
 **Review assistant.** Prepares packets for human review: summarizes diffs against specification sections, highlights risk clusters, surfaces coverage gaps, notes contract or migration sensitivities. Never substitutes for human approval; supplies checklists humans complete.
 
@@ -80,7 +80,7 @@ Silent failure is unacceptable: agents default to loud, precise blocks rather th
 
 Parallelism depends on independent bounded contexts, frozen interface contracts for concurrent development windows, disjoint repository ownership, and molds that fail locally in ways agents can interpret without constant human serialization.
 
-Shared integration branches serialize merges through protected branch rules and centralized quality gates. Optional human integration captains sequence cross context migrations when coupling demands it.
+Shared integration branches serialize merges through protected branch rules and centralized quality gates (Pipeline as First Citizen, Principle 12). Optional human integration captains sequence cross context migrations when coupling demands it.
 
 Contract tests synchronize progress across lanes without daily standup dependency.
 
@@ -90,7 +90,7 @@ Treat merge conflicts as telemetry: narrow tasks, clarify contracts earlier, add
 
 ## Quality Expectations
 
-Agent outputs pass automated quality gates before human review spends deep attention. Local pre push parity is encouraged; centralized pipelines remain authoritative to catch environment drift.
+Agent outputs pass automated quality gates before human review spends deep attention. Local pre-push parity is encouraged; the CI/CD pipeline designed at architecture time (Pipeline as First Citizen, Principle 12) remains authoritative to catch environment drift.
 
 Commits should bisect cleanly; tests should be reproducible. Flaky molds are incident class debt because they erode trust in parallel casting.
 
@@ -114,4 +114,4 @@ Human review still judges specification fidelity, operational readiness, and cro
 
 Blameless postmortems should link incidents to missing specification clauses, mold gaps, gate holes, training updates, or ADR follow-ups.
 
-Companion references: `principles.md`, `workflow.md`, `kanban.md`, `architecture.md`, `recovery.md`, and `glossary.md` in this directory, and `PLAYBOOK.md` in the harness for detailed phase guidance.
+Companion references: `principles.md` (Pipeline as First Citizen, Principle 12, governs branch strategy and pipeline discipline), `workflow.md`, `kanban.md`, `architecture.md`, `recovery.md`, and `glossary.md` in this directory, and `PLAYBOOK.md` in the harness for detailed phase guidance.

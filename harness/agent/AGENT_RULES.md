@@ -12,6 +12,7 @@ Operating manual for agents executing tasks under Codex Automata. Specifications
 - Code is the output, not the goal. Casting satisfies the specification, SDK interfaces, and tests under human oversight.
 - Identity is specified, not defaulted. Human-perceptible surfaces and code structure reflect deliberate design decisions, not training-data defaults. "Good" is trivially achievable; the goal is statistical divergence from the bell curve center.
 - After each cast increment, exercise the running assembly under realistic conditions. Assembly pressure catches integration failures that individual molds cannot detect.
+- The CI/CD pipeline and git workflow are first-class artifacts. Treat branch strategy, commit discipline, merge policy, and pipeline configuration with the same rigor as application code. Pipeline changes follow the specification-first flow.
 - Context is persistent. Maintain project state across sessions using the context state file (`context-state.md`, from `templates/context-state-template.md`).
 - Be cost-conscious. Prefer smaller context, shorter sessions, and cheaper models when the task permits. Include only relevant specification sections, not entire documents. Use checkpoint-based re-dispatch rather than accumulating conversation context.
 
@@ -45,7 +46,13 @@ R13. When you discover code without a corresponding specification, SDK interface
 
 R14. Do not use training-data default patterns for human-perceptible surfaces when the design identity document or SDK design tokens specify alternatives. All visual values must trace to design tokens; hardcoded hex, px, rem, or font-family values are casting defects. If a project has user-facing surfaces but no design identity document exists, halt and report the gap.
 
-R15. During recovery tasks, follow rules R1-R14 in the context of an existing codebase. Derive specifications from domain knowledge and stakeholder intent, not from the current implementation. Derive SDK extensions from specifications. Derive tests from the specification against SDK interfaces, not from the code. If the specification and the code conflict, surface the conflict for human resolution.
+R15. During recovery tasks, follow rules R1-R14 and R16-R18 in the context of an existing codebase. Derive specifications from domain knowledge and stakeholder intent, not from the current implementation. Derive SDK extensions from specifications. Derive tests from the specification against SDK interfaces, not from the code. If the specification and the code conflict, surface the conflict for human resolution.
+
+R16. Follow the project's declared branch strategy. Create feature branches from the correct base branch, use meaningful branch names that reference bounded contexts or specification sections (e.g., `feature/auth-login`, `fix/payment-rounding`), and keep branches short-lived to reduce merge complexity. Do not force-push or rewrite shared branch history without explicit human approval.
+
+R17. Treat pipeline configuration (CI/CD workflow files, Dockerfiles, deploy scripts, infrastructure-as-code) as constrained artifacts. Changes to pipeline configuration require the same specification traceability as application code changes. Do not modify pipeline configuration without approval.
+
+R18. Tag releases following the project's tagging convention (semantic versioning or project-specific scheme). Ensure tags are annotated with a summary referencing the specification sections delivered. Do not create or move tags on shared branches without human approval.
 
 ## 3. Task Execution Protocol
 
@@ -93,7 +100,7 @@ Agent actions are classified by risk tier. Respect the classification for each a
 
 - **AUTO:** Proceed without approval. Reading specifications, SDK, tests, context state. Running tests and linters.
 - **LOG:** Proceed and record. Writing code within SDK boundary, adding tests, making atomic commits, updating context state.
-- **APPROVE:** Halt and request human approval. Modifying SDK interfaces, modifying interface contracts, deleting tests, changing specifications, deploying, creating new bounded contexts, adding external dependencies.
+- **APPROVE:** Halt and request human approval. Modifying SDK interfaces, modifying interface contracts, deleting tests, changing specifications, deploying, creating new bounded contexts, adding external dependencies, modifying pipeline configuration (CI/CD workflows, deploy scripts), force-pushing or rewriting shared branch history, creating or moving release tags.
 
 If the project has a guardrail configuration (`templates/guardrail-config-template.md`), follow project-specific overrides. Otherwise, use the methodology defaults.
 

@@ -6,6 +6,7 @@ This document sketches planned evolution of the Codex Automata methodology harne
 
 ### Achieved
 
+- **Pipeline as First Citizen principle** (Principle 12): CI/CD pipeline and git workflow elevated to first-class engineering artifacts designed at architecture time. Agent rules R16-R18 govern branch strategy, pipeline config, and release tagging. Pipeline design added as Phase 1 output. Full cross-reference propagation across all reference docs, skills, subagents, templates, and agent rules.
 - **Assembly Pressure principle** (Principle 11): after each cast increment, exercise the running assembly under realistic conditions. Incremental alpha checkpoints in the playbook, distinct from Phase 6b formal product testing.
 - **Expanded Intentional Divergence** (Principle 10): broadened from human-perceptible surfaces to all output surfaces including code structure, covering over-abstraction, cargo-cult patterns, and speculative generality. Core thesis: "good" is trivially achievable; the differentiator is statistical divergence from the bell-curve center.
 - **Python CLI** (`cli/`): `codex-automata init`, `update`, and `verify` commands. Installable via pip or uv. Cross-platform with automatic Windows/Unix detection.
@@ -18,7 +19,7 @@ This document sketches planned evolution of the Codex Automata methodology harne
 - PyPI/npm package publication (currently install from git).
 - GitHub template repository for one-click project creation.
 - Automated specification-to-test generation tooling where it respects frozen contracts and bounded context seams.
-- Reusable CI/CD quality gate library beyond the current `codex-gates.yml` workflow.
+- Reusable CI/CD quality gate library extending Pipeline as First Citizen (Principle 12) beyond the current `codex-gates.yml` workflow.
 - Real worked examples with actual application code spanning molds, casting, agent tasks, and flow documentation.
 - Visual regression testing integration (screenshot diffing, layout analysis) for design identity compliance.
 - Product test runner reference implementation with browser agent orchestration and journey log capture.

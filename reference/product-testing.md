@@ -93,13 +93,13 @@ Product testing does not replace any existing phase. It adds a verification laye
 
 ### Relationship to Assembly Pressure
 
-Assembly Pressure (Principle 11) and Product Testing are complementary but distinct. Assembly Pressure is an incremental feedback loop during development: after each cast increment, the running system is exercised under realistic conditions to catch integration failures early. Product Testing is a formal verification gate that runs the full suite of user profiles, objectives, and UX budgets against the assembled product before deployment.
+Assembly Pressure (Principle 11) and Product Testing are complementary but distinct. Assembly Pressure is an incremental feedback loop during development: after each cast increment, the running system is exercised under realistic conditions to catch integration failures early. Product Testing is a formal verification gate that runs the full suite of user profiles, objectives, and UX budgets against the assembled product before deployment. Pipeline as First Citizen (Principle 12) provides the delivery infrastructure that makes both repeatable: product tests are pipeline stages designed at architecture time, not ad hoc manual runs.
 
 Assembly Pressure asks "does the assembly hold together?" Product Testing asks "is the assembled product good to use?" Assembly Pressure may run a subset of product test objectives as smoke tests after each cast increment, but it does not replace the full Product Testing pass. Think of Assembly Pressure as continuous integration for the user experience, and Product Testing as the acceptance gate.
 
 ### When Product Tests Run
 
-**Pre-merge (CI gate).** Critical journey objectives (signup, core workflow, payment) run as quality gates on integration branches. These are the product equivalent of unit test gates.
+**Pre-merge (CI gate).** Critical journey objectives (signup, core workflow, payment) run as quality gates on integration branches, configured as pipeline stages per Pipeline as First Citizen (Principle 12). These are the product equivalent of unit test gates.
 
 **Staging environment.** Full product test suites run against staging after deployment. This catches experience regressions that module-level tests cannot detect.
 

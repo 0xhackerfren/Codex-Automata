@@ -1,6 +1,6 @@
 # Kanban for Agentic Development
 
-Kanban maps Codex Automata to continuous flow: specifications authorize work, molds fix the acceptance shape, agents perform code casting within interface contracts, humans perform review against intent, CI/CD implements quality gates, deployment completes the loop under observation.
+Kanban maps Codex Automata to continuous flow: specifications authorize work, molds fix the acceptance shape, agents perform code casting within interface contracts, humans perform review against intent, the CI/CD pipeline (designed at architecture time per Pipeline as First Citizen, Principle 12) implements quality gates, deployment completes the loop under observation.
 
 The method invests in visible work in process (WIP), pull-based movement, explicit policies, and bottleneck diagnosis rather than rituals tuned to individuals who tire or seek coordination comfort.
 

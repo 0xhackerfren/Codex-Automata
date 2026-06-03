@@ -27,7 +27,7 @@ Follow this workflow to implement a module.
 
 1. Start with the simplest failing test.
 2. Write the minimal code to make it pass. For user-facing code, reference design tokens for all visual values and follow the design identity's aesthetic direction and banned patterns.
-3. Commit when a test passes (atomic commits).
+3. Commit when a test passes. Each commit is atomic and traceable to a specification section (R7). Follow the project's branch strategy (R16).
 4. Move to the next failing test.
 5. Repeat until all assigned tests pass.
 
@@ -47,4 +47,4 @@ Follow this workflow to implement a module.
 ## Reference
 
 - Template: `templates/agent-task-template.md`
-- Rules: `agent/CODE_CASTING_RULES.md`
+- Rules: `agent/CODE_CASTING_RULES.md`, `agent/AGENT_RULES.md` (R7, R16-R18)

@@ -46,6 +46,8 @@ With frozen interface contracts and SDK surfaces within the slicing window for a
 
 Agents perform bounded edits, scaffolding, and refactors that respect interface contracts and SDK boundaries, keep builds and tests deterministic, and control randomness and time through explicit test doubles or harnesses where needed.
 
+Agents follow the project's declared branch strategy (Pipeline as First Citizen, Principle 12): create feature branches from the correct base with meaningful names referencing bounded contexts or spec sections, keep branches short-lived, and merge through the pipeline's gated process. Commit messages trace to specification sections (R7). Pipeline configuration changes follow the same specification-first flow as application code.
+
 Outputs: feature branches meeting local mold execution, SDK conformance, and static analysis policies.
 
 ### Assembly Pressure (Incremental)
@@ -80,7 +82,11 @@ For the full product testing reference, see `product-testing.md` in this directo
 
 ## 9. Integration and CI/CD Gates
 
+The CI/CD pipeline is a first-class engineering artifact designed during Phase 1 and maintained with the same specification-first discipline as application code (Pipeline as First Citizen, Principle 12). Pipeline configuration (workflow files, Dockerfiles, deploy scripts) is version-controlled, reviewed, and gated. Changes to the pipeline require the same traceability as changes to source code.
+
 Merged changes proceed through centralized quality gates that bundle mold execution, static analysis, supply chain and license checks, signing and provenance where required, contract tests across bounded contexts, integration smoke suites, product test objective suites, performance and reliability budgets tied to SLOs, schema and API compatibility checks for migrations, progressive delivery controls (feature flags, canaries, rollbacks), and operational readiness checks (alert routes, runbooks, synthetic monitors) appropriate to the system class.
+
+Git workflow discipline underpins the gate system. Branch protections prevent direct pushes to shared branches. Merge ordering (sequential for multi-agent work, pull-request-gated for team workflows) prevents the collision and drift that parallel execution can produce. Release tagging follows declared conventions so any point in history is reproducible.
 
 Outputs: immutable artifacts destined for deployment with provenance appropriate to organizational policy.
 

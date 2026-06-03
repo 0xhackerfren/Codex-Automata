@@ -9,7 +9,10 @@ Rules for agents writing implementation during code casting.
 - Use the interface contracts and SDK as defined. Do not modify them without explicit human approval (see behavioral rules).
 - If you need a building block not in the SDK, stop and request SDK extension through the specification pipeline.
 - If a test seems wrong, do not alter it silently. Report it and wait for guidance.
-- Make small, atomic commits. Each commit should move toward passing one or more assigned tests where possible.
+- Make small, atomic commits traceable to specification sections (R7). Each commit should move toward passing one or more assigned tests where possible.
+- Follow the project's declared branch strategy (R16): create feature branches from the correct base, use meaningful names referencing bounded contexts or spec sections, keep branches short-lived. Do not force-push or rewrite shared branch history without approval.
+- Do not modify pipeline configuration (CI/CD workflows, Dockerfiles, deploy scripts) without approval (R17). Pipeline config changes follow the same spec-first flow as application code.
+- Do not create or move release tags without approval (R18).
 - Do not introduce dependencies not specified in architecture documents (quality gates on drift).
 - Do not add behavior not required by the specification. Extra behavior is defect risk and scope creep.
 - If you cannot make a test pass and believe the specification is ambiguous, stop and ask instead of guessing.

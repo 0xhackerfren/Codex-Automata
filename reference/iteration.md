@@ -123,7 +123,7 @@ Work is **complete** only when **all** of the following are true:
 
 1. **All assigned tests pass** (module tests, contract tests for provided interfaces, product tests if release-bound)
 2. **Human review approves** (Standard/Complete), or **self-review checklist passes** for qualified [quick-change](quick-change.md)
-3. **All quality gates clear:** lint, coverage thresholds, divergence gate, contract unchanged unless approved
+3. **All quality gates clear:** lint, coverage thresholds, divergence gate, CI/CD pipeline gates (Principle 12), contract unchanged unless approved
 4. **Context state updated:** completion noted in Current Work, Checkpoint set for next work or explicit idle, Session History appended
 5. **No open blockers or escalations** on this work unit (Open Decisions resolved or explicitly deferred with human sign-off)
 
@@ -169,9 +169,10 @@ Automated agents should treat stale Checkpoint (>3 sessions without update) as a
 
 ## Companion Documents
 
+- [principles.md](principles.md) — Pipeline as First Citizen (Principle 12) governs the CI/CD infrastructure that iteration gates execute within
 - [context-persistence.md](context-persistence.md) — Context state file, update protocol, checkpoint discipline
 - [PLAYBOOK.md](../harness/PLAYBOOK.md) — Phase gates that define outer-loop boundaries
-- [AGENT_RULES.md](../harness/agent/AGENT_RULES.md) — Agent halt, escalation, and task mapping rules
+- [AGENT_RULES.md](../harness/agent/AGENT_RULES.md) — Agent halt, escalation, task mapping rules, and branch strategy (R16-R18)
 - [recovery.md](recovery.md) — When iteration reveals spec, mold, SDK, or contract gaps
 - [quick-change.md](quick-change.md) — Abbreviated iteration path for qualified small changes
 - [multi-agent.md](multi-agent.md) — Parallel sessions and merge discipline across iterations

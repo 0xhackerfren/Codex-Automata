@@ -42,6 +42,12 @@ A composable unit within the SDK constraint surface: a type, interface, trait, e
 
 
 
+**Branch Strategy**  
+
+The intentional design of branching, merging, and tagging conventions for a project's version control workflow. Elaboration: branch strategy is an architecture-time decision documented alongside interface contracts and module boundaries. It defines how feature branches are named (referencing bounded contexts or spec sections), how merges are ordered (sequential for multi-agent work, pull-request-gated for team workflows), when tags are applied (semantic versioning or project-appropriate conventions), and what protections apply to shared branches. Agents follow the declared strategy rather than inventing ad hoc conventions. See Pipeline as First Citizen (Principle 12).
+
+
+
 **Brownfield**  
 
 An existing codebase that predates methodology adoption. Elaboration: brownfield onboarding applies the recovery protocol systematically to existing modules, progressively establishing specifications, SDK types, and tests retroactively. Modules are prioritized by risk and change frequency. See `reference/brownfield-onboarding.md`.
@@ -189,6 +195,18 @@ A gap class where behavior is documented in the specification but has no tests, 
 **Multi-Agent Orchestration**  
 
 The coordination of multiple AI agents working simultaneously on a project. Elaboration: Codex Automata coordinates agents through shared artifacts (frozen SDK interfaces, interface contracts, specifications) rather than direct agent-to-agent communication. The SDK constraint surface serves as the coordination protocol. Agents are isolated by bounded context, work in separate git worktrees, and merge sequentially. See `reference/multi-agent.md`.
+
+
+
+**Pipeline as First Citizen**  
+
+The principle that the CI/CD pipeline and git workflow are designed, versioned, and tested alongside the application as first-class engineering artifacts. Elaboration: pipeline design begins during Phase 1 (Architecture) and is specified before pipeline code exists. Pipeline configuration files (workflow definitions, Dockerfiles, deploy scripts, infrastructure-as-code) live in version control and follow the same specification-first flow as application code. Git operations (branch strategy, commit discipline, merge policy, tagging) are intentional design decisions, not emergent habits. Every commit should be deployable in principle, enforced by the pipeline running molds, contracts, and gates on every push. See Principle 12 in `reference/principles.md`.
+
+
+
+**Pipeline Configuration**  
+
+Version-controlled CI/CD workflow definitions, deployment scripts, Dockerfiles, and infrastructure-as-code that define the delivery pipeline for a project. Elaboration: pipeline configuration is treated as a constrained artifact under the same specification-first discipline as application code. Changes to pipeline configuration require the same traceability to specification sections as changes to source code. Agents do not modify pipeline configuration without explicit approval (APPROVE tier action).
 
 
 

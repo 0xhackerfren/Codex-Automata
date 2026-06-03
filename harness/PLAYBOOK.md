@@ -52,7 +52,7 @@ Every agent action in the pipeline is classified by risk: AUTO (proceed), LOG (p
 | 2: Specification | Reading existing docs | Writing spec sections | Approving completed specification |
 | 3: SDK Design | Reading specs and contracts | Defining types and interfaces | Freezing SDK surface for casting |
 | 4: Test Molding | Reading spec and SDK | Writing test cases | N/A (tests are additive) |
-| 5: Code Casting | Reading spec/SDK/tests | Writing code, making commits | Modifying SDK or contracts |
+| 5: Code Casting | Reading spec/SDK/tests | Writing code, making commits | Modifying SDK, contracts, or pipeline config |
 | 6: Review | Reading all artifacts | Producing review notes | Approving or rejecting the casting |
 | 6b: Product Testing | Running product tests | Recording journey metrics | Changing UX budgets |
 | 7: Deployment | Running smoke tests | Executing deploy steps | Triggering production deploy |
@@ -141,6 +141,7 @@ Break the system into bounded contexts with clean interfaces. Define the module 
 - Interface contracts between modules (use `templates/interface-contract-template.md`)
 - Dependency graph showing module relationships
 - Design identity document for projects with user-facing surfaces (use `templates/design-identity-template.md`)
+- CI/CD pipeline design: branch strategy, pipeline stages, deployment strategy, and progressive delivery approach documented in an ADR or architecture note
 
 **Exit Criteria**
 
@@ -150,6 +151,7 @@ Break the system into bounded contexts with clean interfaces. Define the module 
 - [ ] Each module is small enough to be independently specifiable and testable.
 - [ ] Architecture decisions are recorded with rationale and trade-offs.
 - [ ] For projects with user-facing surfaces, the design identity document is complete with aesthetic direction, anti-patterns, and reference targets.
+- [ ] Branch strategy, merge policy, and CI/CD pipeline stages are documented (Pipeline as First Citizen).
 
 **Human Responsibilities**
 
@@ -374,6 +376,7 @@ Implement code that passes all tests. This is the phase where agents work in par
 - For user-facing code, all visual values must reference design tokens. Do not use hardcoded hex, px, rem, or font-family values. Do not use known AI-default patterns when the design identity specifies alternatives.
 - Do not introduce abstractions outside the SDK. If new building blocks are needed, stop and request SDK extension.
 - Make small, atomic commits. Each commit addresses one logical unit of work.
+- Follow the project's branch strategy (R16): create feature branches from the correct base, use meaningful branch names referencing bounded contexts or spec sections, and keep branches short-lived.
 - If the specification is ambiguous, stop and ask. Do not guess.
 - If a test appears incorrect, surface it. Do not modify tests without approval.
 
@@ -522,13 +525,15 @@ For the full product testing reference, see the [Product Testing](https://github
 
 **Purpose**
 
-Ship verified code to production and confirm that production behavior matches the specification. Close the feedback loop.
+Ship verified code to production and confirm that production behavior matches the specification. Close the feedback loop. The CI/CD pipeline designed in Phase 1 (Pipeline as First Citizen) carries the verified casting through automated gates to production.
 
 **Inputs**
 
 - Approved code from Phase 6b
 - Deployment configuration and infrastructure
 - Monitoring and alerting requirements from the specification
+- CI/CD pipeline configuration from Phase 1 architecture
+- Deployment checklist (use `templates/deployment-checklist-template.md`)
 
 **Outputs**
 
@@ -539,11 +544,12 @@ Ship verified code to production and confirm that production behavior matches th
 
 **Exit Criteria**
 
-- [ ] Deployment completes successfully.
+- [ ] Deployment completes successfully through the CI/CD pipeline.
 - [ ] Smoke tests pass in production.
 - [ ] Monitoring confirms behavior matches the specification.
 - [ ] Alerting is configured for failure modes defined in the specification.
 - [ ] Rollback procedure is documented and tested.
+- [ ] Release is tagged in version control following the project's tagging convention.
 
 **Human Responsibilities**
 
@@ -557,6 +563,7 @@ Ship verified code to production and confirm that production behavior matches th
 - Execute deployment scripts and pipelines.
 - Configure monitoring and alerting from specification requirements.
 - Run post-deployment verification (smoke tests, health checks).
+- Tag the release in version control following the project's tagging convention (R18).
 - Report anomalies and deviations from expected behavior.
 - Agents do not decide to roll back. That is a human decision.
 
@@ -659,7 +666,7 @@ Audit --> Spec Patch --> SDK Patch --> Mold Patch --> Recast (if needed) --> Re-
 ### Agent Responsibilities During Recovery
 
 - When a gap is discovered during routine work, halt and report it using the gap assessment template. Do not silently work around gaps.
-- During recovery tasks, follow the same forward rules (R1-R14) in the context of an existing codebase.
+- During recovery tasks, follow the same forward rules (R1-R14 and R16-R18) in the context of an existing codebase.
 - Assist with evidence gathering: scan for related gaps, check version control history, surface specification sections that reference the affected behavior.
 - Derive tests from the specification, not from the existing code.
 - If the specification appears incorrect (code behavior contradicts it and the code is believed correct), surface the conflict for human resolution. Do not update the specification unilaterally.
@@ -689,5 +696,5 @@ Batch related gaps within a single module into one recovery card. Create separat
 | 5: Code Casting | Agent | No | `agent-task-template.md` |
 | 6: Review | Human | **Yes** | `human-review-template.md` |
 | 6b: Product Testing | Agent (human review) | No | `product-test-template.md` |
-| 7: Deployment | Human + Agent | No | N/A |
+| 7: Deployment | Human + Agent | No | `deployment-checklist-template.md` |
 | Recovery | Human + Agent | No | `gap-assessment-template.md` |

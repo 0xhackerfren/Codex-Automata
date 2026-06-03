@@ -1,9 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Commit message linter: verifies that commit messages reference a specification
-# section or are tagged with a recognized prefix. Designed as a commit-msg hook
-# or CI check.
+# Commit message linter: enforces R7 (atomic commits traceable to specification
+# sections) as part of Pipeline as First Citizen (Principle 12). Verifies that
+# commit messages reference a specification section or use a recognized prefix.
+# Designed as a commit-msg hook or CI check.
 #
 # Usage:
 #   As git hook:  cp scripts/commit-lint.sh .git/hooks/commit-msg && chmod +x .git/hooks/commit-msg

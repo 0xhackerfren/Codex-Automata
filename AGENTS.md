@@ -21,7 +21,7 @@ You are in the Codex Automata methodology repository itself. The methodology har
    - Phase 6b: Product Testing
    - Phase 7: Deployment and Observation
 
-4. **The eleven principles are:**
+4. **The twelve principles are:**
    1. Specification First
    2. SDK as Constraint Surface
    3. Local-First
@@ -33,8 +33,9 @@ You are in the Codex Automata methodology repository itself. The methodology har
    9. Quality Gates
    10. Intentional Divergence
    11. Assembly Pressure
+   12. Pipeline as First Citizen
 
-5. **Terminology:** Use the glossary at `reference/glossary.md` for canonical definitions. Key terms: specification, SDK, constraint surface, building block, mold, casting, bounded context, interface contract, iteration, quality gate, quick change, accessibility, action classification, agent task, assembly pressure, brownfield, cost budget, generator, guardrail, human review, invariant, flow, recovery, gap assessment, design identity, design token, deployment checklist, divergence gate, slop fingerprint, product test, property-based test, user profile, test objective, token budget, UX budget, multi-agent orchestration, security audit, incident postmortem, retrospective, WCAG.
+5. **Terminology:** Use the glossary at `reference/glossary.md` for canonical definitions. Key terms: specification, SDK, constraint surface, building block, mold, casting, bounded context, interface contract, iteration, quality gate, quick change, accessibility, action classification, agent task, assembly pressure, pipeline as first citizen, branch strategy, pipeline configuration, brownfield, cost budget, generator, guardrail, human review, invariant, flow, recovery, gap assessment, design identity, design token, deployment checklist, divergence gate, slop fingerprint, product test, property-based test, user profile, test objective, token budget, UX budget, multi-agent orchestration, security audit, incident postmortem, retrospective, WCAG.
 
 6. **When editing harness files:** Ensure changes propagate to all files that reference the modified concept. Use the following as cross-reference anchors:
    - Principles: `reference/principles.md`

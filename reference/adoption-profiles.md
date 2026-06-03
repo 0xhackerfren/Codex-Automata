@@ -4,7 +4,7 @@ Codex Automata is designed to be adopted incrementally. Not every project needs 
 
 ## Why Profiles Exist
 
-The full Codex Automata pipeline includes eleven principles, eight phases, dozens of templates, agent rules, quality gates, and specialized workflows like recovery and product testing. For a solo developer building a side project, this is overwhelming. For a regulated enterprise building a payments platform, it may not be enough.
+The full Codex Automata pipeline includes twelve principles, eight phases, dozens of templates, agent rules, quality gates, and specialized workflows like recovery and product testing. For a solo developer building a side project, this is overwhelming. For a regulated enterprise building a payments platform, it may not be enough.
 
 Profiles solve this by defining three tiers of adoption. Each profile specifies which phases run, which templates are required, which rules are enforced, and which quality gates apply. Projects declare their profile at intake (Phase 0) and can upgrade at any phase boundary.
 
@@ -34,9 +34,10 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 - `test-plan-template.md`
 - `agent-task-template.md`
 
-**Active rules (4):**
+**Active rules (5):**
 - R1 (spec before code)
 - R4 (do not bypass tests)
+- R7 (atomic commits traceable to spec sections)
 - R8 (surface ambiguity)
 - R10 (every task maps to spec and test)
 
@@ -87,7 +88,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 - `context-state-template.md`
 - `block-registry-template.md`
 
-**Active rules:** R1-R13, R14, R15
+**Active rules:** R1-R18
 
 **Quality gates:**
 - All tests pass
@@ -123,7 +124,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 - `design-identity-template.md`
 - `gap-assessment-template.md`
 
-**Active rules:** All (R1-R15)
+**Active rules:** All (R1-R18)
 
 **Quality gates:**
 - All Standard gates
@@ -173,6 +174,7 @@ Downgrades are not recommended. Removing artifacts that exist creates orphaned d
 | Architecture decomposition | Skip | Required | Required |
 | Human review | Self-review | Full review | Full review |
 | Assembly pressure | Smoke tests | Smoke + journey checks | Smoke + journey + load |
+| Pipeline as First Citizen | Commit discipline (R7) | Branch strategy + CI gates | Full pipeline design + progressive delivery |
 | Product testing | Skip | Optional | Required |
 | Design identity | Skip | If user-facing | Required for user-facing |
 | Recovery protocol | Skip | Active | Active |
@@ -180,4 +182,4 @@ Downgrades are not recommended. Removing artifacts that exist creates orphaned d
 | Kanban flow | Skip | Recommended | Required |
 | Quality gates | Basic (2) | Standard (5) | Full (7+) |
 | Templates | 3 | 7+ | All |
-| Active rules | 4 | All | All |
+| Active rules | 5 | All | All |

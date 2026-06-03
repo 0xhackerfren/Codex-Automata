@@ -43,7 +43,7 @@ Follow this workflow when existing code lacks specifications, SDK interfaces, or
 
 1. If patched tests fail against existing code, fix the implementation.
 2. Follow code casting rules (`agent/CODE_CASTING_RULES.md`).
-3. Make small, atomic commits traceable to the gap assessment.
+3. Make small, atomic commits traceable to the gap assessment (R7). Follow the project's branch strategy (R16).
 
 ## Step 6: Re-Review
 
@@ -60,4 +60,4 @@ Follow this workflow when existing code lacks specifications, SDK interfaces, or
 
 - Template: `templates/gap-assessment-template.md`
 - Protocol: `reference/recovery.md` (in the methodology repo)
-- Rules: R13 (halt and report gaps), R15 (recovery task behavior)
+- Rules: R13 (halt and report gaps), R15 (recovery task behavior), R16-R18 (branch strategy, pipeline config, tagging)

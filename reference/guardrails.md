@@ -40,7 +40,7 @@ Safe to proceed, but the action is recorded for audit. The agent executes, logs 
 
 The agent halts and waits for explicit human approval before proceeding. Reserved for irreversible, high-stakes, or scope-changing actions. The agent must surface what it intends to do, why, and what artifacts are affected; it must not execute until approval is recorded.
 
-**Examples:** Modifying SDK interfaces, changing specifications, deleting tests, deploying to production.
+**Examples:** Modifying SDK interfaces, changing specifications, deleting tests, deploying to production, modifying pipeline configuration, force-pushing shared branches.
 
 **Default when uncertain:** Treat ambiguous actions as APPROVE. It is safer to ask than to act.
 
@@ -70,6 +70,9 @@ The agent halts and waits for explicit human approval before proceeding. Reserve
 | Adding external dependencies | APPROVE | Supply chain and security implications |
 | Modifying quality gate thresholds | APPROVE | Weakens enforcement |
 | Disabling linters or checks | APPROVE | Weakens enforcement |
+| Modifying pipeline configuration (CI/CD workflows, deploy scripts) | APPROVE | Changes delivery infrastructure |
+| Force-pushing or rewriting shared branch history | APPROVE | Irreversible loss of team history |
+| Creating or moving release tags | APPROVE | Affects reproducibility and release identity |
 | Bulk file operations (rename/delete multiple files) | APPROVE | Broad impact, hard to review incrementally |
 
 Teams may override defaults using the guardrail configuration template (`harness/templates/guardrail-config-template.md`).
@@ -191,6 +194,6 @@ If classification is unclear, default to **APPROVE**. See `harness/agent/AGENT_R
 | `reference/adoption-profiles.md` | Essential / Standard / Complete profile guardrail differences |
 | `reference/iteration.md` | Inner/outer loops when quality gates fail (distinct from APPROVE halts) |
 | `reference/quick-change.md` | Abbreviated workflow; APPROVE still applies to spec/SDK/test deletion |
-| `reference/principles.md` | Principle 6 (Quality Gates) and Principle 10 (Intentional Divergence) relate to mechanical vs human judgment |
+| `reference/principles.md` | Principle 9 (Quality Gates), Principle 10 (Intentional Divergence), and Principle 12 (Pipeline as First Citizen) relate to mechanical enforcement, human judgment, and pipeline integrity |
 | `reference/glossary.md` | Canonical terminology |
 | `templates/context-state-template.md` | Session History and override documentation |

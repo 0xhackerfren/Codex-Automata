@@ -132,6 +132,6 @@ See [adoption-profiles.md](adoption-profiles.md) for capability trade-offs, not 
 - [adoption-profiles.md](adoption-profiles.md) — Essential, Standard, Complete scope and estimated cost
 - [multi-agent.md](multi-agent.md) — Parallel agents and merge cost trade-offs
 - [context-persistence.md](context-persistence.md) — Checkpoint re-dispatch and session handoff
-- [principles.md](principles.md) — Local-first (Principle 8)
+- [principles.md](principles.md) — Local-First (Principle 3); Pipeline as First Citizen (Principle 12)
 - `harness/agent/AGENT_RULES.md` — R12 and cost-conscious core principle
 - `harness/PLAYBOOK.md` — Phase boundaries for planning token load

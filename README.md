@@ -16,7 +16,7 @@ Codex Automata is a development methodology for the agentic era. It inverts the 
 4. **Tests come third.** Derive tests from the specification, written against SDK interfaces. The tests are the mold.
 5. **Code comes last.** Agents fill the mold within the SDK boundary. The code is the casting.
 
-The methodology rests on [eleven core principles](reference/principles.md): Specification First, SDK as Constraint Surface, Local-First, Research as Foundation, Tests as Molds, Code as Casting, Modularity and Bounded Contexts, Continuous Flow, Quality Gates, Intentional Divergence, and Assembly Pressure. Build local-first: design for the smallest viable model, expand to frontier as needed.
+The methodology rests on [twelve core principles](reference/principles.md): Specification First, SDK as Constraint Surface, Local-First, Research as Foundation, Tests as Molds, Code as Casting, Modularity and Bounded Contexts, Continuous Flow, Quality Gates, Intentional Divergence, Assembly Pressure, and Pipeline as First Citizen. Build local-first: design for the smallest viable model, expand to frontier as needed.
 
 This repository contains the harness (the thing you copy into projects) and reference material (the methodology documentation you read).
 
@@ -158,7 +158,7 @@ codex-automata/
 |   |-- src/                 Empty source code directory
 |
 |-- reference/               METHODOLOGY DOCS (read, don't copy)
-|   |-- principles.md        Eleven core principles explained
+|   |-- principles.md        Twelve core principles explained
 |   |-- adoption-profiles.md Essential, Standard, and Complete adoption profiles
 |   |-- workflow.md           End-to-end workflow reference
 |   |-- architecture.md      Architecture patterns and guidance

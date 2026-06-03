@@ -73,7 +73,7 @@ This is a reduced form of Phase 6 review, not a substitute for human review when
 
 ### 8. Commit with spec traceability
 
-Write a commit message that references the specification section (for example: `fix(auth): align token TTL with spec §3.2 session expiry`). Atomic commits preferred.
+Write a commit message that references the specification section (for example: `fix(auth): align token TTL with spec §3.2 session expiry`). Atomic commits preferred (R7). Follow the project's branch strategy (R16, Pipeline as First Citizen).
 
 ### 9. Update context state if significant
 

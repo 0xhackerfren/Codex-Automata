@@ -35,6 +35,13 @@ Follow this workflow to prepare or assist with a human review of a casting.
 2. Check for tests that were skipped, disabled, or marked flaky.
 3. Flag any specification behavior without test coverage.
 
+## Step 4b: Branch and Pipeline Discipline
+
+1. Check commit hygiene: are commits atomic and traceable to specification sections (R7)?
+2. Check branch discipline: does the branch follow the project's naming convention and originate from the correct base (R16)?
+3. If pipeline configuration files were modified, verify the changes have specification traceability and approval (R17).
+4. For release-bound reviews, verify release tags are annotated and follow the project's tagging convention (R18).
+
 ## Step 5: Divergence Check (User-Facing)
 
 1. Verify all visual values reference design tokens (no hardcoded hex, px, rem, font-family).

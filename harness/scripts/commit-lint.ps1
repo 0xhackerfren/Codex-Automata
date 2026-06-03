@@ -1,10 +1,12 @@
 <#
 .SYNOPSIS
-  Commit message linter for spec-section traceability.
+  Commit message linter for spec-section traceability (R7 / Principle 12).
 
 .DESCRIPTION
-  Verifies commit messages reference a specification section, agent task, or
-  use a recognized prefix. Suitable as a CI check.
+  Enforces R7 (atomic commits traceable to specification sections) as part of
+  Pipeline as First Citizen (Principle 12). Verifies commit messages reference
+  a specification section, agent task, or use a recognized prefix. Suitable as
+  a CI check.
 
 .PARAMETER MessageFile
   Path to a file containing the commit message.
