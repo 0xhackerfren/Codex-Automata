@@ -55,6 +55,18 @@ changes, record a checkpoint, then release or reassign it. Preserve unfinished
 work. If the coordinator is interrupted, reconcile before launching any writer.
 No parallel coordinators or claims are supported by this manual pilot.
 
+Declare the coordination branch and context-state path in the task packet. Before
+claim, handoff, reassignment, or resume, refresh that branch and read its latest
+committed ownership record, not the stale copy in an agent worktree. A stale or
+unavailable coordination ref prevents new claims. The coordinator serializes
+ownership commits and records their SHA in each assignment.
+
+Follow the [iteration budget](../../reference/iteration.md): three attempts per
+failure cluster across consecutive sessions on the same checkpoint by default.
+Redispatch does not reset that count. On budget exhaustion, preserve the work,
+checkpoint attempts and failure evidence, and escalate to the human before a
+clarified or repaired task receives a reset budget.
+
 Only the coordinator writes shared context-state ownership records. Review
 findings live in a task-specific review artifact. SDK/contract changes stop all
 affected casting and follow the existing approval and revision process.
