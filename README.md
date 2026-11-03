@@ -6,6 +6,8 @@ A research-driven, spec-first, SDK-first, local-first development methodology fo
 
 [Read the Manifesto](MANIFESTO.md) | [Browse the Playbook](harness/PLAYBOOK.md) | [MIT License](LICENSE)
 
+Proposed extension under review: [Codex, Linear, and GitHub operating model](docs/proposals/agent-delivery-operating-model.md) and [gap assessment](docs/proposals/agent-delivery-gap-assessment.md). These proposals are not active harness policy.
+
 ## What Is This?
 
 Codex Automata is a development methodology for the agentic era. It inverts the traditional pipeline to **Research → Documentation → SDK → Tests → Code**:
