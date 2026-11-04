@@ -68,7 +68,10 @@ checkpoint attempts and failure evidence, and escalate to the human before a
 clarified or repaired task receives a reset budget.
 
 Only the coordinator writes shared context-state ownership records. Review
-findings live in a task-specific review artifact. SDK/contract changes stop all
+findings live in a task-specific artifact on the coordination branch or a provider
+review record bound to the immutable implementation SHA. Do not commit findings
+onto the reviewed implementation branch and thereby change its head.
+SDK/contract changes stop all
 affected casting and follow the existing approval and revision process.
 
 ## 3. Linear projection and readiness
