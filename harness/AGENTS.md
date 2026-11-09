@@ -2,6 +2,16 @@
 
 This repository follows the Codex Automata methodology. All AI agents operating in this codebase must follow these rules.
 
+## Delivery cadence
+
+Follow [agent/LINEAR_FIRST.md](agent/LINEAR_FIRST.md) for PLAN, EXECUTE and
+RECONCILE sessions. Linear holds durable work scope and dependencies; GitHub
+holds versioned specifications, SDK contracts, tests, branches, PRs, CI and
+release evidence. Neither replaces the other. Use approved economical agents
+for Ready tasks and frontier reasoning for architecture and reconciliation.
+
+Job taxonomy and escalation: [agent/MODEL_ROUTING.md](agent/MODEL_ROUTING.md).
+
 ## Core Doctrine
 
 1. Research informs decisions. Investigate before specifying.
@@ -11,6 +21,8 @@ This repository follows the Codex Automata methodology. All AI agents operating 
 5. Build local-first. Design for the smallest viable model, expand to frontier as needed.
 6. Do not write tests or implementation before the specification and SDK exist.
 7. Do not introduce abstractions outside the SDK. If new building blocks are needed, request SDK extension.
+
+Phase-specific prerequisites follow `agent/LINEAR_FIRST.md` (from project root): upstream research/specification jobs produce the inputs that later casting requires. SDK-before-tests/code applies to casting, not to the creation of upstream artifacts.
 
 ## Constraints
 
@@ -22,7 +34,7 @@ This repository follows the Codex Automata methodology. All AI agents operating 
 - Keep context lean. Specifications, prompts, and task definitions must be modular and retrievable in fragments. Do not assume unlimited context windows.
 - Prefer small, atomic commits traceable to specification sections.
 - Surface ambiguity instead of guessing. If the specification is unclear, stop and ask.
-- Every task must map to a specification section, an SDK interface, and at least one test case.
+- Every task must map to its phase-specific deliverable and verification gate. Casting requires specification, SDK/types and mold references; research and documentation record an explicit rationale where contracts or tests do not apply.
 - Explain deviations. If you must deviate from the specification, document why.
 - When you discover code without a corresponding specification, SDK interface, or tests, halt and report the gap. Do not work around it or derive specs or tests from existing code. Use `templates/gap-assessment-template.md` for triage.
 

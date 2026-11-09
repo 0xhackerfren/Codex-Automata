@@ -23,10 +23,10 @@ Estimates below are **rough orders of magnitude** for a typical module. Actual c
 |-------|----------------|-----------------|------------|
 | 0: Intake | Project description, constraints | 5–15K | Standard |
 | 1: Architecture | Existing codebase context, design docs | 20–50K | Frontier |
-| 2: Specification | Domain knowledge, existing specs | 10–30K | Standard |
+| 2: Specification | Domain knowledge, existing specs | 10–30K | Frontier for executable planning |
 | 3: SDK Design | Spec + architecture + existing SDK | 15–40K | Standard |
 | 4: Test Molding | Spec + SDK interfaces | 10–30K | Standard |
-| 5: Code Casting | Spec + SDK + tests + existing code | 50–150K | Frontier |
+| 5: Code Casting | Spec + SDK + tests + existing code | 50–150K | Cheapest proven approved model |
 | 6: Review | All artifacts for the module | 30–80K | Standard |
 | 6b: Product Testing | App context + user profiles | 20–50K per journey | Standard |
 | 7: Deployment | Checklist + environment config | 5–15K | Standard |
@@ -52,12 +52,13 @@ Not every phase needs the most expensive model.
 **Phases that benefit from frontier models**
 
 - Architecture (complex reasoning, trade-off analysis)
-- Code casting (implementation requires deep understanding of spec, tests, and existing code)
+- Executable specification design and cross-issue reconciliation
+- Code casting only when bounded attempts reveal a need for deeper reasoning
 - Complex **recovery** when gaps span multiple artifacts and require synthesis
 
 **Phases that work well with standard models**
 
-- Specification writing (structured output from templates)
+- Specification formatting after architectural decisions are settled
 - Test molding (pattern application against spec and SDK)
 - Review (checklist verification against artifacts)
 - Context state updates (structured edits to `context-state.md`)
@@ -135,3 +136,6 @@ See [adoption-profiles.md](adoption-profiles.md) for capability trade-offs, not 
 - [principles.md](principles.md) — Local-First (Principle 3); Pipeline as First Citizen (Principle 12)
 - `harness/agent/AGENT_RULES.md` — R12 and cost-conscious core principle
 - `harness/PLAYBOOK.md` — Phase boundaries for planning token load
+
+The active cadence is [Linear-first delivery](../harness/agent/LINEAR_FIRST.md).
+Preserve GitHub version control and review evidence across model/provider changes.

@@ -6,7 +6,7 @@ This repository contains the Codex Automata development methodology: a specifica
 
 You are in the Codex Automata methodology repository itself. The methodology harness lives in `harness/`. When working in this repository:
 
-1. **This is a documentation project.** The harness is a collection of templates, rules, reference documents, and configuration files that teams copy into their own projects. There is no application code to build.
+1. **This is a documentation project.** The harness is a collection of templates, rules, reference documents, and configuration files that teams copy into their own projects. The Python CLI in `cli/` and initialization/enforcement scripts are executable tooling; changes require meaningful regression checks.
 
 2. **Consistency is critical.** Cross-references between files must be accurate. Phase numbers, rule numbers, principle counts, glossary terms, and terminology must be consistent across all documents.
 
@@ -59,3 +59,12 @@ Copy the `harness/` directory into your project root. The harness includes:
 The `.cursor/` directory is Cursor-specific. Everything else works with any AI coding tool that reads AGENTS.md or can be instructed via project-level configuration.
 
 See `reference/adoption-profiles.md` for Essential, Standard, and Complete profile options.
+
+## Linear-first delivery
+
+Use `harness/agent/LINEAR_FIRST.md` for delivery cadence. Root instructions govern
+this methodology repository; harness instructions are the portable consumer copy.
+Template maintenance is authorized when changing the methodology itself.
+GitHub remains the version-control, review, CI and release system. Linear holds
+work specifications and links pinned Git contracts. See
+`docs/development/linear-first-change-spec.md` for this change contract.

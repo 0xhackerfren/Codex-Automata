@@ -42,3 +42,9 @@ htmlcov/
 # yarn.lock
 # Pipfile.lock
 # poetry.lock
+
+# Local coordination state (keep outside the repository when possible)
+*.sqlite
+*.sqlite-journal
+*.sqlite-wal
+*.sqlite-shm

@@ -1,5 +1,8 @@
 # Codex Automata Playbook
 
+Delivery cadence: [PLAN → EXECUTE → RECONCILE](agent/LINEAR_FIRST.md). Linear work records link versioned GitHub contracts and evidence.
+
+
 A practical, phase-by-phase implementation guide for running a software project under the Codex Automata methodology.
 
 ## Overview

@@ -1,6 +1,6 @@
 # Proposed operating model: Codex, Linear, and GitHub
 
-Status: Proposed, not activated. Version: draft 1. Date: 2026-11-03.
+Status: Historical proposal; coordinator automation not activated. Version: draft 1. Date: 2026-11-03.
 Task: [PER-10](https://linear.app/jacobkrell/issue/PER-10).
 Companion: [gap assessment](agent-delivery-gap-assessment.md).
 
@@ -22,8 +22,10 @@ merge/deployment service is assumed.
 | What was integrated? | GitHub PR, reviewed head SHA, required check results, merge commit, and target branch |
 | Where does the next session resume? | Committed context-state checkpoint |
 
-Linear is a projection of execution state, not a second specification or a
-distributed lock. If sources disagree, stop affected work, inspect authoritative
+The active [delivery policy](../../harness/agent/LINEAR_FIRST.md) supersedes
+this proposal on authority: Linear owns work scope, acceptance, dependencies and
+status; Git owns versioned behavioral specifications and contracts. Linear is
+not a distributed lock. If sources disagree, stop affected work, inspect authoritative
 artifacts, and record reconciliation before resuming. Chat may notify an agent
 where to look; it must not silently change contracts or task decisions.
 

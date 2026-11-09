@@ -1,54 +1,26 @@
-"""Refresh harness infrastructure files without overwriting project-specific docs."""
+"""Stage an upstream harness for review without replacing consumer files."""
 
-import platform
-import shutil
 from pathlib import Path
 
-from codex_automata.init import _harness_dir, _patch_hooks_for_windows
-
-PROTECTED_DIRS = {"docs", "sdk", "src", "tests", "tasks", "review"}
-PROTECTED_FILES = {"context-state.md"}
+from codex_automata.init import run_init
 
 
-def run_update(target_str: str) -> int:
+def run_update(target_str: str, staging_str: str | None = None,
+               profile: str = "standard", agent: str = "cursor") -> int:
     target = Path(target_str).resolve()
-    harness = _harness_dir()
-
-    if not (target / "AGENTS.md").exists():
-        print(f"Error: {target} does not appear to be a Codex Automata project (no AGENTS.md found).")
+    if not (target / "AGENTS.md").is_file():
+        print(f"Error: {target} has no AGENTS.md; select the intended project.")
         return 1
-
-    updated = []
-
-    # Update infrastructure files (AGENTS.md, PLAYBOOK.md, agent/, .cursor/, .github/, scripts/)
-    infra_items = ["AGENTS.md", "PLAYBOOK.md", "agent", ".cursor", ".github", "scripts"]
-    for name in infra_items:
-        src = harness / name
-        if not src.exists():
-            continue
-        dest = target / name
-        if src.is_dir():
-            shutil.copytree(src, dest, dirs_exist_ok=True)
-        else:
-            shutil.copy2(src, dest)
-        updated.append(name)
-
-    # Update templates (add new ones, update existing, but don't remove user-added files)
-    tmpl_src = harness / "templates"
-    tmpl_dest = target / "templates"
-    if tmpl_src.is_dir() and tmpl_dest.is_dir():
-        for f in tmpl_src.iterdir():
-            if f.is_file():
-                shutil.copy2(f, tmpl_dest)
-        updated.append("templates/")
-
-    if platform.system() == "Windows":
-        _patch_hooks_for_windows(target)
-
-    print()
-    print(f"Codex Automata harness updated at: {target}")
-    print(f"Refreshed: {', '.join(updated)}")
-    print("Project-specific directories (docs/, sdk/, src/, tests/, tasks/, review/) were not modified.")
-    print()
-
-    return 0
+    staging = (Path(staging_str).resolve() if staging_str else
+               target.with_name(target.name + "-automata-update"))
+    if staging == target or target in staging.parents or staging in target.parents:
+        print("Error: staging must be separate from the project directory.")
+        return 1
+    if staging.exists() or staging.is_symlink():
+        print(f"Error: staging path already exists: {staging}")
+        return 1
+    rc = run_init(str(staging), profile, agent)
+    if rc == 0:
+        print(f"Upstream candidate staged at {staging}.")
+        print(f"Review and merge the diff into {target}; no project files were changed.")
+    return rc
