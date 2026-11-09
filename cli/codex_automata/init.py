@@ -10,6 +10,10 @@ ESSENTIAL_TEMPLATES = [
     "spec-template.md",
     "test-plan-template.md",
     "agent-task-template.md",
+    "linear-issue-template.md",
+    "linear-project-brief-template.md",
+    "execution-queue-template.md",
+    "delivery-control-example.json",
 ]
 
 STANDARD_TEMPLATES = ESSENTIAL_TEMPLATES + [
@@ -91,6 +95,16 @@ def run_init(target_str: str, profile: str, agent: str) -> int:
     if _skip_cursor_dir(agent):
         skip_dirs.add(".cursor")
 
+    # Preflight before any writes, including broken symlinks and directory merges.
+    destinations = [target / item.name for item in harness.iterdir()
+                    if item.name not in skip_dirs]
+    destinations.append(target / "templates")
+    collisions = [p for p in destinations if p.exists() or p.is_symlink()]
+    if collisions:
+        print("Error: init would overwrite existing paths: " +
+              ", ".join(str(p) for p in collisions))
+        print("Initialize a separate directory and review/merge the diff instead.")
+        return 1
     target.mkdir(parents=True, exist_ok=True)
 
     for item in harness.iterdir():

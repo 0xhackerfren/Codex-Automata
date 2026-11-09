@@ -114,9 +114,9 @@ Prompt discipline becomes mandatory. A frontier model will produce reasonable ou
 
 Task decomposition becomes mandatory. A frontier model can hold an entire module in its context and reason about the whole thing at once. A local model cannot. Building local-first forces tasks to be atomized into units small enough for a constrained model to complete successfully. This is exactly the modularity and atomization that Codex Automata already demands, but local-first makes it a hard technical requirement rather than a process aspiration. If the task does not fit in the window, it is too large.
 
-Error handling becomes mandatory. Frontier models fail rarely and gracefully. Local models fail more often and less predictably. Building local-first forces the system to handle partial completions, retries, validation of outputs, and graceful degradation from the beginning. The infrastructure for reliability exists before it is needed at scale, because it was needed at small scale first.
+Error handling becomes mandatory. Every model tier can fail, and failure rates depend on the task, tools and model. Smaller models may require tighter task boundaries and more targeted validation. Building local-first forces the system to handle partial completions, retries, validation of outputs, and graceful degradation from the beginning. The infrastructure for reliability exists before it is needed at scale, because it was needed at small scale first.
 
-The economics reinforce the principle. Local models are cheap. They run on commodity hardware. They incur no API costs, no rate limits, no vendor dependencies. A system proven on local models can scale to frontier when the task genuinely demands it, with confidence that the system's architecture does not depend on frontier capabilities as a crutch.
+The economics reinforce the principle. Local models are cheap. Suitable models can run on owned hardware without hosted API charges, but still incur hardware, energy, maintenance and licensing constraints. A system proven on local models can scale to frontier when the task genuinely demands it, with confidence that the system's architecture does not depend on frontier capabilities as a crutch.
 
 The expansion path is clean. Start with the smallest model that can complete the task given perfect inputs. Verify. Then relax constraints as you move to larger models: larger context windows allow fewer retrieval calls, stronger reasoning allows less prescriptive prompts, faster inference allows more ambitious single-pass generation. Each relaxation is a measured decision with a known baseline, not a dependency discovered in production when the API bill arrives or the rate limit triggers.
 
@@ -383,3 +383,41 @@ The principles were always right. The economics finally agree.
 ---
 
 *Codex Automata Manifesto v2.0, May 2026. Harness version: see VERSION file.*
+
+
+## Durable Intent, Verifiable Reality
+
+An agentic engineering system must outlive the conversation, the model and the
+vendor. Its memory cannot depend on a particular assistant remembering what a
+human meant last week. Intent must become durable, addressable work.
+
+Linear is a first-class work graph: the intended system decomposed into outcomes,
+contracts, dependencies, acceptance criteria and explicit unknowns. If an idea is
+only in chat, the engineering system cannot reliably retrieve or execute it. A
+well-specified ticket gives that idea an address, a place in the dependency graph
+and a contract for completion. A fresh agent should reconstruct the assignment
+from those artifacts without inheriting the author's mind.
+
+Planned existence and implemented existence remain distinct. A ticket can describe
+a complete application while no application yet runs. GitHub preserves versioned
+specifications, SDK contracts, tests, implementation, reviews, CI and releases.
+The work graph describes intent; engineering evidence establishes delivered
+behavior. Reconciliation keeps the two aligned. Neither replaces the other.
+
+Scarce frontier reasoning should remove ambiguity where it has the highest
+return: architecture, executable specifications, difficult invariants and semantic
+reconciliation. Approved economical and local models execute bounded work under
+those contracts. Stronger models are a routing option, never an escape from
+verification. A failed environment needs repair; a missing decision needs design;
+a demonstrated capability failure may need a stronger model. These are different
+jobs, and confusing them wastes both money and trust.
+
+The lasting asset is the engineering system: explicit boundaries, recoverable
+work, independent checks and evidence tied to immutable revisions. Models,
+providers, editors and dispatch mechanisms will change. The contracts between
+intent, execution and verification must remain inspectable and portable.
+
+The operational form is [Linear-first delivery](harness/agent/LINEAR_FIRST.md)
+and its [job-routing contracts](harness/agent/MODEL_ROUTING.md). These are active
+instructions. Automated dispatch, claims and synchronization require executable
+implementations and adversarial acceptance evidence; prose does not supply them.

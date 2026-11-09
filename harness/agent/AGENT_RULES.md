@@ -1,5 +1,8 @@
 # Agent Operating Rules
 
+Delivery cadence: [PLAN → EXECUTE → RECONCILE](LINEAR_FIRST.md). Linear work records link versioned GitHub contracts and evidence.
+
+
 Operating manual for agents executing tasks under Codex Automata. Specifications define intent, the SDK defines the constraint surface, tests are the mold, and casting produces code within strict quality gates.
 
 ## 1. Core Principles
@@ -36,7 +39,7 @@ R8. Surface ambiguity instead of guessing. If the specification does not answer 
 
 R9. Explain deviations. If you must deviate from the specification, document the reason in the commit message and flag it for human review.
 
-R10. Every agent task must map to a specification section, an SDK interface, and at least one test case.
+R10. Every agent task must map to its phase-specific deliverable and verification gate. Casting requires spec, SDK/types and molds. Research and documentation may document why SDK or test references do not apply.
 
 R11. Do not introduce external dependencies not specified in the architecture documents.
 

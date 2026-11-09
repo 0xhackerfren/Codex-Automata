@@ -3,6 +3,9 @@
 # Gates: spec-check (R1), divergence gate (P10), commit-lint (R7/P12), test suite.
 name: Codex Automata Quality Gates
 
+permissions:
+  contents: read
+
 on:
   pull_request:
     branches: [main, master]
@@ -23,7 +26,6 @@ jobs:
   divergence-gate:
     name: Divergence gate
     runs-on: ubuntu-latest
-    if: hashFiles('src/**') != '' || hashFiles('app/**') != '' || hashFiles('lib/**') != ''
     steps:
       - uses: actions/checkout@v4
       - name: Scan for slop fingerprints
@@ -71,14 +73,20 @@ jobs:
             npm ci
             npm test
           elif [ -f "requirements.txt" ] || [ -f "pyproject.toml" ]; then
-            pip install -r requirements.txt 2>/dev/null || pip install -e . 2>/dev/null || true
-            python -m pytest tests/ 2>/dev/null || python -m unittest discover tests/ 2>/dev/null || echo "No Python test runner found."
+            if [ -f "requirements.txt" ]; then
+              python -m pip install -r requirements.txt
+            else
+              python -m pip install -e .
+            fi
+            python -m pip install pytest
+            python -m pytest tests/
           elif [ -f "go.mod" ]; then
             go test ./...
           elif [ -f "Cargo.toml" ]; then
             cargo test
           else
-            echo "No recognized project type. Skipping test run."
+            echo "No recognized test configuration. Configure the project test command."
+            exit 1
           fi
 
   spec-check-windows:
@@ -94,7 +102,6 @@ jobs:
   divergence-gate-windows:
     name: Divergence gate (Windows)
     runs-on: windows-latest
-    if: hashFiles('src/**') != '' || hashFiles('app/**') != '' || hashFiles('lib/**') != ''
     steps:
       - uses: actions/checkout@v4
       - name: Scan for slop fingerprints

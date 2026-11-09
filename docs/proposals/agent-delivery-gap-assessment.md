@@ -63,3 +63,12 @@ before its adoption decision is recorded.
 
 Resolution remains open. Closing G1 through G6 requires the evidence above;
 merging this assessment alone does not close them.
+
+## Follow-up: 2026-11-09
+
+The active [delivery policy](../../harness/agent/LINEAR_FIRST.md) now defines
+work-record versus Git-contract authority. Initialization preflights collisions;
+updates stage a candidate; verification rejects missing gates; shipped Python CI
+propagates failures. These changes have CLI regression molds in `cli/tests/`.
+The manual coordinator, durable claims, automated synchronization and consumer
+pilot scenarios remain unimplemented/unverified. This assessment is not closed.

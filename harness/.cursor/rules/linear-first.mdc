@@ -1,0 +1,16 @@
+---
+description: Route planning, bounded execution and reconciliation through durable Linear work.
+alwaysApply: true
+---
+
+Follow root `AGENTS.md` as canonical policy. Read `agent/LINEAR_FIRST.md` for
+planning, issue execution or reconciliation. Do not maintain a separate policy.
+
+Use frontier reasoning to produce verified executable tasks; use approved
+lower-cost/local agents to implement Ready tasks. Respect existing spec → SDK →
+mold → casting gates. Do not guess credits, switch providers or claim Linear
+writes without evidence. Explicit user scope determines work; mode syntax is
+optional. Offline issue drafts must be labeled unsynchronized.
+
+Use `agent/MODEL_ROUTING.md` to classify jobs and failures before escalation.
+A ticket establishes durable intent; GitHub evidence establishes implementation.

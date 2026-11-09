@@ -1,0 +1,37 @@
+{
+  "job": {
+    "schema_version": 1,
+    "id": "REPLACE-1",
+    "repository": "/absolute/path/to/consumer",
+    "branch": "main",
+    "base_sha": "REPLACE_WITH_FULL_GIT_SHA",
+    "phase": "cast",
+    "risk": "routine",
+    "outcome": "Replace with bounded observable behavior",
+    "write_paths": ["src/selected-module"],
+    "acceptance": ["Replace with independently verifiable criterion"],
+    "dependencies": [],
+    "specs": ["docs/selected-spec.md"],
+    "contracts": ["sdk/selected-contract.py"],
+    "molds": ["tests/test_selected.py"],
+    "policy_id": "REPLACE_APPROVAL_POLICY",
+    "data_class": "private",
+    "max_attempts": 3
+  },
+  "policy": {
+    "schema_version": 1,
+    "id": "REPLACE_APPROVAL_POLICY",
+    "models": [
+      {"id": "REPLACE_APPROVED_ECONOMICAL_MODEL", "tier": "economical", "available": false, "phases": ["cast", "mold", "discover"], "data_classes": ["private"]},
+      {"id": "REPLACE_APPROVED_FRONTIER_MODEL", "tier": "frontier", "available": false, "phases": ["architect", "sdk", "review", "reconcile", "cast", "mold", "discover", "integrate"], "data_classes": ["private"]}
+    ]
+  },
+  "evidence": {
+    "packet_digest": "REPLACE_WITH_VALIDATOR_DIGEST",
+    "head_sha": "REPLACE_WITH_REVIEWED_HEAD",
+    "checks": [{"name": "unit", "head_sha": "REPLACE_WITH_REVIEWED_HEAD", "status": "passed"}],
+    "review": {"head_sha": "REPLACE_WITH_REVIEWED_HEAD", "reviewer": "INDEPENDENT_REVIEWER_ID", "approved": true, "unresolved": 0},
+    "integration_sha": "REPLACE_WITH_INTEGRATION_COMMIT"
+  },
+  "expected_operation_observation": {"entity": "REPLACE-1", "revision": "REPLACE_EXPECTED_REVISION", "desired": "review"}
+}

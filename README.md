@@ -6,7 +6,10 @@ A research-driven, spec-first, SDK-first, local-first development methodology fo
 
 [Read the Manifesto](MANIFESTO.md) | [Browse the Playbook](harness/PLAYBOOK.md) | [MIT License](LICENSE)
 
-Proposed extension under review: [Codex, Linear, and GitHub operating model](docs/proposals/agent-delivery-operating-model.md) and [gap assessment](docs/proposals/agent-delivery-gap-assessment.md). These proposals are not active harness policy.
+Active delivery policy: [Linear-first planning, execution and reconciliation](harness/agent/LINEAR_FIRST.md).
+GitHub remains central for version control, contracts, review, CI and releases.
+The older [coordinator proposal](docs/proposals/agent-delivery-operating-model.md)
+is historical design input; automated dispatch and synchronization remain proposed.
 
 ## What Is This?
 
@@ -21,6 +24,27 @@ Codex Automata is a development methodology for the agentic era. It inverts the 
 The methodology rests on [twelve core principles](reference/principles.md): Specification First, SDK as Constraint Surface, Local-First, Research as Foundation, Tests as Molds, Code as Casting, Modularity and Bounded Contexts, Continuous Flow, Quality Gates, Intentional Divergence, Assembly Pressure, and Pipeline as First Citizen. Build local-first: design for the smallest viable model, expand to frontier as needed.
 
 This repository contains the harness (the thing you copy into projects) and reference material (the methodology documentation you read).
+
+Audit: [adversarial findings and remaining automation gaps](docs/development/adversarial-audit-2026-11-09.md).
+
+## Durable agentic engineering
+
+This project is an evolving engineering system, not a model-specific prompting
+recipe. Linear stores executable work; GitHub preserves engineering history and
+integration evidence. Stable SDK contracts, independent tests, explicit ownership
+and recoverable checkpoints allow tools and models to change over time.
+
+Use frontier sessions for PLAN and RECONCILE; use approved economical/local models
+for bounded EXECUTE work. Read the [delivery policy](harness/agent/LINEAR_FIRST.md),
+then use the [session prompts](harness/prompts/) and
+[issue template](harness/templates/linear-issue-template.md). The CLI now enforces local job validation, routing eligibility, transactional
+claims, retry history, evidence binding and operation journaling. Model dispatch,
+credit monitoring, authenticated Linear/GitHub synchronization and automatic
+merging are not implemented. See [CLI usage](cli/README.md#local-delivery-control-plane-v1).
+
+Initialize into a fresh directory and review the diff before adopting into an
+existing project. `update` stages upstream files for review; it does not replace
+customized project infrastructure in place.
 
 ## Quickstart
 

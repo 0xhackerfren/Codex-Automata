@@ -7,6 +7,8 @@ alwaysApply: true
 
 This project follows the Codex Automata methodology: Research informs decisions. Documentation first, SDK second, Tests third, Code last. Build local-first.
 
+Phase-specific prerequisites follow `agent/LINEAR_FIRST.md` (from project root): upstream research/specification jobs produce the inputs that later casting requires. SDK-before-tests/code applies to casting, not to the creation of upstream artifacts.
+
 ## Constraints
 
 1. Do not write tests or implementation before the specification and SDK constraint surface exist.
@@ -17,7 +19,7 @@ This project follows the Codex Automata methodology: Research informs decisions.
 6. Keep context lean. Design tasks, prompts, and specifications to be modular and retrievable in fragments. Do not assume unlimited context windows or frontier-only capabilities.
 7. Prefer small, atomic commits traceable to specification sections.
 8. Surface ambiguity instead of guessing.
-9. Every task must map to a specification section, an SDK interface, and a test case.
+9. Every task must map to its phase-specific deliverable and verification gate. Casting requires spec, SDK/types and molds; research/documentation may document why SDK or test references do not apply.
 10. When you discover code without a corresponding specification, SDK interface, or tests, halt and report the gap. Do not work around it. Recommend documenting it with `templates/gap-assessment-template.md` for triage and recovery.
 11. For user-facing code, all visual values must trace to design tokens from the SDK. Do not use hardcoded hex, px, rem, or font-family values.
 12. Do not use known AI-default patterns (training-data defaults) when the design identity document specifies alternatives. This applies to code structure (over-abstraction, cargo-cult patterns, speculative generality) as well as human-perceptible surfaces. If a project has user-facing surfaces but no design identity exists, halt and report the gap.

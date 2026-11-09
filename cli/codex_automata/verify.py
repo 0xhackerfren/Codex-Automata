@@ -27,7 +27,11 @@ def _run_script(script: Path, extra_args: list[str] | None = None) -> int:
     else:
         cmd = ["bash", str(script)] + args
 
-    result = subprocess.run(cmd, cwd=script.parent.parent)
+    try:
+        result = subprocess.run(cmd, cwd=script.parent.parent)
+    except OSError as exc:
+        print(f"FAILED: cannot execute {script.name}: {exc}")
+        return 1
     return result.returncode
 
 
@@ -53,7 +57,8 @@ def run_verify(target_str: str) -> int:
         else:
             print("  PASSED.")
     else:
-        print("Skipping spec-check: script not found in scripts/")
+        print("FAILED: required spec-check script not found in scripts/")
+        failures += 1
 
     # Divergence gate
     div_script = _find_script(target, "divergence-gate")
@@ -71,7 +76,8 @@ def run_verify(target_str: str) -> int:
         else:
             print("  PASSED.")
     else:
-        print("Skipping divergence-gate: script not found in scripts/")
+        print("FAILED: required divergence-gate script not found in scripts/")
+        failures += 1
 
     print()
     if failures > 0:

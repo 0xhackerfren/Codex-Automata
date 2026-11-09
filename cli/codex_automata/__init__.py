@@ -1,3 +1,3 @@
-"""Codex Automata CLI: init, update, and verify methodology harness projects."""
+"""Codex Automata CLI: harness adoption and local delivery coordination."""
 
 __version__ = "0.5.0"

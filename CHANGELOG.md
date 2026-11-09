@@ -8,6 +8,38 @@ Types of changes: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 
 ## [Unreleased]
 
+### Local delivery enforcement
+
+- Added versioned job validation, phase/risk-based approved model routing,
+  persistent retry classification, and phase-specific reference gates.
+- Added transactional local writer claims, owner tokens, checkpoints and releases.
+- Added current-head evidence validation, changed-path scope checks, independent
+  review fields and actual integration ancestry checks before dependency completion.
+- Added idempotent operation-intent journaling and uncertain-result reconciliation;
+  no provider actions, merges or releases are executed by these commands.
+- Added 18 control-plane tests including a disposable Git integration flow;
+  the combined local suite now passes 28 tests.
+
+### Linear-first delivery and adoption safety
+
+- Defined job taxonomy, routing decision order, failure classification and durable
+  routing records; elevated work-graph/evidence distinction into the manifesto.
+- Recorded an adversarial audit separating fixed defects from unimplemented
+  readiness, dispatch, ownership, evidence and synchronization enforcement.
+
+- Added portable PLAN / EXECUTE / RECONCILE policy, Cursor routing, Linear issue
+  and project templates, execution queues and session prompts in every profile.
+- Preserved GitHub as version control, contracts, review, CI and release evidence;
+  clarified which authority statements supersede the historical proposal.
+- Init refuses existing harness destinations before writing. Bash and PowerShell
+  initializers now share the Python CLI (Python 3.10+ required).
+- **Breaking:** update stages an upstream candidate in a separate directory for
+  reviewed adoption instead of overwriting customized infrastructure in place.
+- Missing/unavailable verification gates fail explicitly. Shipped Python CI
+  propagates dependency/test failures and rejects unconfigured test stacks.
+- Added CLI regression checks on Linux/Windows CI; automated coordination and
+  consumer harness adoption remain separate work.
+
 ### Added
 
 - **Pipeline as First Citizen (Principle 12):** CI/CD pipeline and git workflow elevated to a first-class engineering artifact designed at architecture time. Pipeline configuration is version-controlled and follows the same specification-first flow as application code. Git operations (branch strategy, commit discipline, merge policy, tagging) are intentional design decisions documented in the architecture specification.
