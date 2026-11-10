@@ -76,18 +76,31 @@ class Workflow:
         self.db = controller.db
         self.context = ContextController(controller)
         self.db.executescript('''
+            CREATE TABLE IF NOT EXISTS approved_plans (digest TEXT PRIMARY KEY, task_id TEXT NOT NULL, packet_digest TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS review_attestations (task_id TEXT NOT NULL, artifact_digest TEXT NOT NULL, reviewer TEXT NOT NULL,
+                PRIMARY KEY(task_id,artifact_digest));
             CREATE TABLE IF NOT EXISTS workflows (id TEXT PRIMARY KEY, plan TEXT NOT NULL,
-                phase_index INTEGER NOT NULL DEFAULT 0, artifacts TEXT NOT NULL DEFAULT '[]');
+                phase_index INTEGER NOT NULL DEFAULT 0, artifacts TEXT NOT NULL DEFAULT '[]', methodology_digest TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS recoveries (sequence INTEGER PRIMARY KEY AUTOINCREMENT,
                 job_id TEXT NOT NULL, payload TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS executions (sequence INTEGER PRIMARY KEY AUTOINCREMENT,
                 job_id TEXT NOT NULL, payload TEXT NOT NULL);
         ''')
 
+    @staticmethod
+    def policy_digest():
+        from . import __version__
+        bundled = files('codex_automata').joinpath('contracts')
+        schemas = {p.name: p.read_text(encoding='utf-8') for p in bundled.iterdir() if p.name.endswith('.json')}
+        return Controller.digest(dict(cli_version=__version__, contracts=schemas,
+                                      universal=UNIVERSAL, phases=PHASE_INSTRUCTIONS))
+
     def _load(self, task):
         state = self.c.state(task)
         row = self.db.execute('SELECT * FROM workflows WHERE id=?', (task,)).fetchone()
         require(row is not None, 'No workflow for task')
+        require('methodology_digest' in row.keys() and row['methodology_digest'] == self.policy_digest(),
+                'Methodology definition changed; pin original release or perform reviewed migration')
         job = json.loads(state['packet'])
         plan = json.loads(row['plan'])
         validate_schema('plan', plan)
@@ -104,10 +117,40 @@ class Workflow:
                 'Retry budget exhausted or unresolved failure')
         return state, job, plan, row, phases
 
+    def approve(self, authority, job, plan):
+        row = self.db.execute('SELECT digest FROM context_authority WHERE id=1').fetchone()
+        import secrets
+        require(row and secrets.compare_digest(row['digest'], Controller.digest(authority)), 'Operator plan approval required')
+        validate_job(job)
+        validate_schema('plan', plan)
+        require(plan['packet_digest'] == Controller.digest(job), 'Plan packet mismatch')
+        self.db.execute('INSERT OR IGNORE INTO approved_plans VALUES(?,?,?)',
+                        (Controller.digest(plan), job['id'], Controller.digest(job)))
+        return dict(approved_plan_digest=Controller.digest(plan), task_id=job['id'])
+
+    def attest_review(self, task, reviewer_token, artifact):
+        grant = self.context._grant(reviewer_token)
+        require(grant['task_id'] == task and artifact.get('review', {}).get('reviewer') == grant['actor'],
+                'Reviewer grant does not match artifact identity')
+        state, job, _, _, _ = self._load(task)
+        require(grant['repository'] == job['repository'] and grant['actor'] != state['owner']
+                and grant['context'] == 'DEVELOP', 'Independent reviewer authority required')
+        self.context.evaluate(job['repository'], task, grant['actor'], 'file:read', job['specs'][0])
+        validate_schema('artifact', artifact)
+        require(artifact['phase'] == 'review' and artifact['head_sha'] == clean_head(job['repository'])
+                and artifact['task_id'] == task and artifact['packet_digest'] == Controller.digest(job),
+                'Review artifact is stale or mismatched')
+        self.db.execute('INSERT OR IGNORE INTO review_attestations VALUES(?,?,?)',
+                        (task, Controller.digest(artifact), grant['actor']))
+        return dict(recorded=True, reviewer=grant['actor'], artifact_digest=Controller.digest(artifact))
+
     def start(self, job, plan, owner):
         validate_job(job)
         validate_schema('plan', plan)
         require(plan['packet_digest'] == Controller.digest(job), 'Plan packet mismatch')
+        approval = self.db.execute('SELECT * FROM approved_plans WHERE digest=?', (Controller.digest(plan),)).fetchone()
+        require(approval and approval['task_id'] == job['id'] and approval['packet_digest'] == Controller.digest(job),
+                'Exact execution plan requires prior operator approval')
         config, _ = verify_installation(job['repository'])
         require(not self.c.path.is_relative_to(Path(job['repository'])), 'Trusted state must be outside worktree')
         decision = self.context.evaluate(job['repository'], job['id'], owner, 'check:run')
@@ -141,7 +184,8 @@ class Workflow:
             import secrets
             token = secrets.token_hex(24)
             self.db.execute("UPDATE jobs SET status='active',owner=?,token=? WHERE id=?", (owner, token, job['id']))
-            self.db.execute('INSERT INTO workflows(id,plan) VALUES(?,?)', (job['id'], canonical(plan)))
+            self.db.execute('INSERT INTO workflows(id,plan,methodology_digest) VALUES(?,?,?)',
+                            (job['id'], canonical(plan), self.policy_digest()))
             self.db.execute('COMMIT')
         except Exception:
             self.db.execute('ROLLBACK')
@@ -215,6 +259,7 @@ class Workflow:
                        output_sha256=hasher.hexdigest(), output_bytes=size,
                        output_excerpt=excerpt.decode('utf-8', errors='replace'),
                        elapsed_seconds=round(time.monotonic()-start, 6), observed_at=datetime.now(timezone.utc).isoformat())
+        validate_schema('verification', receipt)
         self.c._begin()
         try:
             # Recheck ownership after subprocess: interrupted/released claims cannot
@@ -299,6 +344,9 @@ class Workflow:
                     require(review['kind'] == 'independent' and review['reviewer'] != owner,
                             'Independent review required by risk/protected change policy')
                     self.context.evaluate(job['repository'], task, review['reviewer'], 'file:read', job['specs'][0])
+                    attestation = self.db.execute('SELECT reviewer FROM review_attestations WHERE task_id=? AND artifact_digest=?',
+                                                  (task, Controller.digest(artifact))).fetchone()
+                    require(attestation and attestation['reviewer'] == review['reviewer'], 'Reviewer-token attestation required')
                 else:
                     require(review['kind'] == 'self' and review['reviewer'] == owner,
                             'Single-agent review must be labeled self')
@@ -319,6 +367,7 @@ class Workflow:
                                changed_paths=changed, acceptance=plan['traceability'],
                                review=next(a['artifact']['review'] for a in artifacts if a['artifact']['phase'] == 'review'),
                                source='workflow-local-executor', deployed=False)
+                validate_schema('completion', receipt)
                 self.db.execute("UPDATE jobs SET status='completed',token=NULL,evidence=? WHERE id=?", (canonical(receipt), task))
             self.db.execute('UPDATE workflows SET phase_index=?,artifacts=? WHERE id=?',
                             (row['phase_index']+1, canonical(artifacts), task))
@@ -381,9 +430,12 @@ class Workflow:
                        pending_steps=phases[row['phase_index']:], attempts=state['attempts'],
                        failure=state['failure'], remaining_budget=job['max_attempts']-state['attempts'],
                        recovery_instructions=state['checkpoint'], status=state['status'],
+                       failure_history=[dict(r) for r in self.db.execute('SELECT number,classification,detail FROM attempts WHERE job_id=? ORDER BY number', (task,))],
                        verified_results=[json.loads(r['payload']) for r in self.db.execute(
                            'SELECT payload FROM executions WHERE job_id=? ORDER BY sequence', (task,))])
-        return dict(payload, checkpoint_digest=Controller.digest(payload))
+        checkpoint = dict(payload, checkpoint_digest=Controller.digest(payload))
+        validate_schema('checkpoint', checkpoint)
+        return checkpoint
 
     def resume(self, task, owner, token, checkpoint):
         self._access(task, owner, token)

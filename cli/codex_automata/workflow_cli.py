@@ -22,7 +22,17 @@ def add_parser(subparsers):
     draft.add_argument('--acceptance', action='append', required=True)
     draft.add_argument('--branch', default='main')
     schema = commands.add_parser('contract', help='Print the pinned machine-readable definition or schema')
-    schema.add_argument('name', choices=['profiles', 'plan', 'artifact', 'model', 'benchmark'])
+    schema.add_argument('name', choices=['profiles', 'job', 'project', 'grant', 'plan', 'artifact', 'verification', 'checkpoint', 'completion', 'model', 'benchmark'])
+    approve = commands.add_parser('approve', help='Operator-only: freeze the exact plan digest')
+    approve.add_argument('--state', required=True)
+    approve.add_argument('--authority-file', required=True)
+    approve.add_argument('--packet', required=True)
+    approve.add_argument('--plan', required=True)
+    review = commands.add_parser('attest-review', help='Separate reviewer process attests an exact review artifact')
+    review.add_argument('task')
+    review.add_argument('--state', required=True)
+    review.add_argument('--reviewer-grant-file', required=True)
+    review.add_argument('--artifact', required=True)
     for action in ('start', 'advance', 'run', 'context', 'checkpoint', 'resume', 'rewind', 'reclaim'):
         cmd = commands.add_parser(action)
         cmd.add_argument('--state', required=True)
@@ -67,7 +77,14 @@ def run(args):
         else:
             c = Controller(args.state)
             w = Workflow(c)
-            if action == 'start':
+            if action == 'approve':
+                packet = read_json(args.packet)
+                authority_file = Path(args.authority_file).resolve()
+                require(not authority_file.is_relative_to(Path(packet['repository']).resolve()), 'Authority secret must remain outside worktree')
+                result = w.approve(authority_file.read_text().strip(), packet, read_json(args.plan))
+            elif action == 'attest-review':
+                result = w.attest_review(args.task, read_json(args.reviewer_grant_file)['token'], read_json(args.artifact))
+            elif action == 'start':
                 result = w.start(read_json(args.packet), read_json(args.plan), args.owner)
             elif action == 'checkpoint':
                 result = w.snapshot(args.task)

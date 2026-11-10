@@ -1,0 +1,133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:codex-automata:1.0:job",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "repository": {
+      "type": "string",
+      "minLength": 1
+    },
+    "branch": {
+      "type": "string",
+      "minLength": 1
+    },
+    "base_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "phase": {
+      "enum": [
+        "discover",
+        "architect",
+        "sdk",
+        "mold",
+        "cast",
+        "review",
+        "integrate",
+        "reconcile"
+      ]
+    },
+    "outcome": {
+      "type": "string",
+      "minLength": 1
+    },
+    "risk": {
+      "enum": [
+        "routine",
+        "elevated",
+        "critical"
+      ]
+    },
+    "write_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "acceptance": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "specs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true,
+      "minItems": 1
+    },
+    "contracts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "molds": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "policy_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "data_class": {
+      "type": "string",
+      "minLength": 1
+    },
+    "max_attempts": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 10
+    }
+  },
+  "required": [
+    "schema_version",
+    "id",
+    "repository",
+    "branch",
+    "base_sha",
+    "phase",
+    "outcome",
+    "risk",
+    "write_paths",
+    "acceptance",
+    "dependencies",
+    "specs",
+    "contracts",
+    "molds",
+    "policy_id",
+    "data_class",
+    "max_attempts"
+  ],
+  "additionalProperties": false
+}

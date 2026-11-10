@@ -1,0 +1,106 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:codex-automata:1.0:completion",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "methodology_version": {
+      "const": "1.0"
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "packet_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "plan_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "head_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "integration_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "status": {
+      "const": "completed-local"
+    },
+    "changed_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "acceptance": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "string",
+          "minLength": 1
+        },
+        "uniqueItems": true,
+        "minItems": 1
+      }
+    },
+    "review": {
+      "type": "object",
+      "properties": {
+        "kind": {
+          "enum": [
+            "self",
+            "independent"
+          ]
+        },
+        "reviewer": {
+          "type": "string",
+          "minLength": 1
+        },
+        "approved": {
+          "const": true
+        },
+        "unresolved": {
+          "const": 0
+        }
+      },
+      "required": [
+        "kind",
+        "reviewer",
+        "approved",
+        "unresolved"
+      ],
+      "additionalProperties": false
+    },
+    "source": {
+      "const": "workflow-local-executor"
+    },
+    "deployed": {
+      "const": false
+    }
+  },
+  "required": [
+    "schema_version",
+    "methodology_version",
+    "task_id",
+    "packet_digest",
+    "plan_digest",
+    "head_sha",
+    "integration_sha",
+    "status",
+    "changed_paths",
+    "acceptance",
+    "review",
+    "source",
+    "deployed"
+  ],
+  "additionalProperties": false
+}

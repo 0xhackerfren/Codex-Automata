@@ -100,7 +100,7 @@ class IsolationTests(unittest.TestCase):
         install(self.root, config=self.config)
         self.context.select(self.grant()['token'])
         p = self.root / '.automata/project.json'
-        p.write_text(p.read_text().replace('self-for-low-risk', 'independent'))
+        p.write_text(p.read_text().replace('independent', 'self-for-low-risk'))
         with self.assertRaises(ControlError):
             self.context.evaluate(self.root, 'LOCAL-1', 'agent', 'file:read', 'packages/a.py')
 
@@ -169,3 +169,18 @@ class IsolationTests(unittest.TestCase):
                         {'tool_name': 'MCP:web_run', 'mcp_server_name': 'unapproved'}):
             with self.assertRaises(ControlError):
                 hook_decision(self.context, self.root, 'LOCAL-1', 'agent', payload)
+
+    def test_maintenance_can_repair_multiple_assets_without_unlocking_development(self):
+        install(self.root, config=self.config)
+        token = self.grant('MAINTAIN_METHODOLOGY')['token']
+        self.context.select(token)
+        (self.root / '.automata/assets/PLAYBOOK.md').write_text('authorized maintenance in progress')
+        self.context.evaluate(self.root, 'LOCAL-1', 'agent', 'file:write', '.automata/assets/agent/AGENT_RULES.md')
+        with self.assertRaises(ControlError):
+            self.context.select(self.grant()['token'])
+
+    def test_install_failure_after_adapter_creation_rolls_back(self):
+        with patch('codex_automata.isolation.Path.rename', side_effect=OSError('rename interrupted')):
+            with self.assertRaises(OSError):
+                install(self.root)
+        self.assertEqual(list(self.root.iterdir()), [])

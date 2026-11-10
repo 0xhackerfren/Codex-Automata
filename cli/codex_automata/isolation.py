@@ -42,7 +42,7 @@ def project_config(profile='standard'):
                 adoption_profile=profile, paths={k: [] for k in PATH_FIELDS},
                 capabilities={'DEVELOP': ['file:read', 'file:write', 'check:run'],
                               'OPERATE': [], 'MAINTAIN_METHODOLOGY': ['file:read', 'file:write']},
-                review_policy='self-for-low-risk', checks=[])
+                review_policy='self-for-low-risk' if profile == 'essential' else 'independent', checks=[])
 
 
 def validate_config(config, root):
@@ -107,6 +107,7 @@ def install(target, profile='standard', agent='cursor', config=None):
                 shutil.copytree(source, assets / name)
             else:
                 shutil.copy2(source, assets / name)
+        shutil.copytree(Path(__file__).parent / 'contracts', stage / 'schemas')
         (stage / 'project.json').write_text(json.dumps(config, indent=2) + '\n', encoding='utf-8')
         (stage / 'INTEGRATION.md').write_text(ADAPTER + '\nRuntime state and authority secrets belong outside this installation and worktree.\n', encoding='utf-8')
         adapters = stage / 'adapters'
@@ -141,7 +142,7 @@ def install(target, profile='standard', agent='cursor', config=None):
     return manifest
 
 
-def verify_installation(root):
+def verify_installation(root, allow_modified=False):
     root = Path(root).resolve()
     base = root / '.automata'
     require(not base.is_symlink(), 'Installation cannot be a symlink')
@@ -153,8 +154,8 @@ def verify_installation(root):
     for name, digest in manifest['managed'].items():
         safe_path(name)
         path = base / name
-        require(path.resolve().is_relative_to(base) and not path.is_symlink() and path.is_file()
-                and digest_file(path) == digest, 'Managed asset changed or missing: ' + name)
+        require(path.resolve().is_relative_to(base) and not path.is_symlink()
+                and (allow_modified or (path.is_file() and digest_file(path) == digest)), 'Managed asset changed or missing: ' + name)
     return config, manifest
 
 
@@ -198,7 +199,7 @@ class ContextController:
         require(grant['context'] in CONTEXTS and grant['policy_version'] == METHODOLOGY, 'Unsupported context/policy')
         root = Path(grant['repository']).resolve()
         require(not self.c.path.is_relative_to(root), 'Context authority state must remain outside project')
-        verify_installation(root)
+        verify_installation(root, allow_modified=grant['context'] == 'MAINTAIN_METHODOLOGY')
         require(grant['repository'] == str(root), 'Absolute canonical repository required')
         for key in ('capabilities', 'write_paths', 'supersedes'):
             require(isinstance(grant[key], list) and all(nonempty(x) for x in grant[key])
@@ -234,7 +235,7 @@ class ContextController:
         self.c._begin()
         try:
             grant = self._grant(token)
-            config, manifest = verify_installation(grant['repository'])
+            config, manifest = verify_installation(grant['repository'], allow_modified=grant['context'] == 'MAINTAIN_METHODOLOGY')
             capabilities = sorted(set(grant['capabilities']) & set(config['capabilities'][grant['context']]))
             previous = self.current(grant['repository'], grant['task_id'], grant['actor'], required=False)
             event = dict(schema_version=1, current_context=previous['requested_context'] if previous else None,
@@ -258,7 +259,7 @@ class ContextController:
 
     def evaluate(self, root, task, actor, capability, path=None):
         event = self.current(root, task, actor)
-        config, manifest = verify_installation(root)
+        config, manifest = verify_installation(root, allow_modified=event['requested_context'] == 'MAINTAIN_METHODOLOGY')
         require(event['config_digest'] == Controller.digest(config)
                 and event['manifest_digest'] == Controller.digest(manifest), 'Policy changed; operator must select context again')
         row = self.db.execute('SELECT token_digest,payload FROM grants WHERE id=?', (event['grant_id'],)).fetchone()

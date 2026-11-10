@@ -86,6 +86,10 @@ def main(argv: list[str] | None = None) -> int:
     add_context_parser(subparsers)
     from .workflow_cli import add_parser as add_workflow_parser
     add_workflow_parser(subparsers)
+    from .qualification import add_parser as add_model_parser
+    add_model_parser(subparsers)
+    from .benchmark import add_parser as add_benchmark_parser
+    add_benchmark_parser(subparsers)
     init_parser.add_argument('--layout', choices=['namespaced', 'legacy'], default='namespaced')
     init_parser.add_argument('--config', help='Consumer-owned project configuration JSON')
     update_parser.add_argument('--layout', choices=['namespaced', 'legacy'], default='namespaced')
@@ -97,6 +101,14 @@ def main(argv: list[str] | None = None) -> int:
     if args.command is None:
         parser.print_help()
         return 1
+
+    if args.command == 'benchmark':
+        from .benchmark import run
+        return run(args)
+
+    if args.command == 'model':
+        from .qualification import run
+        return run(args)
 
     if args.command == 'workflow':
         from .workflow_cli import run

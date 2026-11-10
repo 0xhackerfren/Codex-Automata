@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:codex-automata:1.0:verification",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "methodology_version": {
+      "const": "1.0"
+    },
+    "source": {
+      "const": "local-executor"
+    },
+    "task_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "packet_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "plan_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "phase": {
+      "type": "string",
+      "minLength": 1
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "role": {
+      "type": "string",
+      "minLength": 1
+    },
+    "tier": {
+      "enum": [
+        "T0",
+        "T1",
+        "T2"
+      ]
+    },
+    "argv": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "head_sha": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}$"
+    },
+    "exit_code": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "expected": {
+      "enum": [
+        "pass",
+        "fail"
+      ]
+    },
+    "failure": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "unchanged": {
+      "type": "boolean"
+    },
+    "output_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "output_bytes": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "output_excerpt": {
+      "type": "string"
+    },
+    "elapsed_seconds": {
+      "type": "number",
+      "minimum": 0
+    },
+    "observed_at": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "schema_version",
+    "methodology_version",
+    "source",
+    "task_id",
+    "packet_digest",
+    "plan_digest",
+    "phase",
+    "name",
+    "role",
+    "tier",
+    "argv",
+    "head_sha",
+    "exit_code",
+    "expected",
+    "failure",
+    "unchanged",
+    "output_sha256",
+    "output_bytes",
+    "output_excerpt",
+    "elapsed_seconds",
+    "observed_at"
+  ],
+  "additionalProperties": false
+}
