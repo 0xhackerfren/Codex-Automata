@@ -72,3 +72,13 @@ For the complete agent operating manual, see `agent/AGENT_RULES.md`.
 Use these terms consistently: **research**, **specification**, **SDK**, **constraint surface**, **building block**, **local-first**, **design identity**, **design token**, **deployment checklist**, **convergence**, **divergence gate**, **slop fingerprint**, **mold**, **casting**, **bounded context**, **interface contract**, **iteration**, **quality gate**, **quick change**, **accessibility**, **action classification**, **agent task**, **assembly pressure**, **pipeline as first citizen**, **branch strategy**, **pipeline configuration**, **brownfield**, **cost budget**, **generator**, **guardrail**, **human review**, **incident postmortem**, **invariant**, **flow**, **recovery**, **retrospective**, **gap assessment**, **spec gap**, **SDK gap**, **mold gap**, **multi-agent orchestration**, **coverage erosion**, **contract gap**, **product test**, **property-based test**, **user profile**, **test objective**, **token budget**, **UX budget**, **security audit**, **SDK extension**, **WCAG**.
 
 See `reference/glossary.md` in the methodology repository (or your project's glossary copy) for canonical definitions.
+
+## Execution-context boundary
+
+These development rules apply only in controller-authorized DEVELOP context.
+OPERATE follows application operational policy and tools. Methodology policy
+changes require MAINTAIN_METHODOLOGY authorization. Default installation is
+namespaced under `.automata/`; existing consumer instructions are preserved.
+Read only relevant phase rules and `agent/SESSION_START.md`, not the entire
+reference library. Local job packets are first-class when Linear is unused.
+Task risk profiles and configured review gates determine applicable rigor.

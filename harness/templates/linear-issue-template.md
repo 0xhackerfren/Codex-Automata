@@ -80,3 +80,14 @@ Implementation flexibility: [What is fixed vs deliberately left to implementer?]
 - Branch / worktree / owner / checkpoint: [values]
 - Required review / integration / release gate: [values]
 - Pending external updates: [values or none]
+
+## Frozen process contract
+
+- Execution context / controller grant / superseded restrictions: [references]
+- Adoption profile / task risk profile / methodology version: [values]
+- Review gate chosen at adoption: [labeled low-risk self-review / independent / domain diverse-verifier]
+- Static conformance / real SDK-TCK fixture / behavioral check commands: [separate commands]
+- Gate tiers and required hosts: [T0 targeted / T1 suite / T2 configured matrix]
+- Acceptance-to-check map and mold-to-rule table: [references]
+- Quota observation / pending drafts / archive procedure: [measured values or unknown; no inferred limit]
+- Child readiness updates: [dependency receipts, exact head and artifact paths; proposed vs observed state]

@@ -7,6 +7,7 @@ import shutil
 from pathlib import Path
 
 ESSENTIAL_TEMPLATES = [
+    "domain-spec-template.md",
     "spec-template.md",
     "test-plan-template.md",
     "agent-task-template.md",

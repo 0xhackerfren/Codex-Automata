@@ -136,7 +136,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 - Recovery protocol active for all discovered gaps
 - Context state updated at every phase boundary
 
-**What you get:** Full methodology coverage. Every gap is caught. Every decision is traceable. Every user journey is verified. The cost is higher ceremony per change, justified by the value of what you are building.
+**What you get:** Broad methodology coverage; effectiveness still requires empirical validation. Every decision is traceable. Every user journey is verified. The cost is higher ceremony per change, justified by the value of what you are building.
 
 **Brownfield adoption:** Upgrade when the full system is onboarded and you want product testing, design identity, and full quality gates. See [brownfield-onboarding.md](brownfield-onboarding.md).
 
@@ -183,3 +183,20 @@ Downgrades are not recommended. Removing artifacts that exist creates orphaned d
 | Quality gates | Basic (2) | Standard (5) | Full (7+) |
 | Templates | 3 | 7+ | All |
 | Active rules | 5 | All | All |
+
+## Explicit review and task-risk policy
+
+At adoption, record the review gate in consumer configuration and issues. Essential
+permits labeled autonomous self-review for low-risk engineering with actual green
+evidence. Standard and Complete normally require independent review; an explicit
+operator policy may allow low-risk engineering slices to self-review. Task risk
+floors still require independent review for standard/architectural/critical work
+and approved protected changes. Domain truth promotion always retains its own
+diverse-verifier rules; engineering self-review cannot waive them. Review identity
+and genuinely independent execution remain controller/operator responsibilities.
+
+Mechanical/Small/Standard/Architectural/Critical are per-task rigor profiles,
+separate from Essential/Standard/Complete adoption. Their executable definition
+ships in CLI `contracts/profiles.json`. A smaller adoption profile cannot lower a
+task's security floor. Check tiers are T0 targeted per relevant edit, T1 full
+project suite per unit, T2 configured host/platform matrix per commit/PR.

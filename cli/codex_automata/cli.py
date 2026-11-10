@@ -84,6 +84,8 @@ def main(argv: list[str] | None = None) -> int:
 
     from .context_cli import add_parser as add_context_parser
     add_context_parser(subparsers)
+    from .workflow_cli import add_parser as add_workflow_parser
+    add_workflow_parser(subparsers)
     init_parser.add_argument('--layout', choices=['namespaced', 'legacy'], default='namespaced')
     init_parser.add_argument('--config', help='Consumer-owned project configuration JSON')
     update_parser.add_argument('--layout', choices=['namespaced', 'legacy'], default='namespaced')
@@ -95,6 +97,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.command is None:
         parser.print_help()
         return 1
+
+    if args.command == 'workflow':
+        from .workflow_cli import run
+        return run(args)
 
     if args.command in ('context', 'migration'):
         from .context_cli import run

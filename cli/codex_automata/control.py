@@ -302,6 +302,9 @@ class Controller:
 
     def complete(self, job, owner, token, evidence, required_checks):
         validate_job(job, current_base=False)
+        if self.db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='workflows'").fetchone():
+            require(not self.db.execute('SELECT 1 FROM workflows WHERE id=?', (job['id'],)).fetchone(),
+                    'Workflow jobs require executor-backed workflow completion')
         require(isinstance(evidence, dict), 'Evidence must be an object')
         require(isinstance(required_checks, list) and required_checks
                 and all(nonempty(x) for x in required_checks)

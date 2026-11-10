@@ -88,3 +88,11 @@ Context state answers **where are we?** Specifications answer **what are we buil
 - [workflow.md](workflow.md) — End-to-end methodology overview
 - [context-state-template.md](../harness/templates/context-state-template.md) — Template for initializing `context-state.md`
 - [recovery.md](recovery.md) — Gap recovery protocol; Known Gaps in context state link here
+
+## Isolated workflow checkpoints
+
+Use per-agent/task journals outside application runtime state; merge shared
+summaries serially at RECONCILE. Workflow checkpoints include exact revisions,
+artifact pins, actual execution receipts, attempts and recovery instructions.
+The trusted controller database remains authoritative; exports cannot reset
+budget or mint authority. After interruption, inspect files before replaying.

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "methodology_version": "1.0",
+  "profiles": {
+    "mechanical": {"phases": ["intake", "specify", "cast", "review", "observe"], "independent_review": false, "required_roles": []},
+    "small": {"phases": ["intake", "specify", "mold", "cast", "review", "observe"], "independent_review": false, "required_roles": ["static", "fixture", "behavior"]},
+    "standard": {"phases": ["intake", "specify", "sdk", "mold", "cast", "review", "observe"], "independent_review": true, "required_roles": ["static", "fixture", "behavior", "integration"]},
+    "architectural": {"phases": ["intake", "architect", "specify", "sdk", "mold", "cast", "review", "product", "observe"], "independent_review": true, "required_roles": ["static", "fixture", "behavior", "integration", "product"]},
+    "critical": {"phases": ["intake", "architect", "specify", "sdk", "mold", "cast", "review", "product", "observe"], "independent_review": true, "required_roles": ["static", "fixture", "behavior", "integration", "product", "security"]}
+  },
+  "phase_names": {"intake": "0: Intake", "architect": "1: Architecture and Decomposition", "specify": "2: Specification Writing", "sdk": "3: SDK Design", "mold": "4: Test Molding", "cast": "5: Code Casting", "review": "6: Review", "product": "6b: Product Testing", "observe": "7: Deployment and Observation"}
+}

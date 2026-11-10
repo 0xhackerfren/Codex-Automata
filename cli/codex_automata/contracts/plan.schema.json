@@ -1,0 +1,161 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:codex-automata:1.0:plan",
+  "type": "object",
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "methodology_version": {
+      "const": "1.0"
+    },
+    "packet_digest": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "profile": {
+      "enum": [
+        "mechanical",
+        "small",
+        "standard",
+        "architectural",
+        "critical"
+      ]
+    },
+    "impacts": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "enum": [
+          "api",
+          "persistence",
+          "concurrency",
+          "security",
+          "authentication",
+          "authorization",
+          "cryptography",
+          "policy",
+          "release",
+          "destructive",
+          "ambiguous",
+          "feature",
+          "refactor",
+          "bugfix",
+          "documentation"
+        ]
+      }
+    },
+    "checks": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "minLength": 1
+          },
+          "argv": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            }
+          },
+          "role": {
+            "enum": [
+              "static",
+              "fixture",
+              "behavior",
+              "integration",
+              "product",
+              "security",
+              "lint"
+            ]
+          },
+          "tier": {
+            "enum": [
+              "T0",
+              "T1",
+              "T2"
+            ]
+          },
+          "timeout": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 300
+          }
+        },
+        "required": [
+          "name",
+          "argv",
+          "role",
+          "tier",
+          "timeout"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "traceability": {
+      "type": "object",
+      "minProperties": 1,
+      "additionalProperties": {
+        "type": "array",
+        "minItems": 1,
+        "uniqueItems": true,
+        "items": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "context_paths": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    },
+    "context_budget": {
+      "type": "integer",
+      "minimum": 1024,
+      "maximum": 1048576
+    },
+    "review_policy": {
+      "enum": [
+        "self-for-low-risk",
+        "independent"
+      ]
+    },
+    "review_max_age_hours": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 168
+    },
+    "approved_changes": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      },
+      "uniqueItems": true
+    }
+  },
+  "required": [
+    "schema_version",
+    "methodology_version",
+    "packet_digest",
+    "profile",
+    "impacts",
+    "checks",
+    "traceability",
+    "context_paths",
+    "context_budget",
+    "review_policy",
+    "review_max_age_hours",
+    "approved_changes"
+  ],
+  "additionalProperties": false
+}

@@ -701,3 +701,13 @@ Batch related gaps within a single module into one recovery card. Create separat
 | 6b: Product Testing | Agent (human review) | No | `product-test-template.md` |
 | 7: Deployment | Human + Agent | No | `deployment-checklist-template.md` |
 | Recovery | Human + Agent | No | `gap-assessment-template.md` |
+
+## Execution-context boundary
+
+These development rules apply only in controller-authorized DEVELOP context.
+OPERATE follows application operational policy and tools. Methodology policy
+changes require MAINTAIN_METHODOLOGY authorization. Default installation is
+namespaced under `.automata/`; existing consumer instructions are preserved.
+Read only relevant phase rules and `agent/SESSION_START.md`, not the entire
+reference library. Local job packets are first-class when Linear is unused.
+Task risk profiles and configured review gates determine applicable rigor.
