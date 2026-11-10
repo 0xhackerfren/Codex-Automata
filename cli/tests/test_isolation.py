@@ -155,7 +155,7 @@ class IsolationTests(unittest.TestCase):
         with patch('codex_automata.verify.subprocess.run') as runner:
             runner.return_value.returncode = 0
             self.assertEqual(run_verify(str(self.root), str(self.c.path), 'LOCAL-1', 'agent'), 0)
-            self.assertEqual(runner.call_args.kwargs['cwd'], self.root)
+            self.assertEqual(runner.call_args.kwargs['cwd'].resolve(), self.root.resolve())
 
     def test_hook_selftest_exact_payload_and_denial_remedy(self):
         from codex_automata.context_cli import hook_decision

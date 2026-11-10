@@ -64,7 +64,7 @@ live-agent study is run. No production readiness or unattended release is assert
 ## Hosted CI follow-up
 
 The first published matrix passed both Linux versions and documentation checks,
-but exposed Windows repository-path casing differences in authorization identity.
+but exposed Windows repository-path spelling differences (including 8.3 short-name aliases) in authorization identity.
 Repository grants now normalize absolute identity, Windows permission prefixes
 compare without case sensitivity, and nonportable trailing-dot/space and Git
 metadata aliases are rejected. Three additional regression tests cover normalized
@@ -72,3 +72,9 @@ identity, permission aliases and legacy-dependency evidence laundering. Workflow
 dependencies now require executor-backed completion, while legacy v1 behavior
 remains explicitly observation-only. The delivered PR head is rerun in the full
 matrix; consult its current checks for final hosted status.
+
+A subsequent Windows run exercised the complete workflows and exposed only a test
+fixture comparing an unresolved 8.3 temporary path to the correctly resolved
+working directory. The assertion now compares resolved identities, retaining the
+same repository-scope guarantee. Platform-specific POSIX/Bash/symlink tests are
+intentionally skipped on Windows; all applicable workflow/security gates still run.
