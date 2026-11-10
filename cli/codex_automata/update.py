@@ -6,9 +6,9 @@ from codex_automata.init import run_init
 
 
 def run_update(target_str: str, staging_str: str | None = None,
-               profile: str = "standard", agent: str = "cursor") -> int:
+               profile: str = "standard", agent: str = "cursor", layout: str = "namespaced") -> int:
     target = Path(target_str).resolve()
-    if not (target / "AGENTS.md").is_file():
+    if not (target / "AGENTS.md").is_file() and not (target / '.automata').is_dir():
         print(f"Error: {target} has no AGENTS.md; select the intended project.")
         return 1
     staging = (Path(staging_str).resolve() if staging_str else
@@ -19,7 +19,33 @@ def run_update(target_str: str, staging_str: str | None = None,
     if staging.exists() or staging.is_symlink():
         print(f"Error: staging path already exists: {staging}")
         return 1
-    rc = run_init(str(staging), profile, agent)
+    config = None
+    report = None
+    if layout == 'namespaced':
+        from .isolation import read_json, verify_installation, migration_report, digest_file
+        from .control import ControlError
+        import json
+        if (target / '.automata').exists():
+            try:
+                # Read the original manifest even when customized assets fail integrity;
+                # stage everything, never discard those local edits.
+                old = read_json(target / '.automata/manifest.json')
+                config = read_json(target / '.automata/project.json')
+                profile = config['adoption_profile']
+                custom = [name for name, digest in old['managed'].items()
+                          if not (target / '.automata' / name).is_file()
+                          or digest_file(target / '.automata' / name) != digest]
+                report = dict(from_version=old['methodology_version'], to_version='1.0',
+                              customized_managed_files=custom, consumer_files_replaced=[],
+                              action='Review staged candidate; preserve customizations; no automatic replacement')
+            except (OSError, ValueError, KeyError, TypeError) as exc:
+                print('Error: cannot inspect installation: ' + str(exc))
+                return 1
+        else:
+            report = migration_report(target)
+    rc = run_init(str(staging), profile, agent, layout, config)
+    if rc == 0 and report is not None:
+        (staging / '.automata/migration-report.json').write_text(json.dumps(report, indent=2) + '\n', encoding='utf-8')
     if rc == 0:
         print(f"Upstream candidate staged at {staging}.")
         print(f"Review and merge the diff into {target}; no project files were changed.")

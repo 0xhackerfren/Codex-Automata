@@ -35,8 +35,32 @@ def _run_script(script: Path, extra_args: list[str] | None = None) -> int:
     return result.returncode
 
 
-def run_verify(target_str: str) -> int:
+def run_verify(target_str: str, state=None, task=None, actor=None) -> int:
     target = Path(target_str).resolve()
+
+    if (target / '.automata').exists():
+        from .isolation import verify_installation, ContextController
+        from .control import Controller, ControlError, require
+        controller = None
+        try:
+            config, _ = verify_installation(target)
+            require(state and task and actor, 'Explicit state/task/actor and DEVELOP context required')
+            controller = Controller(state)
+            context = ContextController(controller)
+            decision = context.evaluate(target, task, actor, 'check:run')
+            require(decision['context'] == 'DEVELOP', 'Verification is development-only')
+            require(config['checks'], 'Configure project checks; installation integrity is not behavioral verification')
+            for check in config['checks']:
+                result = subprocess.run(check['argv'], cwd=target, timeout=300)
+                if result.returncode:
+                    return 1
+            return 0
+        except (ControlError, OSError, ValueError, subprocess.TimeoutExpired) as exc:
+            print('FAILED: ' + str(exc))
+            return 1
+        finally:
+            if controller:
+                controller.close()
 
     if not (target / "AGENTS.md").exists():
         print(f"Error: {target} does not appear to be a Codex Automata project (no AGENTS.md found).")

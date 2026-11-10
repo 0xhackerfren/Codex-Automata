@@ -102,6 +102,7 @@ class Controller:
     """One local database is the coordination authority for its workers."""
     def __init__(self, path):
         path = Path(path)
+        self.path = path.resolve()
         path.parent.mkdir(parents=True, exist_ok=True)
         require(not path.is_symlink(), 'State database cannot be a symlink')
         try:
