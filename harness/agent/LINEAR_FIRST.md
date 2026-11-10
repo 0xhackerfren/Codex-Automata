@@ -49,7 +49,7 @@ PLAN changes planning artifacts by default; implement product code only when the
 user also requests it. Deep planning is useful only while it reduces downstream
 uncertainty. Stop expanding speculative detail when a usable queue exists.
 
-### MODE=EXECUTE ISSUE=<ID>
+### MODE=EXECUTE ISSUE=[ID]
 
 1. Fetch the current issue, dependencies and linked contracts; read relevant code
    and applicable instructions. Check the Ready gate below. Confirm the assigned
@@ -69,7 +69,7 @@ uncertainty. Stop expanding speculative detail when a usable queue exists.
    Record observed/expected behavior, attempts, evidence and the missing decision;
    move to another unblocked task rather than guessing repeatedly.
 
-### MODE=RECONCILE PROJECT=<ID>
+### MODE=RECONCILE PROJECT=[ID]
 
 Read actual diffs, reviewed SHAs, checks, blockers and changed requirements.
 Compare them to the intended work and versioned contracts. Update affected

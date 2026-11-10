@@ -2,7 +2,6 @@
 
 Delivery cadence: [PLAN → EXECUTE → RECONCILE](LINEAR_FIRST.md). Linear work records link versioned GitHub contracts and evidence.
 
-
 Operating manual for agents executing tasks under Codex Automata. Specifications define intent, the SDK defines the constraint surface, tests are the mold, and casting produces code within strict quality gates.
 
 ## 1. Core Principles

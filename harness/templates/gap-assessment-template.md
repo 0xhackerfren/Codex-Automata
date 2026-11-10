@@ -80,6 +80,7 @@
 <!--
 Common root causes and remediation:
 - Review checklist did not require coverage verification --> add the check to the review and PR templates.
+
 - Contract tests were not required at the boundary --> update architecture and module boundary templates.
 - Spec was reviewed by someone unfamiliar with the domain --> establish domain-owner review requirements.
 - Tests were disabled to unblock a deadline --> require tracking issues with due dates for disabled tests.

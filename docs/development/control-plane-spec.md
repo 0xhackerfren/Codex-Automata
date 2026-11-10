@@ -59,7 +59,6 @@ a coordinator service. Validate the repository root and refs using Git commands
 with argument arrays, no shell interpolation. Store packets/evidence without
 secrets. No SDK ABI change to consumer applications is needed.
 
-
 ## Trust decisions and v1 boundaries
 
 The operator controls the approval inventory, identities, required checks and
@@ -72,7 +71,6 @@ unknown database schema versions. State must remain outside model write scope.
 Existing insecure permissions and remote-host coordination require deployment
 controls. Revision and packet replacement is explicit re-planning, not mutation
 of an active assignment; cross-ID retry lineage remains operator-enforced.
-
 
 ## Observed package validation
 

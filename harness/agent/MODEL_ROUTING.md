@@ -76,3 +76,11 @@ Routing records support retrospective qualification: first-pass acceptance,
 rework, integration defects, escalation causes, latency and measured cost. Never
 lower acceptance criteria to qualify a cheaper model. Keep model IDs and limits
 in consumer configuration; keep the job and evidence contracts provider-neutral.
+
+## Measured capability path
+
+CLI 0.6 additionally exposes `model eligible` using versioned capability profiles
+and operator-supplied real availability/capacity. Unknown metrics cannot qualify a
+model; commercial names imply no hierarchy. The existing v1 tier route remains a
+compatibility interface. New runtime adapters should apply capability eligibility
+and task risk before dispatch. The methodology recommends, the runtime schedules.

@@ -107,3 +107,8 @@ Commit `.automata` assets/config/manifest and reviewed routing adapters. Keep co
 state, tokens and per-agent checkpoints outside the worktree and model write
 scope, retained for the task/audit lifecycle by the operator. Application runtime
 state remains at application-configured paths with its own retention policy.
+
+The namespace includes scoped Git attributes preserving managed asset bytes across
+Windows/Unix checkouts. Manifest integrity is byte-based; do not normalize managed
+files independently of a reviewed update. Consumer-owned project configuration
+and routing adapters remain ordinary project files.

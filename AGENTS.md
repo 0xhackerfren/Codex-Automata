@@ -47,18 +47,16 @@ You are in the Codex Automata methodology repository itself. The methodology har
 
 ## For Teams Adopting the Methodology
 
-Copy the `harness/` directory into your project root. The harness includes:
+Use the CLI isolated installation by default. Managed rules, templates and schemas
+live under `.automata/`; application code, tests, SDK, documentation and runtime
+state remain consumer-owned at configured paths. Existing agent instructions are
+preserved. Root and IDE integration use minimal context-routing adapters.
 
-- `AGENTS.md` — Tool-agnostic agent instructions (works with Claude Code, Copilot, Codex, Windsurf, etc.)
-- `agent/` — Agent operating rules and casting rules
-- `templates/` — Specification, test plan, architecture, design identity, and other templates
-- `.cursor/` — Cursor-specific rules, skills, subagents, and hooks (optional, Cursor-only)
-- `scripts/` — Init scripts for project scaffolding
-- `PLAYBOOK.md` — Phase-by-phase execution guide
-
-The `.cursor/` directory is Cursor-specific. Everything else works with any AI coding tool that reads AGENTS.md or can be instructed via project-level configuration.
-
-See `reference/adoption-profiles.md` for Essential, Standard, and Complete profile options.
+DEVELOP applies engineering gates. OPERATE uses application instructions/tools.
+MAINTAIN_METHODOLOGY requires separate explicit authority. Installation alone
+never activates development. See `docs/development/isolation.md` and
+`SWARM_INTEGRATION_HANDOFF.md`. Legacy root-copy adoption requires explicit
+`--layout legacy` and an ownership-reviewed migration.
 
 ## Linear-first delivery
 

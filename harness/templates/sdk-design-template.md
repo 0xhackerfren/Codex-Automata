@@ -22,7 +22,7 @@
 
 ### [Type Name]
 
-```
+```text
 [Language-appropriate type definition, e.g., TypeScript interface, Python dataclass, Go struct]
 ```
 
@@ -39,7 +39,7 @@ _[Repeat for each domain type]_
 
 ### [Interface Name]
 
-```
+```text
 [Language-appropriate interface definition]
 ```
 

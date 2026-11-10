@@ -17,6 +17,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 **Philosophy:** Get the core loop right. Specification, tests, code. Everything else is optional but available.
 
 **Active phases:**
+
 - Phase 0: Intake (simplified: project name, goal, constraints)
 - Phase 2: Specification Writing
 - Phase 4: Test Molding
@@ -24,17 +25,20 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 - Phase 6: Review (self-review checklist)
 
 **Skipped phases:**
+
 - Phase 1: Architecture (implicit for small scope)
 - Phase 3: SDK Design (no separate SDK; types live alongside code)
 - Phase 6b: Product Testing (optional manual verification)
 - Phase 7: Deployment (out of scope for the methodology at this tier)
 
 **Required templates (3):**
+
 - `spec-template.md`
 - `test-plan-template.md`
 - `agent-task-template.md`
 
 **Active rules (5):**
+
 - R1 (spec before code)
 - R4 (do not bypass tests)
 - R7 (atomic commits traceable to spec sections)
@@ -42,6 +46,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 - R10 (every task maps to spec and test)
 
 **Quality gates:**
+
 - All tests pass
 - Specification exists for every module
 
@@ -66,6 +71,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 **Philosophy:** Full pipeline minus the heaviest verification layers. All principles active. SDK constraint surface enforced.
 
 **Active phases:**
+
 - Phase 0: Intake (full)
 - Phase 1: Architecture and Decomposition
 - Phase 2: Specification Writing
@@ -76,9 +82,11 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 - Phase 7: Deployment and Observation
 
 **Skipped phases:**
+
 - Phase 6b: Product Testing (recommended but not required)
 
 **Required templates (all standard):**
+
 - `spec-template.md`
 - `test-plan-template.md`
 - `agent-task-template.md`
@@ -91,6 +99,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 **Active rules:** R1-R18
 
 **Quality gates:**
+
 - All tests pass
 - Specification exists for every module
 - SDK interfaces cover all public module boundaries
@@ -118,6 +127,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 **Active phases:** All (Phase 0 through Phase 7, including Phase 6b)
 
 **Required templates:** All templates in the harness, including:
+
 - All Standard templates
 - `product-test-template.md`
 - `user-profile-template.md`
@@ -127,6 +137,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 **Active rules:** All (R1-R18)
 
 **Quality gates:**
+
 - All Standard gates
 - Product test objectives pass for all critical user journeys
 - UX budgets met for all defined profiles

@@ -109,6 +109,7 @@ def install(target, profile='standard', agent='cursor', config=None):
                 shutil.copy2(source, assets / name)
         shutil.copytree(Path(__file__).parent / 'contracts', stage / 'schemas')
         (stage / 'project.json').write_text(json.dumps(config, indent=2) + '\n', encoding='utf-8')
+        (stage / '.gitattributes').write_text('assets/** -text\nschemas/** -text\nadapters/** -text\nINTEGRATION.md -text\n', encoding='utf-8')
         (stage / 'INTEGRATION.md').write_text(ADAPTER + '\nRuntime state and authority secrets belong outside this installation and worktree.\n', encoding='utf-8')
         adapters = stage / 'adapters'
         adapters.mkdir()

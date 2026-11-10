@@ -70,6 +70,7 @@ Priority = Risk Level x Change Frequency. Critical modules that change frequentl
 **Target module:** _[highest priority from inventory]_
 **Profile:** Essential
 **Steps:**
+
 1. [ ] Write specification from domain knowledge (not code)
 2. [ ] Derive tests from specification
 3. [ ] Verify existing implementation against new tests
@@ -81,6 +82,7 @@ Priority = Risk Level x Change Frequency. Critical modules that change frequentl
 **Target modules:** _[next 2-4 highest priority]_
 **Profile upgrade:** _[Essential or Standard]_
 **Steps:**
+
 1. [ ] Repeat recovery process for each module
 2. [ ] Extract SDK types for shared interfaces
 3. [ ] Define interface contracts between onboarded modules
@@ -91,6 +93,7 @@ Priority = Risk Level x Change Frequency. Critical modules that change frequentl
 **Target:** _[remaining high/medium priority modules]_
 **Profile upgrade:** Standard
 **Steps:**
+
 1. [ ] Continue recovery-based onboarding
 2. [ ] Implement context persistence
 3. [ ] Activate full quality gate pipeline

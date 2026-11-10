@@ -28,3 +28,20 @@ Review identities, approval policy, command meaning, declared impact, and databa
 isolation remain trusted-operator responsibilities. No daemon or private adapter
 belongs in this repository. Existing explanations remain human references;
 short execution packets must not load them all by default.
+
+## After implementation
+
+| Original gap | Result and evidence | Residual limitation |
+| --- | --- | --- |
+| Root namespace/role ambiguity (added P0) | Namespaced manifest/config, explicit grants, capability evaluator, populated-monorepo/operation/maintenance/update/rollback tests | Tool adapter/process isolation and legacy rule cleanup remain consumer responsibilities |
+| Fabricated completion/phase skipping | Approved-plan workflow, observed subprocess receipts, ordered pinned artifacts, legacy-bypass rejection | Command/test semantic quality still requires review |
+| Risk/protected artifact bypass | Conservative deterministic floors, operator-approved impacts/checks, protected deltas and separate reviewer attestation | Unknown semantic impact and authentic reviewer independence require operator judgment |
+| Unbounded context/recovery | Deterministic byte-bounded packets, optional pinned line excerpts, supplied-context journal, typed snapshot/resume/reclaim/rewind | Byte budgets are not model token counts; repository relocation needs reviewed replan |
+| Coarse model routing/no benchmark | Capability eligibility schema/API and three-arm eight-category evaluator | Live model outcomes, statistical effectiveness and candidate test-quality scoring remain pending |
+| Windows SQLite cleanup | Cleanup closes current reopened controller, retained in cross-platform CI matrix | Hosted Windows results must be observed for delivered revision |
+| Invalid docs workflow | Valid YAML, checked-in lint configuration, formatting fixes, actual local link check | External web availability excluded from local-link validation |
+| Undefined adoption/review and mold fixtures | Explicit configured review policy, two-layer mold gates, retrospective adoption matrix | Next real campaign must validate adoption; no synthetic result substitutes for it |
+
+The serious local bypasses found during implementation were fixed and given
+regression molds. Remaining items are stated constraints and external validation
+work, not claims that unattended production use is ready.

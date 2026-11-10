@@ -74,10 +74,12 @@
 **Trigger criteria:** _[What conditions trigger a rollback? e.g., "Error rate exceeds 5% for 5 minutes"]_
 
 **Rollback steps:**
+
 1. [ ] _[Step 1]_
 2. [ ] _[Step 2]_
 
 **Rollback verification:**
+
 - [ ] Smoke tests pass on rolled-back version
 - [ ] Monitoring confirms recovery
 

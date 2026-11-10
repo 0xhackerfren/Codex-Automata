@@ -170,12 +170,14 @@ Accessibility is a specification constraint, not a testing afterthought. These c
 **Target WCAG level:** _[A / AA / AAA. AA recommended as minimum for production products.]_
 
 **Contrast requirements:**
+
 - Body text on background: _[minimum ratio, e.g., 4.5:1 for AA normal text]_
 - Large text on background: _[minimum ratio, e.g., 3:1 for AA large text]_
 - Interactive element boundaries: _[minimum ratio, e.g., 3:1 for UI components]_
 - Validate all text/background pairings from the Color System section against these ratios.
 
 **Keyboard navigation:**
+
 - [ ] All interactive elements reachable via Tab/Shift+Tab
 - [ ] All interactive elements operable via Enter/Space
 - [ ] Visible focus indicators on all focusable elements
@@ -183,6 +185,7 @@ Accessibility is a specification constraint, not a testing afterthought. These c
 - [ ] No focus traps (Escape exits modals and dropdowns)
 
 **Screen reader support:**
+
 - [ ] Semantic HTML used (headings, landmarks, lists, buttons)
 - [ ] ARIA attributes only when native semantics are insufficient
 - [ ] Meaningful alt text for informative images; decorative images marked `alt=""`
@@ -190,14 +193,17 @@ Accessibility is a specification constraint, not a testing afterthought. These c
 - [ ] Dynamic content changes announced to screen readers
 
 **Motion and animation:**
+
 - [ ] Respect `prefers-reduced-motion` media query
 - [ ] No auto-playing animations that cannot be paused
 - [ ] Essential animations have reduced-motion alternatives
 
 **Touch targets:**
+
 - Minimum interactive target size: _[e.g., 44x44 CSS pixels per WCAG 2.5.5]_
 
 **Additional commitments:**
+
 - _[Project-specific accessibility goals]_
 
 ## Copy Voice

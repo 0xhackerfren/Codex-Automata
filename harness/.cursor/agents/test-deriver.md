@@ -14,6 +14,7 @@ When invoked:
 5. Name tests to clearly reference spec sections (e.g., test_create_task_empty_title).
 
 For each test case, provide:
+
 - Test name
 - Specification reference (section and behavior number)
 - Setup (preconditions and test data)
@@ -25,6 +26,7 @@ Use the test plan template structure from templates/test-plan-template.md.
 Build a specification coverage matrix showing which tests cover which spec behaviors. Every behavior must be covered. Every edge case must be covered.
 
 After deriving tests, verify:
+
 - No spec behavior is untested.
 - No edge case is skipped.
 - Contract tests exist for every referenced interface.

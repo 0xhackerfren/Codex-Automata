@@ -49,7 +49,7 @@ Prior pins remain valid only while their referenced bytes stay unchanged.
 The CLI verifies structure, pins and observed command status. It cannot prove the
 semantic quality of an ADR, fixture oracle, test assertions or review. Those
 remain review/benchmark responsibilities. Independent review requires a different
-controller-granted actor, but the operator must ensure an actually independent
+controller-granted actor and an exact artifact attested using that reviewer token through `workflow attest-review`, but the operator must ensure an actually independent
 review occurred. Different strings alone do not create independence.
 
 ## Commands and bounded context
@@ -66,7 +66,7 @@ codex-automata workflow resume LOCAL-1 --state /secure/control.sqlite --owner co
 codex-automata workflow rewind LOCAL-1 --state /secure/control.sqlite --owner coder --token CLAIM --phase cast --reason 'Review correction'
 ```
 
-The operator freezes exact argv, timeout, role and gate tier in the plan. No task
+The operator approves the exact plan digest with `workflow approve --authority-file ...` before `workflow start`. The operator freezes exact argv, timeout, role and gate tier in the plan. No task
 text is evaluated as a command. Command execution is real code execution and
 requires appropriate process isolation, reviewed commands and controlled tools.
 Output is spooled to a temporary file, hashed completely and retained as an 8 KiB
@@ -118,3 +118,10 @@ partial implementation, use `workflow reclaim TASK --state ... --owner ...`,
 with a fresh context grant for a replacement actor, rather than a fresh stale-base
 job claim. Claims are never stolen by timeout. Inspect target files after every
 interrupted edit before reapplying. Reconcile unknown remote effects separately.
+
+An optional plan `context_excerpts` list selects `{path, start_line, end_line}`
+(inclusive, one-based) instead of loading an entire referenced file. Excerpts pin
+the full blob and record the selected range; invalid ranges fail. Selected source
+objects are capped at 1 MiB before extraction. Supplied packets are journaled in
+trusted context_packets state so instruction/source provenance survives sessions.
+The context includes a compact output envelope and tool-argument requirements.
