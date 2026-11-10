@@ -43,12 +43,6 @@ Run the complete CLI suite and standalone workflow demonstration.
 - Hosted Windows/Python matrix results belong to the PR checks, not this local
   Linux validation. This was a single-agent review.
 
-## Repository reconciliation
-
-Baseline main is `687c71eb2574a86db775c62a6de22d11acf78a25`, the merge of PR #6.
-At inspection, all four non-main branches were ancestors of main:
-`docs/per-10-operating-model`, `feat/automata-vnext`, `sdk-block-registry` and
-`three-new-principles`. Remote deletion was blocked pending explicit user
-authorization; no branch was removed. The implementation is committed locally;
-automatic approval review also blocked public push pending explicit authorization.
-No remote implementation branch or PR was created in this continuation.
+The follow-up [execution recovery contract](execution-recovery-spec.md) adds
+durable command intent, overlap rejection and operator reconciliation after
+interruption. Its validation record covers the combined implementation.

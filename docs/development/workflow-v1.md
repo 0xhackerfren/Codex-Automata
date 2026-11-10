@@ -81,6 +81,23 @@ process containment require the consuming runtime. See the
 [execution contract](bounded-execution-spec.md).
 Commands must be side-effect-bounded; unknown external effects use the journal.
 
+Each workflow command commits an intent before launch. One unresolved command
+per repository blocks further commands, phase transitions, rewind, release and
+manual failure changes in the shared controller database. A crash or interruption
+leaves the intent visible in checkpoints and `workflow runs TASK --state STATE`.
+There is no automatic expiry or replay. Stop the original command and descendants,
+inspect side effects, then use operator authority to reconcile the exact run:
+
+```bash
+codex-automata workflow reconcile-run RUN_ID --state /secure/control.sqlite --authority-file /secure/authority.key --confirm-stopped --evidence 'Stopped original process tree; inspected side effects and cleanup'
+```
+
+Reconciliation records an environment failure attempt, never a passing check.
+Resolve the failure with repair evidence before retrying. A prior passing receipt
+cannot substitute for the unresolved or reconciled run. See the
+[recovery contract](execution-recovery-spec.md). Separate controller databases do
+not coordinate; operator stop assertions require external host investigation.
+
 Unexpected command failures consume the existing job attempt budget automatically.
 Expected red behavioral molds do not. Environment failures require `job resolve`
 with repair evidence; capability failures permit retry within the same budget.

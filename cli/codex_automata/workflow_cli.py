@@ -33,6 +33,15 @@ def add_parser(subparsers):
     review.add_argument('--state', required=True)
     review.add_argument('--reviewer-grant-file', required=True)
     review.add_argument('--artifact', required=True)
+    runs = commands.add_parser('runs', help='Inspect durable command intent and outcomes')
+    runs.add_argument('task')
+    runs.add_argument('--state', required=True)
+    reconcile = commands.add_parser('reconcile-run', help='Operator-only: reconcile an uncertain command without replay')
+    reconcile.add_argument('run_id')
+    reconcile.add_argument('--state', required=True)
+    reconcile.add_argument('--authority-file', required=True)
+    reconcile.add_argument('--evidence', required=True)
+    reconcile.add_argument('--confirm-stopped', action='store_true')
     for action in ('start', 'advance', 'run', 'context', 'checkpoint', 'resume', 'rewind', 'reclaim'):
         cmd = commands.add_parser(action)
         cmd.add_argument('--state', required=True)
@@ -77,7 +86,18 @@ def run(args):
         else:
             c = Controller(args.state)
             w = Workflow(c)
-            if action == 'approve':
+            if action == 'runs':
+                result = w.runs(args.task)
+            elif action == 'reconcile-run':
+                authority_file = Path(args.authority_file).resolve()
+                run = c.db.execute('SELECT job_id FROM command_runs WHERE id=?', (args.run_id,)).fetchone()
+                require(run is not None, 'Unknown command run')
+                repository = json.loads(c.state(run['job_id'])['packet'])['repository']
+                require(not authority_file.is_relative_to(Path(repository).resolve()),
+                        'Authority secret must remain outside worktree')
+                result = w.reconcile_run(authority_file.read_text().strip(), args.run_id,
+                                         args.evidence, args.confirm_stopped)
+            elif action == 'approve':
                 packet = read_json(args.packet)
                 authority_file = Path(args.authority_file).resolve()
                 require(not authority_file.is_relative_to(Path(packet['repository']).resolve()), 'Authority secret must remain outside worktree')

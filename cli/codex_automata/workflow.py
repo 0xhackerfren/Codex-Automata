@@ -225,8 +225,19 @@ class Workflow:
                     'Protected existing artifact changed without operator-reviewed plan: ' + path)
         return list(filter(None, changed))
 
-    def execute(self, task, owner, token, name, expect='pass'):
+    def _prepare_execution(self, task, owner, token, name, expect):
+        self.c._begin()
+        try:
+            prepared = self._execution_intent(task, owner, token, name, expect)
+            self.db.execute('COMMIT')
+            return prepared
+        except BaseException:
+            self.db.execute('ROLLBACK')
+            raise
+
+    def _execution_intent(self, task, owner, token, name, expect):
         state, job, plan, row, phases = self._access(task, owner, token)
+        self.c._no_running_command(task)
         require(row['phase_index'] < len(phases), 'Workflow already finished')
         phase = phases[row['phase_index']]
         checks = {x['name']: x for x in plan['checks']}
@@ -238,12 +249,25 @@ class Workflow:
         repo = job['repository']
         head = clean_head(repo)
         self._scope(job, plan, head, owner)
+        import secrets
+        run_id = secrets.token_hex(24)
+        payload = dict(task_id=task, owner=owner, name=name, phase=phase, head_sha=head,
+                       plan_digest=Controller.digest(plan), packet_digest=Controller.digest(job),
+                       expected=expect, started_at=datetime.now(timezone.utc).isoformat())
+        self.db.execute('INSERT INTO command_runs VALUES(?,?,?,?,?,NULL)',
+                        (run_id, task, str(Path(repo).resolve()), 'running', canonical(payload)))
+        return job, plan, row, phase, check, head, run_id
+
+    def execute(self, task, owner, token, name, expect='pass'):
+        job, plan, row, phase, check, head, run_id = self._prepare_execution(task, owner, token, name, expect)
+        repo = job['repository']
         start = time.monotonic()
         execution = run_check(check['argv'], repo, check['timeout'],
                               check.get('output_limit_bytes', DEFAULT_OUTPUT_LIMIT))
         code, failure = execution['exit_code'], execution['failure']
         unchanged = git(repo, 'rev-parse', 'HEAD') == head and not git(repo, 'status', '--porcelain', '--untracked-files=all')
         receipt = dict(schema_version=1, methodology_version=METHODOLOGY, source='local-executor',
+                       run_id=run_id,
                        task_id=task, packet_digest=Controller.digest(job), plan_digest=Controller.digest(plan),
                        phase=phase, name=name, role=check['role'], tier=check['tier'], argv=check['argv'],
                        head_sha=head, exit_code=code, expected=expect, failure=failure, unchanged=unchanged,
@@ -256,9 +280,12 @@ class Workflow:
             # Recheck ownership after subprocess: interrupted/released claims cannot
             # record evidence under a replacement worker's authority.
             self._access(task, owner, token)
+            pending = self.db.execute('SELECT status FROM command_runs WHERE id=?', (run_id,)).fetchone()
+            require(pending and pending['status'] == 'running', 'Command intent was already reconciled')
             current = self.db.execute('SELECT phase_index FROM workflows WHERE id=?', (task,)).fetchone()[0]
             require(current == row['phase_index'], 'Phase changed while check ran')
             self.db.execute('INSERT INTO executions(job_id,payload) VALUES(?,?)', (task, canonical(receipt)))
+            self.db.execute("UPDATE command_runs SET status='finished' WHERE id=?", (run_id,))
             if not unchanged or failure or (code == 0) != (expect == 'pass'):
                 number = self.c.state(task)['attempts'] + 1
                 classification = 'environment' if failure else 'capability'
@@ -273,15 +300,51 @@ class Workflow:
             raise
         return receipt
 
+    def runs(self, task):
+        self.c.state(task)
+        return [dict(run_id=r['id'], status=r['status'], resolution=r['resolution'],
+                     **json.loads(r['payload'])) for r in self.db.execute(
+                         'SELECT * FROM command_runs WHERE job_id=? ORDER BY rowid', (task,))]
+
+    def reconcile_run(self, authority, run_id, evidence, stopped=False):
+        import secrets
+        self.c._begin()
+        try:
+            authority_row = self.db.execute('SELECT digest FROM context_authority WHERE id=1').fetchone()
+            require(authority_row and secrets.compare_digest(authority_row['digest'], Controller.digest(authority)),
+                    'Operator command reconciliation authority required')
+            require(stopped is True and isinstance(evidence, str) and evidence.strip(),
+                    'Confirm command/descendants stopped and provide investigation evidence')
+            run = self.db.execute('SELECT * FROM command_runs WHERE id=?', (run_id,)).fetchone()
+            require(run and run['status'] == 'running', 'No unresolved command with this run ID')
+            state = self.c.state(run['job_id'])
+            number = state['attempts'] + 1
+            detail = 'Uncertain command ' + run_id + ': ' + evidence.strip()
+            self.db.execute('INSERT INTO attempts VALUES(?,?,?,?)',
+                            (run['job_id'], number, 'environment', detail))
+            self.db.execute('UPDATE jobs SET attempts=?,failure=?,checkpoint=? WHERE id=?',
+                            (number, 'environment', detail, run['job_id']))
+            self.db.execute("UPDATE command_runs SET status='reconciled',resolution=? WHERE id=?",
+                            (evidence.strip(), run_id))
+            self.db.execute('COMMIT')
+            return dict(run_id=run_id, status='reconciled', attempts=number, failure='environment')
+        except BaseException:
+            self.db.execute('ROLLBACK')
+            raise
+
     def _checks(self, task, plan, head, roles=None, red=False):
         records = [json.loads(r['payload']) for r in self.db.execute(
             'SELECT payload FROM executions WHERE job_id=? ORDER BY sequence', (task,))]
+        runs = self.runs(task)
         for check in plan['checks']:
             if roles is not None and check['role'] not in roles:
                 continue
             matching = [r for r in records if r['name'] == check['name'] and r['head_sha'] == head]
             require(matching, 'Missing observed current-head command: ' + check['name'])
             result = matching[-1]
+            latest = next((r for r in reversed(runs) if r['name'] == check['name'] and r['head_sha'] == head), None)
+            require(latest and latest['status'] == 'finished' and result.get('run_id') == latest['run_id'],
+                    'Latest command has no verified receipt; rerun after operator reconciliation: ' + check['name'])
             expected = 'fail' if red and check['role'] == 'behavior' else 'pass'
             require(result['source'] == 'local-executor' and result['unchanged'] and result['failure'] is None
                     and result['expected'] == expected and (result['exit_code'] == 0) == (expected == 'pass'),
@@ -292,6 +355,7 @@ class Workflow:
         self.c._begin()
         try:
             state, job, plan, row, phases = self._access(task, owner, token)
+            self.c._no_running_command(task)
             require(row['phase_index'] < len(phases), 'Workflow already completed')
             phase = phases[row['phase_index']]
             head = clean_head(job['repository'])
@@ -373,6 +437,7 @@ class Workflow:
         self.c._begin()
         try:
             _, _, _, row, phases = self._access(task, owner, token)
+            self.c._no_running_command(task)
             require(phase in phases and phases.index(phase) < row['phase_index'], 'Recovery must revisit a required earlier phase')
             artifacts = json.loads(row['artifacts'])
             keep = [a for a in artifacts if phases.index(a['artifact']['phase']) < phases.index(phase)]
@@ -389,6 +454,7 @@ class Workflow:
 
     def reclaim(self, task, owner):
         state, job, plan, row, _ = self._load(task)
+        self.c._no_running_command(task)
         validate_job(job, current_base=False)
         decision = self.context.evaluate(job['repository'], task, owner, 'check:run')
         require(decision['context'] == 'DEVELOP', 'Recovery requires DEVELOP')
@@ -422,6 +488,7 @@ class Workflow:
                        failure=state['failure'], remaining_budget=job['max_attempts']-state['attempts'],
                        recovery_instructions=state['checkpoint'], status=state['status'],
                        failure_history=[dict(r) for r in self.db.execute('SELECT number,classification,detail FROM attempts WHERE job_id=? ORDER BY number', (task,))],
+                       command_runs=self.runs(task),
                        verified_results=[json.loads(r['payload']) for r in self.db.execute(
                            'SELECT payload FROM executions WHERE job_id=? ORDER BY sequence', (task,))])
         checkpoint = dict(payload, checkpoint_digest=Controller.digest(payload))

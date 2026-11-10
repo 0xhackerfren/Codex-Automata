@@ -137,6 +137,11 @@ class Controller:
             CREATE TABLE IF NOT EXISTS operations (
                 id TEXT PRIMARY KEY, digest TEXT NOT NULL,
                 payload TEXT NOT NULL, status TEXT NOT NULL);
+            CREATE TABLE IF NOT EXISTS command_runs (
+                id TEXT PRIMARY KEY, job_id TEXT NOT NULL, repo TEXT NOT NULL,
+                status TEXT NOT NULL, payload TEXT NOT NULL, resolution TEXT);
+            CREATE UNIQUE INDEX IF NOT EXISTS one_running_command ON command_runs(repo)
+                WHERE status = 'running';
         ''')
         self.db.execute('PRAGMA user_version=1')
 
@@ -261,6 +266,7 @@ class Controller:
         self._begin()
         try:
             self._owned(job_id, owner, token)
+            self._no_running_command(job_id)
             self.db.execute("UPDATE jobs SET status='queued',owner=NULL,token=NULL,checkpoint=? WHERE id=?",
                             (checkpoint, job_id))
             self.db.execute('COMMIT')
@@ -273,6 +279,7 @@ class Controller:
         self._begin()
         try:
             row = self._owned(job_id, owner, token)
+            self._no_running_command(job_id)
             packet = json.loads(row['packet'])
             require(row['attempts'] < packet['max_attempts'], 'Attempt budget exhausted')
             number = row['attempts'] + 1
@@ -290,6 +297,7 @@ class Controller:
         self._begin()
         try:
             row = self._owned(job_id, owner, token)
+            self._no_running_command(job_id)
             require(row['failure'] in ('environment', 'design', 'authority'),
                     'No prerequisite failure to resolve')
             self.db.execute('INSERT INTO resolutions VALUES(?,?,?,?)',
@@ -300,6 +308,13 @@ class Controller:
         except Exception:
             self.db.execute('ROLLBACK')
             raise
+
+    def _no_running_command(self, job_id):
+        row = self.db.execute('SELECT repo FROM jobs WHERE id=?', (job_id,)).fetchone()
+        require(row is not None, 'Unknown job')
+        require(not self.db.execute("SELECT id FROM command_runs WHERE repo=? AND status='running'",
+                                    (row['repo'],)).fetchone(),
+                'Command running or outcome uncertain; operator reconciliation required')
 
     def complete(self, job, owner, token, evidence, required_checks):
         validate_job(job, current_base=False)

@@ -24,6 +24,8 @@ Tests use real disposable Git repositories, SQLite state and subprocess checks.
 | Windows casing aliases reject legitimate grants or bypass permission prefixes | test_repository_alias_is_normalized_and_relative_identity_rejected; test_windows_permission_prefixes_do_not_depend_on_case | Canonical absolute repository identity, case-aware Windows permission comparisons and portable paths |
 | Observation-only legacy completion launders a workflow dependency | test_legacy_dependency_observations_do_not_qualify_for_verified_workflow | Workflow dependencies require local-executor-backed completion |
 | New methodology silently changes active phases | test_methodology_change_blocks_active_work_without_resetting_history | Definition/schema/CLI fingerprint mismatch blocks continuation |
+| Shared claim launches overlapping commands or controller dies before receipt | test_running_intent_blocks_overlap_and_state_transitions; test_process_crash_retains_intent_and_requires_operator_reconciliation | Durable intent, repository lock and operator-only reconciliation |
+| Reconciliation reuses an older green receipt or accepts a late result | test_reconciliation_cannot_reuse_older_passing_receipt; test_reconciled_run_rejects_late_receipt | Latest run identity must match the receipt; reconciliation consumes an attempt |
 | Unapproved/unqualified/unknown model | test_unapproved_unknown_unavailable_and_security_fail_closed | Capability thresholds, approval and explicit availability fail closed |
 | Benchmark accepts unauthorized patch or confuses fixtures with model results | benchmark tests | Hidden trusted oracles, scope validation, pending live results |
 

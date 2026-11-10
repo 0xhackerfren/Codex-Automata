@@ -10,6 +10,11 @@ Types of changes: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 
 ### Bounded workflow execution: CLI 0.6.1
 
+- Durable command intents prevent overlapping checks and survive controller
+  interruption. Operator-only `workflow reconcile-run` records investigation
+  evidence and a failed attempt before retry; no automatic command replay.
+- Checkpoints and `workflow runs` expose command history without claim tokens.
+  Reconciled commands cannot reuse earlier passing receipts or accept late ones.
 - Replaced workflow command output spooling with a bounded pipe queue. Approved
   checks may set `output_limit_bytes` (default 1 MiB, maximum 16 MiB). Overflow
   fails closed and consumes a persistent environment failure attempt.

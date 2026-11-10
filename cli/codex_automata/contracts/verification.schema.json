@@ -93,6 +93,10 @@
     },
     "observed_at": {
       "type": "string"
+    },
+    "run_id": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{48}$"
     }
   },
   "required": [

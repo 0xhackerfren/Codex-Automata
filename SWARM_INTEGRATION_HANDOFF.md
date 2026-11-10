@@ -135,6 +135,15 @@ process group on timeout, overflow, interruption and parent completion. Windows
 direct-child termination and detached POSIX descendants require external process
 containment. These limits cover captured output, not arbitrary file writes.
 
+Commands commit durable intent before launch, with one unresolved command per
+repository in a shared controller database. Checkpoints and `workflow runs` expose
+history. Interruption blocks replay until operator-only `workflow reconcile-run`
+records evidence and confirmation that the original command/descendants stopped.
+Reconciliation consumes a failure attempt and invalidates reuse of prior passing
+receipts; resolve the environment failure before retry. The runtime must stop and
+inspect processes/side effects before asserting `--confirm-stopped`. See
+[execution recovery](docs/development/execution-recovery-spec.md).
+
 Artifact schema: `artifact.schema.json`; phase-specific outputs pin committed
 regular Git blobs. Current-head checks precede cast/review/product/observe exits.
 All prior contract/mold pins must remain unchanged. Existing protected artifacts

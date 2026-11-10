@@ -21,11 +21,14 @@ def run_check(argv, cwd, timeout, output_limit=DEFAULT_OUTPUT_LIMIT):
     size, excerpt, code, failure = 0, b'', None, None
     process = None
     reader = None
+    cleanup_sent = False
     deadline = time.monotonic() + timeout
 
     def stop_process():
-        if process is None:
+        nonlocal cleanup_sent
+        if process is None or cleanup_sent:
             return
+        cleanup_sent = True
         try:
             if os.name == 'posix':
                 os.killpg(process.pid, signal.SIGKILL)
