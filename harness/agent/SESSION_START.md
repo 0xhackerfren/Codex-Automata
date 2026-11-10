@@ -28,3 +28,10 @@ operations. MCP payload: `tool_name: MCP:<exact-tool>`, separate
 actual host schema before adoption. Unknown tools deny with an actionable operator
 bootstrap remedy. Re-read effective context per tool call. Tool adapters, not
 prompts, enforce privileges; unrestricted shells bypass a prompt-only policy.
+
+Executable evidence checks: `session inspect --project .` records local-only N/A;
+add `--publication-required --branch BRANCH` to require a fresh remote ref matching
+local HEAD. Failure blocks publication claims, not already authorized offline work.
+`session readiness --packet child.json --state /secure/control.sqlite` derives a
+local Ready proposal from actual upstream integration receipts and artifact pins;
+it performs no Linear transition.

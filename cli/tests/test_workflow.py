@@ -308,3 +308,16 @@ class WorkflowTests(unittest.TestCase):
             with self.assertRaisesRegex(ControlError, 'Methodology definition changed'):
                 self.w.context_packet('LOCAL-1', 'coder', self.token)
         self.assertEqual(self.w.snapshot('LOCAL-1')['attempts'], 0)
+
+    def test_source_excerpts_preserve_provenance_and_are_recorded(self):
+        (self.repo / 'notes.md').write_text('one\ntwo\n' + 'x'*20000 + '\n')
+        self.commit('large source baseline')
+        self.job['base_sha'] = self.head()
+        self.plan['packet_digest'] = Controller.digest(self.job)
+        self.plan['context_excerpts'] = [dict(path='notes.md', start_line=1, end_line=2)]
+        self.start()
+        packet = self.w.context_packet('LOCAL-1', 'coder', self.token)
+        excerpt = next(s for s in packet['sources'] if s['path']=='notes.md')
+        self.assertEqual(excerpt['content'], 'one\ntwo\n')
+        self.assertEqual(excerpt['blob'], blob(self.repo, self.head(), 'notes.md'))
+        self.assertEqual(self.c.db.execute('SELECT count(*) FROM context_packets').fetchone()[0], 1)

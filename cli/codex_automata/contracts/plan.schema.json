@@ -141,6 +141,32 @@
         "minLength": 1
       },
       "uniqueItems": true
+    },
+    "context_excerpts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "path",
+          "start_line",
+          "end_line"
+        ],
+        "additionalProperties": false,
+        "properties": {
+          "path": {
+            "type": "string",
+            "minLength": 1
+          },
+          "start_line": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "end_line": {
+            "type": "integer",
+            "minimum": 1
+          }
+        }
+      }
     }
   },
   "required": [

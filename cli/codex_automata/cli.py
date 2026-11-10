@@ -90,6 +90,8 @@ def main(argv: list[str] | None = None) -> int:
     add_model_parser(subparsers)
     from .benchmark import add_parser as add_benchmark_parser
     add_benchmark_parser(subparsers)
+    from .session import add_parser as add_session_parser
+    add_session_parser(subparsers)
     init_parser.add_argument('--layout', choices=['namespaced', 'legacy'], default='namespaced')
     init_parser.add_argument('--config', help='Consumer-owned project configuration JSON')
     update_parser.add_argument('--layout', choices=['namespaced', 'legacy'], default='namespaced')
@@ -101,6 +103,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.command is None:
         parser.print_help()
         return 1
+
+    if args.command == 'session':
+        from .session import run
+        return run(args)
 
     if args.command == 'benchmark':
         from .benchmark import run
@@ -177,8 +183,12 @@ def main(argv: list[str] | None = None) -> int:
 
     if args.command == "init":
         from .isolation import read_json
-        return run_init(args.target, args.profile, args.agent, args.layout,
-                        read_json(args.config) if args.config else None)
+        try:
+            return run_init(args.target, args.profile, args.agent, args.layout,
+                            read_json(args.config) if args.config else None)
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            print(json.dumps({'error': str(exc)}), file=sys.stderr)
+            return 1
     elif args.command == "update":
         return run_update(args.target, args.staging, args.profile, args.agent, args.layout)
     elif args.command == "verify":

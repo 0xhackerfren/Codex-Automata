@@ -199,6 +199,6 @@ def run_init(target_str: str, profile: str, agent: str, layout: str = "namespace
         print("Installed isolated .automata/ assets; context remains unselected.")
         print("Adapters requiring review: " + ", ".join(manifest["adapters_pending"]))
         return 0
-    except (ControlError, OSError, ValueError) as exc:
+    except (ControlError, OSError, ValueError, TypeError, KeyError) as exc:
         print("Error: " + str(exc))
         return 1

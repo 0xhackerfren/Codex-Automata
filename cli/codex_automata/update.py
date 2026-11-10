@@ -23,7 +23,7 @@ def run_update(target_str: str, staging_str: str | None = None,
     report = None
     if layout == 'namespaced':
         from .isolation import read_json, verify_installation, migration_report, digest_file
-        from .control import ControlError
+        from .control import ControlError, safe_path, require
         import json
         if (target / '.automata').exists():
             try:
@@ -32,6 +32,12 @@ def run_update(target_str: str, staging_str: str | None = None,
                 old = read_json(target / '.automata/manifest.json')
                 config = read_json(target / '.automata/project.json')
                 profile = config['adoption_profile']
+                require(old.get('schema_version') == 1 and old.get('methodology_version') == '1.0', 'Unsupported installation version')
+                for name in old['managed']:
+                    safe_path(name)
+                    managed_path = target / '.automata' / name
+                    require(managed_path.resolve().is_relative_to(target / '.automata')
+                            and not managed_path.is_symlink(), 'Unsafe managed manifest path')
                 custom = [name for name, digest in old['managed'].items()
                           if not (target / '.automata' / name).is_file()
                           or digest_file(target / '.automata' / name) != digest]

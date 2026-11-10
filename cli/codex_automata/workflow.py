@@ -76,6 +76,8 @@ class Workflow:
         self.db = controller.db
         self.context = ContextController(controller)
         self.db.executescript('''
+            CREATE TABLE IF NOT EXISTS context_packets (sequence INTEGER PRIMARY KEY AUTOINCREMENT,
+                job_id TEXT NOT NULL, digest TEXT NOT NULL, payload TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS approved_plans (digest TEXT PRIMARY KEY, task_id TEXT NOT NULL, packet_digest TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS review_attestations (task_id TEXT NOT NULL, artifact_digest TEXT NOT NULL, reviewer TEXT NOT NULL,
                 PRIMARY KEY(task_id,artifact_digest));
@@ -166,7 +168,11 @@ class Workflow:
         require(required_roles <= {x['role'] for x in plan['checks']}, 'Missing profile check roles')
         require(set(plan['traceability']) == set(job['acceptance']), 'Acceptance-to-check coverage incomplete')
         require(all(set(v) <= set(names) for v in plan['traceability'].values()), 'Unknown traceability check')
-        for path in plan['context_paths'] + plan['approved_changes']:
+        excerpts = plan.get('context_excerpts', [])
+        require(len({e['path'] for e in excerpts}) == len(excerpts), 'Duplicate source excerpt')
+        for excerpt in excerpts:
+            require(excerpt['end_line'] >= excerpt['start_line'], 'Invalid source excerpt range')
+        for path in plan['context_paths'] + plan['approved_changes'] + [e['path'] for e in excerpts]:
             safe_path(path)
         require(all(under(path, job['write_paths']) for path in plan['approved_changes']),
                 'Protected change exceeds job scope')
@@ -453,13 +459,20 @@ class Workflow:
         self._pins(job, json.loads(row['artifacts']), head)
         self._scope(job, plan, head, owner)
         sources = []
-        for path in dict.fromkeys(job['specs'] + job['contracts'] + job['molds'] + plan['context_paths']):
+        excerpts = {e['path']: e for e in plan.get('context_excerpts', [])}
+        for path in dict.fromkeys(job['specs'] + job['contracts'] + job['molds'] + plan['context_paths'] + list(excerpts)):
             self.context.evaluate(job['repository'], task, owner, 'file:read', path)
             revision = blob(job['repository'], head, path)
             size = int(git(job['repository'], 'cat-file', '-s', revision))
-            require(size <= plan['context_budget'], 'Source exceeds context byte budget: ' + path)
+            require(size <= (1048576 if path in excerpts else plan['context_budget']), 'Source exceeds context byte budget: ' + path)
             content = subprocess.check_output(['git', '-C', job['repository'], 'show', head + ':' + path]).decode('utf-8')
-            sources.append(dict(path=path, blob=revision, content=content, trust='untrusted-source-data'))
+            selected = excerpts.get(path)
+            if selected:
+                lines = content.splitlines(keepends=True)
+                require(selected['end_line'] <= len(lines), 'Excerpt range exceeds source: ' + path)
+                content = ''.join(lines[selected['start_line']-1:selected['end_line']])
+            sources.append(dict(path=path, blob=revision, content=content, line_range=selected,
+                                trust='untrusted-source-data'))
         packet = dict(schema_version=1, methodology_version=METHODOLOGY, execution_context='DEVELOP',
                       task_id=task, packet_digest=Controller.digest(job), plan_digest=Controller.digest(plan),
                       head_sha=head, universal_rules=UNIVERSAL, outcome=job['outcome'],
@@ -468,6 +481,15 @@ class Workflow:
                       checks=[dict(name=c['name'], argv=c['argv'], role=c['role'], tier=c['tier']) for c in plan['checks']],
                       attempts=state['attempts'], remaining_budget=job['max_attempts']-state['attempts'],
                       checkpoint=state['checkpoint'], sources=sources,
+                      risk_requirements=PROFILES[plan['profile']], approved_changes=plan['approved_changes'],
+                      review_max_age_hours=plan['review_max_age_hours'],
+                      required_output=dict(schema_version=1, methodology_version=METHODOLOGY, task_id=task,
+                                           packet_digest=Controller.digest(job), phase=phase, head_sha=head,
+                                           inputs=[], outputs=[{'path': 'committed-output-path', 'blob': 'full-git-blob-sha'}],
+                                           summary='Observed result, limitations and next step', review=None),
+                      tools={'workflow run': ['task', 'owner', 'token', 'check', 'expect'],
+                             'workflow advance': ['task', 'owner', 'token', 'artifact'],
+                             'workflow checkpoint': ['task']},
                       output_contract='artifact.schema.json', output_limit_bytes=plan['context_budget'],
                       instruction_digest=Controller.digest([UNIVERSAL, PHASE_INSTRUCTIONS[phase], DEFINITION]))
         # Exact UTF-8 serialized payload size including its own size field.
@@ -478,4 +500,6 @@ class Workflow:
                 break
             packet['context_bytes'] = size
         require(size <= plan['context_budget'], 'Context byte budget exceeded; narrow selected references or raise reviewed plan budget')
+        self.db.execute('INSERT INTO context_packets(job_id,digest,payload) VALUES(?,?,?)',
+                        (task, Controller.digest(packet), canonical(packet)))
         return packet

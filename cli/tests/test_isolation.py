@@ -184,3 +184,22 @@ class IsolationTests(unittest.TestCase):
             with self.assertRaises(OSError):
                 install(self.root)
         self.assertEqual(list(self.root.iterdir()), [])
+
+    def test_update_rejects_manifest_escape_without_staging(self):
+        import json
+        from codex_automata.update import run_update
+        install(self.root, config=self.config)
+        path = self.root / '.automata/manifest.json'
+        manifest = read_json(path)
+        manifest['managed']['../../external'] = '0'*64
+        path.write_text(json.dumps(manifest))
+        stage = self.root.with_name('unsafe-candidate')
+        self.assertEqual(run_update(str(self.root), str(stage)), 1)
+        self.assertFalse(stage.exists())
+
+    def test_cli_malformed_config_fails_before_installation(self):
+        from codex_automata.cli import main
+        path = Path(self.tmp.name) / 'invalid.json'
+        path.write_text('{"schema_version":1,"schema_version":99}')
+        self.assertEqual(main(['init', str(self.root), '--config', str(path)]), 1)
+        self.assertEqual(list(self.root.iterdir()), [])
