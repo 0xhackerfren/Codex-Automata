@@ -69,10 +69,16 @@ codex-automata workflow rewind LOCAL-1 --state /secure/control.sqlite --owner co
 The operator approves the exact plan digest with `workflow approve --authority-file ...` before `workflow start`. The operator freezes exact argv, timeout, role and gate tier in the plan. No task
 text is evaluated as a command. Command execution is real code execution and
 requires appropriate process isolation, reviewed commands and controlled tools.
-Output is spooled to a temporary file, hashed completely and retained as an 8 KiB
-excerpt plus byte count. Test tools can emit secrets; configure redaction and do
-not export confidential receipts indiscriminately. Timeout kills the immediate
-process via Python; a consuming runtime must isolate and stop process trees.
+Output streams through a bounded pipe queue without disk spooling. Each approved
+check may set `output_limit_bytes` (default 1 MiB, range 1 byte to 16 MiB). A further
+byte fails with `output-limit`, including for expected red molds. Hashes and byte
+counts describe the captured prefix on failure; excerpts retain at most 8 KiB.
+Test tools can emit secrets; configure redaction and do not export confidential
+receipts indiscriminately. POSIX checks start a fresh session and kill the process
+group on timeout, overflow, interruption or direct-child completion. Windows kills
+the direct child only. Detached descendants, arbitrary file writes and complete
+process containment require the consuming runtime. See the
+[execution contract](bounded-execution-spec.md).
 Commands must be side-effect-bounded; unknown external effects use the journal.
 
 Unexpected command failures consume the existing job attempt budget automatically.

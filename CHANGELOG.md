@@ -8,6 +8,18 @@ Types of changes: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 
 ## [Unreleased]
 
+### Bounded workflow execution: CLI 0.6.1
+
+- Replaced workflow command output spooling with a bounded pipe queue. Approved
+  checks may set `output_limit_bytes` (default 1 MiB, maximum 16 MiB). Overflow
+  fails closed and consumes a persistent environment failure attempt.
+- POSIX workflow checks run in a new session; process-group cleanup handles
+  timeout, overflow, interruption and parent completion. Windows direct-child
+  termination remains; detached descendants still require host containment.
+- Output hashes/counts describe the captured prefix on failure. Excerpts remain
+  limited to 8 KiB. This version changes the workflow policy fingerprint; active
+  jobs require the original pinned release or reviewed migration.
+
 ### vNext: CLI 0.6.0 / methodology 1.0
 
 - Isolated default installation under `.automata/`, consumer path configuration,

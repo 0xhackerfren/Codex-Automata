@@ -1,17 +1,16 @@
 """Single-agent methodology gates built on existing claims and durable attempts."""
 from datetime import datetime, timezone
-import hashlib
 from importlib.resources import files
 import json
 from pathlib import Path
 import subprocess
-import tempfile
 import time
 
 from jsonschema import Draft202012Validator
 
 from .control import Controller, ControlError, require, git, validate_job, safe_path, canonical
 from .isolation import ContextController, METHODOLOGY, verify_installation, under
+from .execution import run_check, DEFAULT_OUTPUT_LIMIT
 
 
 def contract(name):
@@ -240,36 +239,16 @@ class Workflow:
         head = clean_head(repo)
         self._scope(job, plan, head, owner)
         start = time.monotonic()
-        # Spool bounded retained output, rather than unbounded capture into memory.
-        with tempfile.TemporaryFile() as output:
-            try:
-                result = subprocess.run(check['argv'], cwd=repo, stdin=subprocess.DEVNULL,
-                                        stdout=output, stderr=subprocess.STDOUT, timeout=check['timeout'], shell=False)
-                code = result.returncode
-                failure = None
-            except subprocess.TimeoutExpired:
-                code, failure = None, 'timeout'
-            except OSError as exc:
-                code, failure = None, type(exc).__name__
-            output.seek(0)
-            hasher = hashlib.sha256()
-            size = 0
-            excerpt = b''
-            while True:
-                chunk = output.read(65536)
-                if not chunk:
-                    break
-                hasher.update(chunk)
-                size += len(chunk)
-                if len(excerpt) < 8192:
-                    excerpt += chunk[:8192-len(excerpt)]
+        execution = run_check(check['argv'], repo, check['timeout'],
+                              check.get('output_limit_bytes', DEFAULT_OUTPUT_LIMIT))
+        code, failure = execution['exit_code'], execution['failure']
         unchanged = git(repo, 'rev-parse', 'HEAD') == head and not git(repo, 'status', '--porcelain', '--untracked-files=all')
         receipt = dict(schema_version=1, methodology_version=METHODOLOGY, source='local-executor',
                        task_id=task, packet_digest=Controller.digest(job), plan_digest=Controller.digest(plan),
                        phase=phase, name=name, role=check['role'], tier=check['tier'], argv=check['argv'],
                        head_sha=head, exit_code=code, expected=expect, failure=failure, unchanged=unchanged,
-                       output_sha256=hasher.hexdigest(), output_bytes=size,
-                       output_excerpt=excerpt.decode('utf-8', errors='replace'),
+                       output_sha256=execution['output_sha256'], output_bytes=execution['output_bytes'],
+                       output_excerpt=execution['output_excerpt'],
                        elapsed_seconds=round(time.monotonic()-start, 6), observed_at=datetime.now(timezone.utc).isoformat())
         validate_schema('verification', receipt)
         self.c._begin()

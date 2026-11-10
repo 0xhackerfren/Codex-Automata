@@ -132,6 +132,28 @@ class WorkflowTests(unittest.TestCase):
         with self.assertRaisesRegex(ControlError, 'executor-backed'):
             self.c.complete(self.job, 'coder', self.token, {}, ['behavior'])
 
+    def test_output_overflow_persists_and_cannot_satisfy_expected_red(self):
+        check = self.plan['checks'][2]
+        check.update(argv=[sys.executable, '-c', 'import os; os.write(1, b"x" * 1025)'],
+                     output_limit_bytes=1024)
+        self.start()
+        self.advance('intake')
+        self.advance('specify')
+        for name in ('static', 'fixtures'):
+            self.w.execute('LOCAL-1', 'coder', self.token, name)
+        receipt = self.w.execute('LOCAL-1', 'coder', self.token, 'behavior', 'fail')
+        self.assertEqual(receipt['failure'], 'output-limit')
+        self.assertEqual(receipt['output_bytes'], 1024)
+        self.assertEqual(self.c.state('LOCAL-1')['attempts'], 1)
+        self.assertEqual(self.c.state('LOCAL-1')['failure'], 'environment')
+        with self.assertRaises(ControlError):
+            self.advance('mold')
+        self.c.close()
+        self.c = Controller(self.root / 'state.sqlite')
+        self.assertEqual(self.c.state('LOCAL-1')['attempts'], 1)
+        stored = json.loads(self.c.db.execute('SELECT payload FROM executions ORDER BY sequence DESC LIMIT 1').fetchone()[0])
+        self.assertEqual(stored['failure'], 'output-limit')
+
     def test_failure_consumes_budget_across_restart(self):
         self.to_cast()
         for _ in range(3):

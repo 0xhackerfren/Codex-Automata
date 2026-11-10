@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "codex-automata"
-version = "0.6.0"
+version = "0.6.1"
 description = "Codex Automata: a spec-first, SDK-constrained, test-molded development methodology for the agentic era"
 readme = "README.md"
 license = "MIT"

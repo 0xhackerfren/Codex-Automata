@@ -36,8 +36,10 @@ Tests use real disposable Git repositories, SQLite state and subprocess checks.
   red reasons still require review. Test quality is not empirically scored yet.
 - Reviewer tokens authenticate a controller-issued identity, not cognitive
   diversity. Operators must issue them to a genuinely separate review process.
-- Subprocess timeout stops the direct child, not every possible descendant.
-  Isolate process trees and bound output/disk usage in the consuming runtime.
+- CLI 0.6.1 follow-up bounds captured command output and kills POSIX process
+  groups on timeout, overflow and direct-child completion. Windows descendants,
+  detached POSIX descendants and arbitrary disk writes still require host
+  containment. See [execution contract](bounded-execution-spec.md).
 - Cross-ID retry lineage, multi-host synchronization, provider attestations and
   authenticated Linear/GitHub writes remain adapter/operator responsibilities.
 - Checkpoint relocation needs reviewed replan plus trusted DB restoration; exports
