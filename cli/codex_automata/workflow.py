@@ -188,7 +188,8 @@ class Workflow:
             for dependency in job['dependencies']:
                 dependency_state = self.c.state(dependency)
                 dependency_receipt = json.loads(dependency_state['evidence'])
-                require(dependency_receipt.get('source') == 'workflow-local-executor',
+                dependency_workflow = self.db.execute('SELECT id FROM workflows WHERE id=?', (dependency,)).fetchone()
+                require(dependency_workflow is not None and dependency_receipt.get('source') == 'workflow-local-executor',
                         'Workflow dependency requires executor-backed completion, not legacy supplied observations')
             require(state['status'] == 'queued' and state['attempts'] < job['max_attempts'], 'Task unavailable')
             require(state['failure'] is None, 'Unresolved task failure')

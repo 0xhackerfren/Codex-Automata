@@ -325,7 +325,7 @@ class WorkflowTests(unittest.TestCase):
     def test_legacy_dependency_observations_do_not_qualify_for_verified_workflow(self):
         legacy = dict(self.job, id='LEGACY')
         claim = self.c.claim(legacy, 'legacy-worker')
-        evidence = dict(head_sha=self.head(), packet_digest=Controller.digest(legacy),
+        evidence = dict(source='workflow-local-executor', head_sha=self.head(), packet_digest=Controller.digest(legacy),
                         checks=[dict(name='unit', head_sha=self.head(), status='passed')],
                         review=dict(head_sha=self.head(), reviewer='different-string', approved=True, unresolved=0),
                         integration_sha=self.head())
