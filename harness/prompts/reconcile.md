@@ -1,4 +1,4 @@
-MODE=RECONCILE PROJECT=<real ID>
+MODE=RECONCILE PROJECT=[real ID]
 
 Follow AGENTS.md and agent/LINEAR_FIRST.md. Compare the current Linear project to
 actual commits, reviews, checks and blocker evidence. Repair specification drift

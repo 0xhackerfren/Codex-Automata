@@ -1,0 +1,13 @@
+{
+  "methodology_version": "1.0",
+  "cli_version": "0.6.0",
+  "artifact_schema_version": 1,
+  "job_schema_version": 1,
+  "control_database_version": 1,
+  "installation_layout": "namespaced-v1",
+  "execution_contexts": ["DEVELOP", "OPERATE", "MAINTAIN_METHODOLOGY"],
+  "workflow_definition": "cli/codex_automata/contracts/profiles.json",
+  "contracts": "cli/codex_automata/contracts/",
+  "compatibility": "Pin exact Git revision. Existing job/journal v1 remains available. Workflow definition/schema/CLI changes block active work until original release is restored or reviewed migration occurs.",
+  "runtime_responsibilities": ["inference", "scheduling", "capacity", "tool interception", "process isolation", "remote adapters"]
+}

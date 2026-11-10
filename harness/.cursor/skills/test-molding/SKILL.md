@@ -23,17 +23,20 @@ Follow this workflow to derive tests from a specification.
 ## Step 3: Write Unit Tests
 
 For each behavior in the specification:
+
 1. Create at least one test case.
 2. Name the test to reference the spec section (e.g., test_create_task_empty_title).
 3. Define input, expected output, and assertion.
 
 For each edge case:
+
 1. Create a dedicated test case.
 2. Name it to reference the edge case.
 
 ## Step 4: Write Contract Tests
 
 For each interface contract the module participates in:
+
 1. Write tests that verify the contract from both sides.
 2. Test normal operations and error conditions.
 

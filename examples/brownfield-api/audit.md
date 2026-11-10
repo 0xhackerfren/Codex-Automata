@@ -68,6 +68,7 @@ Onboarding order: BookmarkManager first (highest priority), then TagService (dep
 **Target module:** BookmarkManager
 **Profile:** Essential
 **Steps:**
+
 1. [x] Write specification from domain knowledge (`docs/spec-bookmark-manager.md`)
 2. [x] Derive tests from specification (`tests/test-plan.md`)
 3. [ ] Verify existing implementation against new tests
@@ -79,6 +80,7 @@ Onboarding order: BookmarkManager first (highest priority), then TagService (dep
 **Target modules:** TagService, then SearchIndex
 **Profile upgrade:** Standard (after BookmarkManager verify completes)
 **Steps:**
+
 1. [ ] Repeat recovery process for each module
 2. [ ] Extract SDK types for shared interfaces (`sdk/types.ts` extended)
 3. [ ] Define interface contracts between BookmarkManager and TagService
@@ -89,6 +91,7 @@ Onboarding order: BookmarkManager first (highest priority), then TagService (dep
 **Target:** Remaining medium-priority paths, operational hardening
 **Profile upgrade:** Standard
 **Steps:**
+
 1. [ ] Continue recovery-based onboarding for SearchIndex
 2. [ ] Implement context persistence (`context-state.md`)
 3. [ ] Activate SDK and contract quality gates on onboarded paths

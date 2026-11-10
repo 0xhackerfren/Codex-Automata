@@ -31,6 +31,7 @@ Follow this workflow when writing a new specification.
 ## Step 4: Specify Behaviors
 
 For each behavior the module must support:
+
 1. Write a clear description of the behavior.
 2. Define preconditions (what must be true before).
 3. Define postconditions (what must be true after).

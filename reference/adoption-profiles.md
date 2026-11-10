@@ -17,6 +17,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 **Philosophy:** Get the core loop right. Specification, tests, code. Everything else is optional but available.
 
 **Active phases:**
+
 - Phase 0: Intake (simplified: project name, goal, constraints)
 - Phase 2: Specification Writing
 - Phase 4: Test Molding
@@ -24,17 +25,20 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 - Phase 6: Review (self-review checklist)
 
 **Skipped phases:**
+
 - Phase 1: Architecture (implicit for small scope)
 - Phase 3: SDK Design (no separate SDK; types live alongside code)
 - Phase 6b: Product Testing (optional manual verification)
 - Phase 7: Deployment (out of scope for the methodology at this tier)
 
 **Required templates (3):**
+
 - `spec-template.md`
 - `test-plan-template.md`
 - `agent-task-template.md`
 
 **Active rules (5):**
+
 - R1 (spec before code)
 - R4 (do not bypass tests)
 - R7 (atomic commits traceable to spec sections)
@@ -42,6 +46,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 - R10 (every task maps to spec and test)
 
 **Quality gates:**
+
 - All tests pass
 - Specification exists for every module
 
@@ -66,6 +71,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 **Philosophy:** Full pipeline minus the heaviest verification layers. All principles active. SDK constraint surface enforced.
 
 **Active phases:**
+
 - Phase 0: Intake (full)
 - Phase 1: Architecture and Decomposition
 - Phase 2: Specification Writing
@@ -76,9 +82,11 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 - Phase 7: Deployment and Observation
 
 **Skipped phases:**
+
 - Phase 6b: Product Testing (recommended but not required)
 
 **Required templates (all standard):**
+
 - `spec-template.md`
 - `test-plan-template.md`
 - `agent-task-template.md`
@@ -91,6 +99,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 **Active rules:** R1-R18
 
 **Quality gates:**
+
 - All tests pass
 - Specification exists for every module
 - SDK interfaces cover all public module boundaries
@@ -118,6 +127,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 **Active phases:** All (Phase 0 through Phase 7, including Phase 6b)
 
 **Required templates:** All templates in the harness, including:
+
 - All Standard templates
 - `product-test-template.md`
 - `user-profile-template.md`
@@ -127,6 +137,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 **Active rules:** All (R1-R18)
 
 **Quality gates:**
+
 - All Standard gates
 - Product test objectives pass for all critical user journeys
 - UX budgets met for all defined profiles
@@ -136,7 +147,7 @@ Profiles solve this by defining three tiers of adoption. Each profile specifies 
 - Recovery protocol active for all discovered gaps
 - Context state updated at every phase boundary
 
-**What you get:** Full methodology coverage. Every gap is caught. Every decision is traceable. Every user journey is verified. The cost is higher ceremony per change, justified by the value of what you are building.
+**What you get:** Broad methodology coverage; effectiveness still requires empirical validation. Every decision is traceable. Every user journey is verified. The cost is higher ceremony per change, justified by the value of what you are building.
 
 **Brownfield adoption:** Upgrade when the full system is onboarded and you want product testing, design identity, and full quality gates. See [brownfield-onboarding.md](brownfield-onboarding.md).
 
@@ -183,3 +194,20 @@ Downgrades are not recommended. Removing artifacts that exist creates orphaned d
 | Quality gates | Basic (2) | Standard (5) | Full (7+) |
 | Templates | 3 | 7+ | All |
 | Active rules | 5 | All | All |
+
+## Explicit review and task-risk policy
+
+At adoption, record the review gate in consumer configuration and issues. Essential
+permits labeled autonomous self-review for low-risk engineering with actual green
+evidence. Standard and Complete normally require independent review; an explicit
+operator policy may allow low-risk engineering slices to self-review. Task risk
+floors still require independent review for standard/architectural/critical work
+and approved protected changes. Domain truth promotion always retains its own
+diverse-verifier rules; engineering self-review cannot waive them. Review identity
+and genuinely independent execution remain controller/operator responsibilities.
+
+Mechanical/Small/Standard/Architectural/Critical are per-task rigor profiles,
+separate from Essential/Standard/Complete adoption. Their executable definition
+ships in CLI `contracts/profiles.json`. A smaller adoption profile cannot lower a
+task's security floor. Check tiers are T0 targeted per relevant edit, T1 full
+project suite per unit, T2 configured host/platform matrix per commit/PR.

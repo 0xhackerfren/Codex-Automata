@@ -8,8 +8,16 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from codex_automata.init import run_init
-from codex_automata.update import run_update
+from codex_automata.init import run_init as _run_init
+
+def run_init(*args, **kwargs):
+    return _run_init(*args, **kwargs, layout="legacy")
+
+from codex_automata.update import run_update as _run_update
+
+def run_update(*args, **kwargs):
+    return _run_update(*args, **kwargs, layout="legacy")
+
 from codex_automata.verify import run_verify
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -102,8 +110,9 @@ class DeliveryTests(unittest.TestCase):
         result = subprocess.run(['bash', str(ROOT / 'scripts/init.sh'),
                                  '--profile', 'essential', str(target)], capture_output=True)
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertTrue((target / '.cursor/rules/linear-first.mdc').is_file())
-        self.assertTrue((target / '.github/workflows/codex-gates.yml').is_file())
+        self.assertTrue((target / '.automata/adapters/automata-context.mdc').is_file())
+        self.assertTrue((target / '.automata/assets/agent/LINEAR_FIRST.md').is_file())
+        self.assertFalse((target / '.github/workflows/codex-gates.yml').exists())
 
     @unittest.skipIf(os.name == 'nt', 'Bash CI command tested on Linux')
     def test_shipped_ci_does_not_swallow_python_failures(self):

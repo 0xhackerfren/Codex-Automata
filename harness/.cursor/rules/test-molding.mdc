@@ -15,7 +15,8 @@ When editing test files:
 - Tests must be sharp: incorrect behavior must fail.
 - Tests must not over-specify: test behavior, not implementation details.
 - Contract tests must exist for every inter-module interface.
-- All tests must compile. Before code casting, all tests must fail (red state).
+- Static contract/API conformance and real SDK/TCK fixture checks must pass before the mold commit. New behavioral regression molds must fail for the intended reason; existing tests remain green.
+- Record `mold name | spec basis | class (positive/protected/ambiguous)` traceability. See agent/TEST_MOLDING_RULES.md.
 - Do not write implementation code in test files.
 - If a spec section is untestable, flag it rather than skipping it.
 - If an SDK interface is missing for a behavior you need to test, report the gap.

@@ -42,6 +42,7 @@ _[One-paragraph summary of what happened, what was affected, and the resolution.
 **Proximate cause:** _[The direct technical cause]_
 
 **Contributing factors:**
+
 1. _[Factor 1]_
 2. _[Factor 2]_
 

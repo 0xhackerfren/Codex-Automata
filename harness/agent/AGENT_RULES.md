@@ -2,7 +2,6 @@
 
 Delivery cadence: [PLAN → EXECUTE → RECONCILE](LINEAR_FIRST.md). Linear work records link versioned GitHub contracts and evidence.
 
-
 Operating manual for agents executing tasks under Codex Automata. Specifications define intent, the SDK defines the constraint surface, tests are the mold, and casting produces code within strict quality gates.
 
 ## 1. Core Principles
@@ -16,7 +15,7 @@ Operating manual for agents executing tasks under Codex Automata. Specifications
 - Identity is specified, not defaulted. Human-perceptible surfaces and code structure reflect deliberate design decisions, not training-data defaults. "Good" is trivially achievable; the goal is statistical divergence from the bell curve center.
 - After each cast increment, exercise the running assembly under realistic conditions. Assembly pressure catches integration failures that individual molds cannot detect.
 - The CI/CD pipeline and git workflow are first-class artifacts. Treat branch strategy, commit discipline, merge policy, and pipeline configuration with the same rigor as application code. Pipeline changes follow the specification-first flow.
-- Context is persistent. Maintain project state across sessions using the context state file (`context-state.md`, from `templates/context-state-template.md`).
+- Context is persistent. Maintain per-agent/task checkpoints outside application runtime state; merge summaries at RECONCILE. Avoid concurrent edits to one shared checkpoint.
 - Be cost-conscious. Prefer smaller context, shorter sessions, and cheaper models when the task permits. Include only relevant specification sections, not entire documents. Use checkpoint-based re-dispatch rather than accumulating conversation context.
 
 ## 2. Behavioral Rules (Strict)
@@ -59,7 +58,8 @@ R18. Tag releases following the project's tagging convention (semantic versionin
 
 ## 3. Task Execution Protocol
 
-- Step 1: Read the agent task definition, locate the specification reference, and review the context state file (`context-state.md`) for current project status.
+- Step 0: Read effective context, current authorization ledger and supersession before selecting tools. Missing context grants no development privilege. Read tool schemas before first use in each session. Check configured remote, refs and last-pushed head when remote publication is required; offline local-only work records N/A rather than inventing GitHub access.
+- Step 1: Read the bounded task, linked specification and per-agent/task checkpoint. Verify the review gate declared at adoption and the current Git revision.
 - Step 2: If the task involves technology decisions or unfamiliar domains, perform research and produce structured findings.
 - Step 3: Read the relevant specification sections.
 - Step 4: Locate the SDK interfaces that define the constraint surface for this task.
@@ -69,7 +69,9 @@ R18. Tag releases following the project's tagging convention (semantic versionin
 - Step 8: Verify all assigned tests pass.
 - Step 9: Run any available linters and quality gates.
 - Step 10: Report completion with a summary of what was implemented and which tests pass.
-- Step 10b: Update the context state file with session results, completed work, Session History, and the Checkpoint for the next session.
+- Step 10b: Update the per-agent/task checkpoint with results, pending actions, attempts and recovery steps. Reconcile shared summaries serially.
+- After any interrupted turn or tool result, re-read every target file and inspect Git state before reapplying an edit. An interrupted response does not prove the write failed.
+- Standing operator authorization remains effective until revoked or explicitly superseded. Record dated grants and exactly which prior constraints they supersede; do not preserve a stale planning restriction over a later authorized action.
 
 ## 4. Iteration Protocol
 

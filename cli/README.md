@@ -14,45 +14,36 @@ pip install git+https://github.com/0xhackerfren/Codex-Automata.git#subdirectory=
 
 ## Commands
 
-### `codex-automata init <path>`
+Default `init` installs managed assets under `.automata/`, preserves application
+files and existing agent instructions, and leaves execution context unselected.
+Provide `--config` for custom/monorepo source, test, spec, SDK and runtime paths.
+No application directories are created. `--layout legacy` explicitly retains the
+old root-copy behavior for compatibility.
 
-Initialize a new project with the methodology harness. Requires Python 3.10+.
-Existing harness destinations cause a no-write failure; rehearse adoption in a
-fresh directory and merge a reviewed diff into an existing project.
-
-```powershell
-codex-automata init D:\projects\my-app
-codex-automata init D:\projects\my-app --profile essential
-codex-automata init D:\projects\my-app --profile complete --agent claude
+```bash
+codex-automata init ./app --profile essential --agent codex
+codex-automata init ./monorepo --config reviewed-project.json
+codex-automata update ./app --staging ./candidate
+codex-automata migration ./legacy-app
+codex-automata verify ./app --state /secure/control.sqlite --task LOCAL-1 --actor coder
 ```
 
-Options:
-- `--profile` (essential, standard, complete) - Adoption profile. Default: standard.
-- `--agent` (cursor, claude, copilot, codex, generic) - Primary AI agent. Default: cursor.
+`update` stages a candidate and reports customized managed files and ambiguous
+legacy ownership; it replaces no project files. `verify` on the isolated layout
+requires DEVELOP and configured checks; installation integrity alone is not a
+behavioral pass. Legacy verification retains the structural shell gates.
 
-### `codex-automata update [path]`
+`context` supplies operator bootstrap/grants, selection, decisions and hook
+selftests. Do not expose bootstrap or authorization to agent tools. `workflow`
+provides exact-plan approval, local task drafting, phase transitions, command
+execution, bounded context, reviewer-token attestation and recovery. `model
+eligible` makes capability decisions without dispatch. `benchmark` prepares and
+evaluates three instruction arms without invoking a model.
 
-Stage an upstream harness in a new sibling directory (`<project>-automata-update`)
-without modifying any project file. Review and merge the diff yourself. Existing
-staging directories are never overwritten. Use `--staging`, `--profile` and
-`--agent` to select a new staging path and the intended installation settings.
-This intentionally replaces the older destructive in-place update behavior.
-
-```powershell
-codex-automata update
-codex-automata update D:\projects\my-app
-```
-
-### `codex-automata verify [path]`
-
-Run spec-check and divergence-gate enforcement scripts against a project.
-Missing scripts and unavailable runners fail verification. These structural
-checks do not replace acceptance tests, review or CI evidence. Automatically selects the platform-appropriate script (.ps1 on Windows, .sh elsewhere).
-
-```powershell
-codex-automata verify
-codex-automata verify D:\projects\my-app
-```
+See the [isolation contract](../docs/development/isolation.md),
+[workflow contract](../docs/development/workflow-v1.md),
+[evaluation contract](../docs/development/benchmark-and-qualification.md) and
+[integration handoff](../SWARM_INTEGRATION_HANDOFF.md) for executable interfaces.
 
 ## Development
 

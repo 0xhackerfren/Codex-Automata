@@ -2,7 +2,7 @@
 
 Rules for agents assisting with human review flows.
 
-- Agents assist with review preparation; approval or rejection stays a human decision.
+- Use the review gate declared at adoption. Explicit low-risk engineering policy may permit labeled autonomous self-review with actual green checks. Independent review, finding truth promotion, protected changes and higher risk require the configured separate verifier; an implementer cannot self-promote findings or claim independence.
 - Check specification compliance: does the casting match every specified behavior?
 - Check interface contract compliance: are contracts honored? Any silent changes?
 - Check test coverage: does every specification behavior have a passing test forming a credible quality gate?

@@ -1,0 +1,11 @@
+# Long reference prose and repeated template titles are intentional.
+MD013: false
+MD025: false
+MD024:
+  siblings_only: true
+# Issue templates and executable prompt fragments need not start at h1.
+MD041: false
+# Table alignment is cosmetic; semantic table syntax is still checked.
+MD060: false
+# Bold field labels in human playbooks/glossary are intentional.
+MD036: false

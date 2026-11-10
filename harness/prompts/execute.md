@@ -1,4 +1,4 @@
-MODE=EXECUTE ISSUE=<real ID>
+MODE=EXECUTE ISSUE=[real ID]
 
 Follow AGENTS.md and agent/LINEAR_FIRST.md. Fetch the issue and linked artifacts,
 check Ready and dependencies, then implement one bounded change on its branch.

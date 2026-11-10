@@ -7,6 +7,7 @@ import shutil
 from pathlib import Path
 
 ESSENTIAL_TEMPLATES = [
+    "domain-spec-template.md",
     "spec-template.md",
     "test-plan-template.md",
     "agent-task-template.md",
@@ -83,7 +84,7 @@ def _skip_cursor_dir(agent: str) -> bool:
     return agent not in ("cursor", "generic")
 
 
-def run_init(target_str: str, profile: str, agent: str) -> int:
+def _legacy_init(target_str: str, profile: str, agent: str) -> int:
     target = Path(target_str).resolve()
     harness = _harness_dir()
     templates_dir = harness / "templates"
@@ -186,3 +187,18 @@ def run_init(target_str: str, profile: str, agent: str) -> int:
     print()
 
     return 0
+
+
+def run_init(target_str: str, profile: str, agent: str, layout: str = "namespaced", config=None) -> int:
+    if layout == "legacy":
+        return _legacy_init(target_str, profile, agent)
+    from .isolation import install
+    from .control import ControlError
+    try:
+        manifest = install(target_str, profile, agent, config)
+        print("Installed isolated .automata/ assets; context remains unselected.")
+        print("Adapters requiring review: " + ", ".join(manifest["adapters_pending"]))
+        return 0
+    except (ControlError, OSError, ValueError, TypeError, KeyError) as exc:
+        print("Error: " + str(exc))
+        return 1

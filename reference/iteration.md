@@ -76,7 +76,7 @@ Review sends work back to specification (or any earlier phase). Architecture cha
 
 Typical cascade when spec changes:
 
-```
+```text
 Spec change → SDK may need update → tests may need update → code needs recast
 ```
 

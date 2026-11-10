@@ -21,3 +21,11 @@ Rules for agents writing implementation during code casting.
 - Do not use known AI-default patterns when the design identity document specifies alternatives. Banned defaults include: Inter/Roboto/Arial as primary typeface, framework-default color palettes, purple-blue gradient heroes, three-column feature grids at identical breakpoints, and generic copy phrases cataloged in the design identity.
 - When implementing UI, reference the design identity document for aesthetic direction, permitted patterns, and banned patterns. If no design identity exists for user-facing work, stop and report the gap.
 - When all assigned tests pass within scope, stop. Do not refactor, optimize, or add features beyond what the specification and task allow unless a separate agent task directs it.
+
+## Verification tiers and determinism
+
+- T0: targeted molds after relevant edits. T1: full project suite per completed unit. T2: configured platform/host matrix per commit/PR. Record exact tier, host, command and current-head result. One host does not prove both hosts passed.
+- Run the tier appropriate to the change; repeat broader checks only after relevant changes or failures. Completion requires the frozen plan's checks.
+- Every generator/projection is a pure function of declared inputs, with deterministic ordering and a `--check` drift mode wired into the shared gate. Document necessary time/random/external inputs explicitly.
+- Static contract checks and fixture checks pass separately from intentionally red new behavioral molds. Never reinterpret a fixture exception as proof of the intended failing behavior.
+- After interruption, inspect files before reapplying. Preserve per-agent/task checkpoint journals and retry history.

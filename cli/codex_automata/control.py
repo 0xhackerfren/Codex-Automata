@@ -41,7 +41,8 @@ def safe_path(path):
     require(nonempty(path) and '\\' not in path and ':' not in path,
             'Paths must be nonempty relative POSIX paths')
     p = PurePosixPath(path)
-    require(not p.is_absolute() and all(part not in ('.', '..', '.git') for part in path.split('/'))
+    require(not p.is_absolute() and all(part.casefold() not in ('.', '..', '.git') and part and part == part.strip()
+            and not part.endswith('.') for part in path.split('/'))
             and not any(ch in path for ch in '*?[]\x00\n'), 'Unsafe or wildcard path')
     return path
 
@@ -102,6 +103,7 @@ class Controller:
     """One local database is the coordination authority for its workers."""
     def __init__(self, path):
         path = Path(path)
+        self.path = path.resolve()
         path.parent.mkdir(parents=True, exist_ok=True)
         require(not path.is_symlink(), 'State database cannot be a symlink')
         try:
@@ -301,6 +303,9 @@ class Controller:
 
     def complete(self, job, owner, token, evidence, required_checks):
         validate_job(job, current_base=False)
+        if self.db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='workflows'").fetchone():
+            require(not self.db.execute('SELECT 1 FROM workflows WHERE id=?', (job['id'],)).fetchone(),
+                    'Workflow jobs require executor-backed workflow completion')
         require(isinstance(evidence, dict), 'Evidence must be an object')
         require(isinstance(required_checks, list) and required_checks
                 and all(nonempty(x) for x in required_checks)

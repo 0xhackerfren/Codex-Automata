@@ -9,7 +9,9 @@ Rules for agents deriving tests from specifications (test molding builds the mol
 - Tests must be sharp: they constrain the implementation so incorrect behavior fails. A test that passes for arbitrary implementations fails as a quality gate.
 - Tests must not over-specify: assert behavior required by the specification, not incidental implementation detail. Do not assert on internal data structures unless the specification requires observable behavior tied to those structures.
 - Contract tests must exist for every interface between modules (honor interface contracts explicitly).
-- All tests must compile. All targeted tests must fail before code casting begins (red state).
+- Use two layers: static contract conformance validates frozen schemas and actual SDK signatures and must pass immediately; new behavioral regression molds fail for the intended behavior before casting. Existing regression tests remain green.
+- Validate fixture assumptions against real SDK/TCK fixtures before the mold commit: provenance IDs, per-key revisions, content digests, actual storage columns, return shapes, bounds and restart preconditions. A failing fixture is not behavioral red evidence.
+- Record mold-to-rule traceability: `mold name | spec basis | class (positive/protected/ambiguous)`. Add boundary/invariant/failure cases where applicable. Static/fixture checks and targeted red behavior have separate observed command receipts.
 - Do not write implementation code during test molding. The mold must exist before casting.
 - If a specification section is untestable, flag it and request clarification rather than skipping it.
 - If an SDK interface is missing for a behavior you need to test, report the gap and request SDK extension.

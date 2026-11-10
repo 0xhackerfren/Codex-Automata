@@ -8,6 +8,27 @@ Types of changes: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 
 ## [Unreleased]
 
+### vNext: CLI 0.6.0 / methodology 1.0
+
+- Isolated default installation under `.automata/`, consumer path configuration,
+  manifest integrity, safe staged updates and ownership-preserving migration.
+- Explicit controller-authorized DEVELOP/OPERATE/MAINTAIN_METHODOLOGY contexts,
+  dated supersession-aware grants and exact tool capability decisions/selftests.
+- Operator-approved plans, risk-adaptive ordered phase gates, actual subprocess
+  receipts, current-head artifact pins, protected deltas, review-token attestation,
+  bounded context and portable checkpoints with persistent retries/recovery.
+- Capability-based model eligibility and an eight-task three-arm evaluation
+  harness; live model results and next-campaign adoption evidence remain pending.
+- Adopted retrospective items 1–10: two-layer molds and fixture validation,
+  authorization/session checks, explicit review, quota-aware closure/readiness,
+  bootstrap/tool schemas, per-agent checkpoints, tiers/determinism and domain spec.
+- Fixed Windows reopened SQLite test cleanup and invalid documentation workflow
+  YAML. Documentation lint configuration now lives in the repository.
+- Added runnable standalone demonstration and SWARM_INTEGRATION_HANDOFF.md.
+- Breaking default: root-copy adoption now requires explicit `--layout legacy`.
+  Existing job/journal v1 remains; workflow jobs cannot use observation-only legacy
+  completion. No runtime scheduler, inference server or private adapter added.
+
 ### Local delivery enforcement
 
 - Added versioned job validation, phase/risk-based approved model routing,

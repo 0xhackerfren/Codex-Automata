@@ -12,9 +12,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Write markdownlint defaults
-        run: printf '%s\n' 'MD013: false' 'MD025: false' > .markdownlint.yaml
-
       - uses: DavidAnson/markdownlint-cli2-action@v19
         with:
           globs: '**/*.md'

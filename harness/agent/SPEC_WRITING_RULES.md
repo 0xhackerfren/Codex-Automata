@@ -11,3 +11,5 @@ Rules for agents assisting with specification writing inside a bounded context.
 - Do not make design decisions in the specification. The specification defines WHAT, not HOW (design belongs outside the behavioral contract unless the architecture explicitly freezes it).
 - Cross-reference interface contracts when the module depends on or provides interfaces.
 - Flag any unresolved ambiguity as an Open Question rather than making assumptions.
+
+- For domain behavior, copy `templates/domain-spec-template.md`: numbered rules, scenario traces as mold basis, exact paper fixture, alternatives/decision and downstream handoff.

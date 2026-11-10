@@ -40,7 +40,7 @@ class ControlTests(unittest.TestCase):
                  phases=['cast', 'architect'], data_classes=['private'])])
         self.db = self.root / 'control.sqlite'
         self.c = Controller(self.db)
-        self.addCleanup(self.c.close)
+        self.addCleanup(lambda: self.c.close())
 
     def git(self, *args):
         return subprocess.check_output(['git', '-C', str(self.repo), *args],

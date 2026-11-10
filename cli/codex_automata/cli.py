@@ -82,11 +82,47 @@ def main(argv: list[str] | None = None) -> int:
     journal.add_argument("--state", required=True)
     journal.add_argument("--payload", help="Operation or remote-observation JSON")
 
+    from .context_cli import add_parser as add_context_parser
+    add_context_parser(subparsers)
+    from .workflow_cli import add_parser as add_workflow_parser
+    add_workflow_parser(subparsers)
+    from .qualification import add_parser as add_model_parser
+    add_model_parser(subparsers)
+    from .benchmark import add_parser as add_benchmark_parser
+    add_benchmark_parser(subparsers)
+    from .session import add_parser as add_session_parser
+    add_session_parser(subparsers)
+    init_parser.add_argument('--layout', choices=['namespaced', 'legacy'], default='namespaced')
+    init_parser.add_argument('--config', help='Consumer-owned project configuration JSON')
+    update_parser.add_argument('--layout', choices=['namespaced', 'legacy'], default='namespaced')
+    verify_parser.add_argument('--state')
+    verify_parser.add_argument('--task')
+    verify_parser.add_argument('--actor')
     args = parser.parse_args(argv)
 
     if args.command is None:
         parser.print_help()
         return 1
+
+    if args.command == 'session':
+        from .session import run
+        return run(args)
+
+    if args.command == 'benchmark':
+        from .benchmark import run
+        return run(args)
+
+    if args.command == 'model':
+        from .qualification import run
+        return run(args)
+
+    if args.command == 'workflow':
+        from .workflow_cli import run
+        return run(args)
+
+    if args.command in ('context', 'migration'):
+        from .context_cli import run
+        return run(args)
 
     if args.command in ("job", "journal"):
         controller = None
@@ -146,11 +182,17 @@ def main(argv: list[str] | None = None) -> int:
                 controller.close()
 
     if args.command == "init":
-        return run_init(args.target, args.profile, args.agent)
+        from .isolation import read_json
+        try:
+            return run_init(args.target, args.profile, args.agent, args.layout,
+                            read_json(args.config) if args.config else None)
+        except (OSError, ValueError, TypeError, KeyError) as exc:
+            print(json.dumps({'error': str(exc)}), file=sys.stderr)
+            return 1
     elif args.command == "update":
-        return run_update(args.target, args.staging, args.profile, args.agent)
+        return run_update(args.target, args.staging, args.profile, args.agent, args.layout)
     elif args.command == "verify":
-        return run_verify(args.target)
+        return run_verify(args.target, args.state, args.task, args.actor)
 
     return 1
 

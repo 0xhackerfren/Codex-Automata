@@ -8,7 +8,7 @@ model that passes verification. Optimize reviewed functionality per frontier
 window, not issue count or specification length. Never infer credit availability,
 reset times, model access, pricing or approval.
 
-Linear is the durable work specification: goals, scope, milestones, dependencies,
+When available, Linear is the preferred durable work specification: goals, scope, milestones, dependencies,
 priorities, acceptance criteria and status. Git is authoritative for versioned
 behavior specifications, ADRs, SDK contracts, tests and actual implementation.
 An issue links the required contract/spec revision rather than duplicating it.
@@ -30,13 +30,13 @@ Do not force unrelated maintenance through a new project or invented issue.
 
 ### MODE=PLAN
 
-1. Read current Linear work, repository, tests and constraints. Verify the intended
+1. Read current local work packets or available Linear work, repository, tests and constraints. Verify the intended
    workspace/team/project before writes. Record observed facts separately from
    assumptions. Do not invent paths or commands.
 2. Record a project brief using `templates/linear-project-brief-template.md`:
    outcome, non-goals, architecture, data boundaries, API contracts, failure cases,
    rollout and unresolved decisions. Link versioned ADRs.
-3. Decompose milestones into reviewable tasks using
+3. Before mass creation, inspect available workspace quota/capabilities; record unknown limits as unknown and publish a bounded batch. Keep overflow drafts local with stable dependency keys. Decompose milestones into reviewable tasks using
    `templates/linear-issue-template.md`. Include research, contract, mold,
    implementation, integration and release work where relevant. Prefer near-term
    vertical slices; keep distant work coarse until evidence supports detail.
@@ -49,7 +49,7 @@ PLAN changes planning artifacts by default; implement product code only when the
 user also requests it. Deep planning is useful only while it reduces downstream
 uncertainty. Stop expanding speculative detail when a usable queue exists.
 
-### MODE=EXECUTE ISSUE=<ID>
+### MODE=EXECUTE ISSUE=[ID]
 
 1. Fetch the current issue, dependencies and linked contracts; read relevant code
    and applicable instructions. Check the Ready gate below. Confirm the assigned
@@ -69,7 +69,7 @@ uncertainty. Stop expanding speculative detail when a usable queue exists.
    Record observed/expected behavior, attempts, evidence and the missing decision;
    move to another unblocked task rather than guessing repeatedly.
 
-### MODE=RECONCILE PROJECT=<ID>
+### MODE=RECONCILE PROJECT=[ID]
 
 Read actual diffs, reviewed SHAs, checks, blockers and changed requirements.
 Compare them to the intended work and versioned contracts. Update affected
@@ -104,9 +104,7 @@ Local execution also requires access and isolation controls. Pass only the issue
 and relevant context; cheap capacity does not justify dumping full repositories.
 No automatic model switching or provider upload is implemented by these rules.
 
-If Linear is unavailable, prepare explicitly unsynchronized drafts/completion
-records under `tasks/`. Continue only already assigned work within its verified
-scope. Re-read remote state before retrying an uncertain write; never invent an
+If Linear is unavailable or intentionally unused, use first-class local job packets and completion records. Mark remote synchronization status explicitly; a local task does not need a fabricated issue ID. Continue authorized bounded work through the same gates. Re-read remote state before retrying an uncertain write; never invent an
 issue ID or report drafts as published. Native templates require manual setup.
 Do not place secrets, credentials or sensitive evidence in issues or checkpoints.
 
@@ -116,7 +114,7 @@ workflow authorizes no unattended merge, deployment or external messaging.
 
 ## First-class work graph
 
-Linear is the agent's durable map of intended work, not an optional status mirror.
+Linear is the preferred shared durable map when configured; local packets provide the same intent contract offline.
 A fresh session reconstructs the intended system from project brief, issue graph,
 linked versioned contracts and execution evidence. A conversation decision becomes
 reliable handoff state only after it is recorded in the appropriate artifact.
@@ -148,3 +146,20 @@ This v1 executes no model/provider calls, merges, deployments or remote writes.
 It validates supplied observations; authenticated adapters must supply real
 provider evidence before unattended integration is enabled. Keep the state
 outside agent write scope. Separate state databases do not coordinate each other.
+
+## Closure and child readiness
+
+At closure, retain exact completed head, artifact paths, check tiers and review.
+Reconcile children in dependency order: fill readiness from actual upstream
+completion receipts and pinned Git artifacts, validate every dependency, then
+propose the configured Ready/Todo transition. Never infer readiness from an
+upstream title or Done label. The local controller already checks evidenced
+ancestry; optional remote adapters must fetch fresh state and journal writes.
+
+Archive completed issues only under the workspace's standing authorization,
+after retaining linked evidence and confirming dependents can still resolve
+artifacts. Archiving is reversible and distinct from deletion. Never delete work
+to free quota. Verify current plan limits and archival semantics; do not assume
+Done frees capacity. If the connected adapter lacks archive/quota APIs, record
+that limitation and provide an operator UI reconciliation step. No remote archive
+or child transition is implemented merely by this document.

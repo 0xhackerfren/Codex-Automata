@@ -105,3 +105,15 @@
 - [ ] Coverage targets: [statement / branch / critical paths; or explicit rationale if not numeric]
 - [ ] Contract tests run in quality gate: [where, e.g., CI job name]
 - [ ] Human review can verify traceability from spec to mold via the coverage matrix
+
+## Two-layer mold evidence
+
+| Mold name | Spec basis | Class (positive/protected/ambiguous) | Static/fixture command | Behavioral command and intended red reason |
+| --- | --- | --- | --- | --- |
+| [test] | [numbered rule] | [class] | [real SDK/schema/TCK check] | [command; expected failure] |
+
+Static schema/API checks and real SDK fixture assumptions pass before mold commit.
+Record actual green static/fixture receipts separately from new behavioral red
+receipts. Existing regression tests remain green. Do not assert implementation
+encodings absent from the contract. Record expected records exactly in a paper
+fixture, including provenance, revision starts, digest meaning and restart state.

@@ -4,11 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "codex-automata"
-version = "0.5.0"
+version = "0.6.0"
 description = "Codex Automata: a spec-first, SDK-constrained, test-molded development methodology for the agentic era"
 readme = "README.md"
 license = "MIT"
 requires-python = ">=3.10"
+dependencies = ["jsonschema>=4.18,<5"]
 authors = [
     { name = "Codex Automata Contributors" },
 ]

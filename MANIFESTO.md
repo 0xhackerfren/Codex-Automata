@@ -384,7 +384,6 @@ The principles were always right. The economics finally agree.
 
 *Codex Automata Manifesto v2.0, May 2026. Harness version: see VERSION file.*
 
-
 ## Durable Intent, Verifiable Reality
 
 An agentic engineering system must outlive the conversation, the model and the
