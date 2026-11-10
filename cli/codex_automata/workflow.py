@@ -135,7 +135,7 @@ class Workflow:
         require(grant['task_id'] == task and artifact.get('review', {}).get('reviewer') == grant['actor'],
                 'Reviewer grant does not match artifact identity')
         state, job, _, _, _ = self._load(task)
-        require(grant['repository'] == job['repository'] and grant['actor'] != state['owner']
+        require(Path(grant['repository']).resolve() == Path(job['repository']).resolve() and grant['actor'] != state['owner']
                 and grant['context'] == 'DEVELOP', 'Independent reviewer authority required')
         self.context.evaluate(job['repository'], task, grant['actor'], 'file:read', job['specs'][0])
         validate_schema('artifact', artifact)
@@ -185,6 +185,11 @@ class Workflow:
         try:
             state = self.c._register(job)
             self.c._ready(job)
+            for dependency in job['dependencies']:
+                dependency_state = self.c.state(dependency)
+                dependency_receipt = json.loads(dependency_state['evidence'])
+                require(dependency_receipt.get('source') == 'workflow-local-executor',
+                        'Workflow dependency requires executor-backed completion, not legacy supplied observations')
             require(state['status'] == 'queued' and state['attempts'] < job['max_attempts'], 'Task unavailable')
             require(state['failure'] is None, 'Unresolved task failure')
             import secrets

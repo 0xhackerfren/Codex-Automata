@@ -203,3 +203,20 @@ class IsolationTests(unittest.TestCase):
         path.write_text('{"schema_version":1,"schema_version":99}')
         self.assertEqual(main(['init', str(self.root), '--config', str(path)]), 1)
         self.assertEqual(list(self.root.iterdir()), [])
+
+    def test_repository_alias_is_normalized_and_relative_identity_rejected(self):
+        install(self.root, config=self.config)
+        grant = self.grant(repository=str(self.root / '..' / self.root.name))
+        self.assertEqual(grant['grant']['repository'], str(self.root.resolve()))
+        with self.assertRaises(ControlError):
+            self.grant(id='relative', repository='consumer')
+
+    def test_windows_permission_prefixes_do_not_depend_on_case(self):
+        from codex_automata.isolation import under
+        from codex_automata.control import safe_path
+        with patch('codex_automata.isolation.os.name', 'nt'):
+            self.assertTrue(under('.AUTOMATA/project.json', ['.automata']))
+            self.assertTrue(under('Checks/Test.py', ['checks']))
+        for path in ('.GIT/config', 'app./code.py', 'app /code.py'):
+            with self.assertRaises(ControlError):
+                safe_path(path)

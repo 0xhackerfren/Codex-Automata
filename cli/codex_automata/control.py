@@ -41,7 +41,8 @@ def safe_path(path):
     require(nonempty(path) and '\\' not in path and ':' not in path,
             'Paths must be nonempty relative POSIX paths')
     p = PurePosixPath(path)
-    require(not p.is_absolute() and all(part not in ('.', '..', '.git') for part in path.split('/'))
+    require(not p.is_absolute() and all(part.casefold() not in ('.', '..', '.git') and part and part == part.strip()
+            and not part.endswith('.') for part in path.split('/'))
             and not any(ch in path for ch in '*?[]\x00\n'), 'Unsafe or wildcard path')
     return path
 

@@ -5,6 +5,7 @@ policy decision boundary for tool adapters, not an OS sandbox.
 """
 import hashlib
 import json
+import os
 from pathlib import Path
 import secrets
 import shutil
@@ -59,7 +60,7 @@ def validate_config(config, root):
         for path in values:
             safe_path(path)
             require((root / path).resolve().is_relative_to(root), 'Configured path escapes project')
-            require(path != '.automata' and not path.startswith('.automata/'),
+            require(not under(path, ['.automata']),
                     'Application paths cannot own methodology assets')
     caps = config['capabilities']
     require(isinstance(caps, dict) and set(caps) == set(CONTEXTS), 'Invalid context capabilities')
@@ -171,6 +172,10 @@ def migration_report(root):
 
 
 def under(path, prefixes):
+    # Windows path identity is case-insensitive; permission prefixes must be too.
+    if os.name == 'nt':
+        path = path.casefold()
+        prefixes = [prefix.casefold() for prefix in prefixes]
     return any(path == prefix or path.startswith(prefix + '/') for prefix in prefixes)
 
 
@@ -198,17 +203,18 @@ class ContextController:
                 'context', 'capabilities', 'write_paths', 'policy_version', 'supersedes', 'reason'}, 'Invalid grant fields')
         require(all(nonempty(grant[k]) for k in ('id', 'actor', 'task_id', 'reason')), 'Grant identity/reason required')
         require(grant['context'] in CONTEXTS and grant['policy_version'] == METHODOLOGY, 'Unsupported context/policy')
+        require(Path(grant['repository']).is_absolute(), 'Absolute repository required')
         root = Path(grant['repository']).resolve()
+        grant = dict(grant, repository=str(root))
         require(not self.c.path.is_relative_to(root), 'Context authority state must remain outside project')
         verify_installation(root, allow_modified=grant['context'] == 'MAINTAIN_METHODOLOGY')
-        require(grant['repository'] == str(root), 'Absolute canonical repository required')
         for key in ('capabilities', 'write_paths', 'supersedes'):
             require(isinstance(grant[key], list) and all(nonempty(x) for x in grant[key])
                     and len(set(grant[key])) == len(grant[key]), 'Invalid grant list: ' + key)
         for path in grant['write_paths']:
             safe_path(path)
         token = secrets.token_hex(32)
-        payload = dict(grant, issued_at=datetime.now(timezone.utc).isoformat())
+        payload = dict(grant, repository=str(root), issued_at=datetime.now(timezone.utc).isoformat())
         self.c._begin()
         try:
             for old in grant['supersedes']:

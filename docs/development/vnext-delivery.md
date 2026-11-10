@@ -30,8 +30,8 @@ matrix and SWARM_INTEGRATION_HANDOFF.md for concrete evidence and residual limit
 
 | Check | Actual result |
 | --- | --- |
-| `PYTHONPATH=cli python -m unittest discover -s cli/tests -q` | 70 tests pass on Linux |
-| Built wheel, installed to isolated target, reran same suite against installed package | 70 tests pass |
+| `PYTHONPATH=cli python -m unittest discover -s cli/tests -q` | 73 tests pass on Linux |
+| Built wheel, installed to isolated target, reran same suite against installed package | 73 tests pass |
 | `PYTHONPATH=/tmp/automata-final-installed python examples/standalone_workflow_demo.py` | completed-local; six phases, six actual commands; checkpoint resumed; self-review labeled; no deployment/external service |
 | Demo bounded context | maximum 3,114 bytes, budget 16,000 bytes |
 | `npx markdownlint-cli2@0.20.0 --config .markdownlint.yaml '**/*.md'` | zero errors |
@@ -60,3 +60,15 @@ manage process trees, preserve cross-ID failure lineage and authenticate remote
 adapters. Checkpoint exports cannot replace lost controller authority. The small
 benchmark tests instruction treatments, not the entire process, until the external
 live-agent study is run. No production readiness or unattended release is asserted.
+
+## Hosted CI follow-up
+
+The first published matrix passed both Linux versions and documentation checks,
+but exposed Windows repository-path casing differences in authorization identity.
+Repository grants now normalize absolute identity, Windows permission prefixes
+compare without case sensitivity, and nonportable trailing-dot/space and Git
+metadata aliases are rejected. Three additional regression tests cover normalized
+identity, permission aliases and legacy-dependency evidence laundering. Workflow
+dependencies now require executor-backed completion, while legacy v1 behavior
+remains explicitly observation-only. The delivered PR head is rerun in the full
+matrix; consult its current checks for final hosted status.

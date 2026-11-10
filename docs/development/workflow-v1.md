@@ -125,3 +125,9 @@ the full blob and record the selected range; invalid ranges fail. Selected sourc
 objects are capped at 1 MiB before extraction. Supplied packets are journaled in
 trusted context_packets state so instruction/source provenance survives sessions.
 The context includes a compact output envelope and tool-argument requirements.
+
+Workflow dependencies require executor-backed workflow completion receipts; legacy
+caller-supplied observations cannot qualify an upstream dependency. Existing
+legacy job/journal v1 behavior remains compatible for explicitly trusted-operator
+manual workflows. Windows repository identities normalize to canonical absolute
+paths, and permission prefixes compare using platform path identity rules.

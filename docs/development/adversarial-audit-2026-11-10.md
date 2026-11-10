@@ -21,6 +21,8 @@ Tests use real disposable Git repositories, SQLite state and subprocess checks.
 | Stale authorization remains active | test_authority_and_supersession_observable | Superseded selected grants and token reuse denied |
 | Maintenance locks itself after first authorized policy edit | test_maintenance_can_repair_multiple_assets_without_unlocking_development | Only maintenance tolerates in-progress asset changes; development stays blocked |
 | Interrupted install leaves adapter behind | test_install_failure_after_adapter_creation_rolls_back | Staged namespace and created routing adapter removed on failure |
+| Windows casing aliases reject legitimate grants or bypass permission prefixes | test_repository_alias_is_normalized_and_relative_identity_rejected; test_windows_permission_prefixes_do_not_depend_on_case | Canonical absolute repository identity, case-aware Windows permission comparisons and portable paths |
+| Observation-only legacy completion launders a workflow dependency | test_legacy_dependency_observations_do_not_qualify_for_verified_workflow | Workflow dependencies require local-executor-backed completion |
 | New methodology silently changes active phases | test_methodology_change_blocks_active_work_without_resetting_history | Definition/schema/CLI fingerprint mismatch blocks continuation |
 | Unapproved/unqualified/unknown model | test_unapproved_unknown_unavailable_and_security_fail_closed | Capability thresholds, approval and explicit availability fail closed |
 | Benchmark accepts unauthorized patch or confuses fixtures with model results | benchmark tests | Hidden trusted oracles, scope validation, pending live results |
