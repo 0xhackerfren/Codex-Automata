@@ -6,6 +6,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from unittest.mock import patch
 
 from codex_automata.control import Controller, ControlError
 from codex_automata.isolation import ContextController, install, project_config
@@ -131,6 +132,123 @@ class WorkflowTests(unittest.TestCase):
             self.advance('mold')
         with self.assertRaisesRegex(ControlError, 'executor-backed'):
             self.c.complete(self.job, 'coder', self.token, {}, ['behavior'])
+
+    def test_output_overflow_persists_and_cannot_satisfy_expected_red(self):
+        check = self.plan['checks'][2]
+        check.update(argv=[sys.executable, '-c', 'import os; os.write(1, b"x" * 1025)'],
+                     output_limit_bytes=1024)
+        self.start()
+        self.advance('intake')
+        self.advance('specify')
+        for name in ('static', 'fixtures'):
+            self.w.execute('LOCAL-1', 'coder', self.token, name)
+        receipt = self.w.execute('LOCAL-1', 'coder', self.token, 'behavior', 'fail')
+        self.assertEqual(receipt['failure'], 'output-limit')
+        self.assertEqual(receipt['output_bytes'], 1024)
+        self.assertEqual(self.c.state('LOCAL-1')['attempts'], 1)
+        self.assertEqual(self.c.state('LOCAL-1')['failure'], 'environment')
+        with self.assertRaises(ControlError):
+            self.advance('mold')
+        self.c.close()
+        self.c = Controller(self.root / 'state.sqlite')
+        self.assertEqual(self.c.state('LOCAL-1')['attempts'], 1)
+        stored = json.loads(self.c.db.execute('SELECT payload FROM executions ORDER BY sequence DESC LIMIT 1').fetchone()[0])
+        self.assertEqual(stored['failure'], 'output-limit')
+
+    def test_running_intent_blocks_overlap_and_state_transitions(self):
+        self.start()
+
+        def during_command(*args):
+            other = Controller(self.root / 'state.sqlite')
+            try:
+                competing = Workflow(other)
+                with patch('codex_automata.workflow.run_check') as launch:
+                    with self.assertRaisesRegex(ControlError, 'Command running'):
+                        competing.execute('LOCAL-1', 'coder', self.token, 'static')
+                    launch.assert_not_called()
+                for action in (
+                    lambda: other.release('LOCAL-1', 'coder', self.token, 'pause'),
+                    lambda: other.attempt('LOCAL-1', 'coder', self.token, 'environment', 'repair'),
+                    lambda: competing.advance('LOCAL-1', 'coder', self.token, self.artifact('intake')),
+                ):
+                    with self.assertRaisesRegex(ControlError, 'Command running'):
+                        action()
+            finally:
+                other.close()
+            return dict(exit_code=0, failure=None, output_sha256='0' * 64, output_bytes=0, output_excerpt='')
+
+        with patch('codex_automata.workflow.run_check', side_effect=during_command):
+            receipt = self.w.execute('LOCAL-1', 'coder', self.token, 'static')
+        self.assertEqual(self.w.runs('LOCAL-1')[0]['status'], 'finished')
+        self.assertEqual(receipt['run_id'], self.w.runs('LOCAL-1')[0]['run_id'])
+
+    def test_process_crash_retains_intent_and_requires_operator_reconciliation(self):
+        self.start()
+        script = '''
+import os, sys
+from unittest.mock import patch
+from codex_automata.control import Controller
+from codex_automata.workflow import Workflow
+c = Controller(sys.argv[1])
+with patch('codex_automata.workflow.run_check', side_effect=lambda *a: os._exit(23)):
+    Workflow(c).execute('LOCAL-1', 'coder', sys.argv[2], 'static')
+'''
+        result = subprocess.run([sys.executable, '-c', script, str(self.root / 'state.sqlite'), self.token])
+        self.assertEqual(result.returncode, 23)
+        self.c.close()
+        self.c = Controller(self.root / 'state.sqlite')
+        self.w = Workflow(self.c)
+        runs = self.w.snapshot('LOCAL-1')['command_runs']
+        self.assertEqual(runs[0]['status'], 'running')
+        self.assertNotIn(self.token, json.dumps(runs))
+        with patch('codex_automata.workflow.run_check') as launch:
+            with self.assertRaisesRegex(ControlError, 'Command running'):
+                self.w.execute('LOCAL-1', 'coder', self.token, 'static')
+            launch.assert_not_called()
+        run_id = runs[0]['run_id']
+        for authority, evidence, stopped in [('invalid', 'inspected', True),
+                                               (self.authority, '', True),
+                                               (self.authority, 'inspected', False)]:
+            with self.assertRaises(ControlError):
+                self.w.reconcile_run(authority, run_id, evidence, stopped)
+        self.assertEqual(self.c.state('LOCAL-1')['attempts'], 0)
+        self.w.reconcile_run(self.authority, run_id, 'Worker exited before launch; no descendants', True)
+        with self.assertRaises(ControlError):
+            self.w.reconcile_run(self.authority, run_id, 'duplicate', True)
+        self.assertEqual(self.c.state('LOCAL-1')['attempts'], 1)
+        with self.assertRaises(ControlError):
+            self.w.execute('LOCAL-1', 'coder', self.token, 'static')
+        self.c.resolve('LOCAL-1', 'coder', self.token, 'Verified safe to retry')
+        self.assertIsNone(self.w.execute('LOCAL-1', 'coder', self.token, 'static')['failure'])
+        self.assertEqual(self.c.state('LOCAL-1')['attempts'], 1)
+
+    def test_reconciliation_cannot_reuse_older_passing_receipt(self):
+        self.start()
+        self.w.execute('LOCAL-1', 'coder', self.token, 'static')
+        with patch('codex_automata.workflow.run_check', side_effect=KeyboardInterrupt):
+            with self.assertRaises(KeyboardInterrupt):
+                self.w.execute('LOCAL-1', 'coder', self.token, 'static')
+        run_id = self.w.runs('LOCAL-1')[-1]['run_id']
+        self.w.reconcile_run(self.authority, run_id, 'Stopped; inspected for side effects', True)
+        self.c.resolve('LOCAL-1', 'coder', self.token, 'Safe to retry')
+        with self.assertRaisesRegex(ControlError, 'Latest command'):
+            self.w._checks('LOCAL-1', self.plan, self.head(), roles={'static'})
+        self.w.execute('LOCAL-1', 'coder', self.token, 'static')
+        self.w._checks('LOCAL-1', self.plan, self.head(), roles={'static'})
+
+    def test_reconciled_run_rejects_late_receipt(self):
+        self.start()
+
+        def reconcile_during_run(*args):
+            run_id = self.w.runs('LOCAL-1')[-1]['run_id']
+            self.w.reconcile_run(self.authority, run_id, 'Test operator verified stopped', True)
+            return dict(exit_code=0, failure=None, output_sha256='0' * 64, output_bytes=0, output_excerpt='')
+
+        with patch('codex_automata.workflow.run_check', side_effect=reconcile_during_run):
+            with self.assertRaises(ControlError):
+                self.w.execute('LOCAL-1', 'coder', self.token, 'static')
+        self.assertEqual(self.c.db.execute('SELECT count(*) FROM executions').fetchone()[0], 0)
+        self.assertEqual(self.c.state('LOCAL-1')['attempts'], 1)
 
     def test_failure_consumes_budget_across_restart(self):
         self.to_cast()

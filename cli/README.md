@@ -40,6 +40,14 @@ execution, bounded context, reviewer-token attestation and recovery. `model
 eligible` makes capability decisions without dispatch. `benchmark` prepares and
 evaluates three instruction arms without invoking a model.
 
+CLI 0.6.2 defaults workflow checks to a fresh committed-file snapshot. Approved
+`verified-worktree` mode supports commands needing Git metadata or existing
+dependencies, with physical tracked-content checks in both modes. Plans may
+declare phase-owned future outputs; reviewer renewal requires its own token.
+See the [evidence/lifecycle correction contract](../docs/development/evidence-lifecycle-fixes.md)
+for compatibility limits and regression evidence. Active jobs require the pinned
+original release or reviewed migration; upgrades do not silently rewrite them.
+
 See the [isolation contract](../docs/development/isolation.md),
 [workflow contract](../docs/development/workflow-v1.md),
 [evaluation contract](../docs/development/benchmark-and-qualification.md) and

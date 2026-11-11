@@ -24,8 +24,21 @@ Tests use real disposable Git repositories, SQLite state and subprocess checks.
 | Windows casing aliases reject legitimate grants or bypass permission prefixes | test_repository_alias_is_normalized_and_relative_identity_rejected; test_windows_permission_prefixes_do_not_depend_on_case | Canonical absolute repository identity, case-aware Windows permission comparisons and portable paths |
 | Observation-only legacy completion launders a workflow dependency | test_legacy_dependency_observations_do_not_qualify_for_verified_workflow | Workflow dependencies require local-executor-backed completion |
 | New methodology silently changes active phases | test_methodology_change_blocks_active_work_without_resetting_history | Definition/schema/CLI fingerprint mismatch blocks continuation |
+| Shared claim launches overlapping commands or controller dies before receipt | test_running_intent_blocks_overlap_and_state_transitions; test_process_crash_retains_intent_and_requires_operator_reconciliation | Durable intent, repository lock and operator-only reconciliation |
+| Reconciliation reuses an older green receipt or accepts a late result | test_reconciliation_cannot_reuse_older_passing_receipt; test_reconciled_run_rejects_late_receipt | Latest run identity must match the receipt; reconciliation consumes an attempt |
 | Unapproved/unqualified/unknown model | test_unapproved_unknown_unavailable_and_security_fail_closed | Capability thresholds, approval and explicit availability fail closed |
 | Benchmark accepts unauthorized patch or confuses fixtures with model results | benchmark tests | Hidden trusted oracles, scope validation, pending live results |
+
+## Evidence/lifecycle follow-up: CLI 0.6.2
+
+The subsequent adversarial pass reproduced hidden-worktree completion, blocked
+legitimate phase authoring and stale reviewer issuance accepted as fresh. The
+[correction contract](evidence-lifecycle-fixes.md) describes default raw-blob
+snapshots, physical tracked-content checks, explicit compatibility mode,
+phase-owned future outputs and timestamped recovery-aware reviewer attestations.
+`cli/tests/test_adversarial_fixes.py` contains the positive/negative regressions.
+This remains a single-agent review; no OS isolation or live-model effectiveness
+claim is added.
 
 ## Remaining boundaries
 
@@ -36,8 +49,10 @@ Tests use real disposable Git repositories, SQLite state and subprocess checks.
   red reasons still require review. Test quality is not empirically scored yet.
 - Reviewer tokens authenticate a controller-issued identity, not cognitive
   diversity. Operators must issue them to a genuinely separate review process.
-- Subprocess timeout stops the direct child, not every possible descendant.
-  Isolate process trees and bound output/disk usage in the consuming runtime.
+- CLI 0.6.1 follow-up bounds captured command output and kills POSIX process
+  groups on timeout, overflow and direct-child completion. Windows descendants,
+  detached POSIX descendants and arbitrary disk writes still require host
+  containment. See [execution contract](bounded-execution-spec.md).
 - Cross-ID retry lineage, multi-host synchronization, provider attestations and
   authenticated Linear/GitHub writes remain adapter/operator responsibilities.
 - Checkpoint relocation needs reviewed replan plus trusted DB restoration; exports

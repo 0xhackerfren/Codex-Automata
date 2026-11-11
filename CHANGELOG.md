@@ -8,6 +8,40 @@ Types of changes: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 
 ## [Unreleased]
 
+### Evidence and lifecycle corrections: CLI 0.6.2
+
+- Default workflow execution uses fresh raw-blob commit snapshots with a minimal
+  environment. Content verification and rejection of hidden Git index flags
+  prevent dirty-worktree completion. Receipts identify the actual execution mode.
+  An exact-plan `verified-worktree` compatibility mode supports Git-aware tools
+  and ignored dependencies while retaining tracked-content checks.
+- Added phase-owned `planned_outputs` for future specifications, SDK and molds;
+  provisional outputs can evolve before their owning phase freezes them. Existing
+  protected changes still require operator approval and independent review.
+- Reviewer attestations carry issuance time and recovery generation. Expired,
+  future-dated, legacy undated and pre-rewind approvals fail closed. Renewal needs
+  the separate reviewer token and retains issuance history.
+- Active jobs require their original release or reviewed migration. Snapshots do
+  not pin external dependencies or provide OS isolation; symlinks, submodules,
+  custom clean-filter transformations and oversized trees need reviewed adapters.
+
+### Bounded workflow execution: CLI 0.6.1
+
+- Durable command intents prevent overlapping checks and survive controller
+  interruption. Operator-only `workflow reconcile-run` records investigation
+  evidence and a failed attempt before retry; no automatic command replay.
+- Checkpoints and `workflow runs` expose command history without claim tokens.
+  Reconciled commands cannot reuse earlier passing receipts or accept late ones.
+- Replaced workflow command output spooling with a bounded pipe queue. Approved
+  checks may set `output_limit_bytes` (default 1 MiB, maximum 16 MiB). Overflow
+  fails closed and consumes a persistent environment failure attempt.
+- POSIX workflow checks run in a new session; process-group cleanup handles
+  timeout, overflow, interruption and parent completion. Windows direct-child
+  termination remains; detached descendants still require host containment.
+- Output hashes/counts describe the captured prefix on failure. Excerpts remain
+  limited to 8 KiB. This version changes the workflow policy fingerprint; active
+  jobs require the original pinned release or reviewed migration.
+
 ### vNext: CLI 0.6.0 / methodology 1.0
 
 - Isolated default installation under `.automata/`, consumer path configuration,

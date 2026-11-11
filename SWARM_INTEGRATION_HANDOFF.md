@@ -105,7 +105,7 @@ emits packet v1 with current Git baseline. The packet's legacy entry-job phase
 is distinct from the recorded lifecycle; workflow phases come from profiles.json.
 
 Operator execution plan: `plan.schema.json`. Freeze profile/impact declarations,
-exact argv/role/tier/timeouts, acceptance-to-check mapping, selected context paths,
+exact argv/role/tier/timeouts, optional per-check `output_limit_bytes`, acceptance-to-check mapping, selected context paths,
 byte budget, review policy/lifetime and protected-change exceptions. Task risk
 floors can raise requested rigor. The operator must review semantic impacts and
 command meaning; filenames and green exit codes do not prove those properties.
@@ -127,6 +127,33 @@ with expected pass. T0/T1/T2 name targeted/suite/configured host matrix; the loc
 executor records its host observation only. A wrapper claiming T2 must genuinely
 run the required remote matrix and retain authenticated results; a tier label is
 not proof of multiple hosts.
+
+Workflow output defaults to a 1 MiB cap (operator-configurable up to 16 MiB).
+Overflow is a failed environment attempt even for expected red molds; receipt
+hash/count covers the captured prefix only. POSIX cleanup kills the command's
+process group on timeout, overflow, interruption and parent completion. Windows
+direct-child termination and detached POSIX descendants require external process
+containment. These limits cover captured output, not arbitrary file writes.
+
+Commands commit durable intent before launch, with one unresolved command per
+repository in a shared controller database. Checkpoints and `workflow runs` expose
+history. Interruption blocks replay until operator-only `workflow reconcile-run`
+records evidence and confirmation that the original command/descendants stopped.
+Reconciliation consumes a failure attempt and invalidates reuse of prior passing
+receipts; resolve the environment failure before retry. The runtime must stop and
+inspect processes/side effects before asserting `--confirm-stopped`. See
+[execution recovery](docs/development/execution-recovery-spec.md).
+
+CLI 0.6.2 defaults to a separate raw-blob commit snapshot for every check. Supply
+dependency bootstrap in the approved command or a reviewed dependency adapter;
+ignored dependencies and `.git` are absent. Exact-plan `verified-worktree` mode
+supports compatibility while retaining tracked-content checks and flag rejection;
+its receipt does not claim ignored-source exclusion. Process environment secrets
+and import paths are not inherited. Neither mode is an OS sandbox or a dependency
+attestation. See [evidence and lifecycle corrections](docs/development/evidence-lifecycle-fixes.md)
+for size/path restrictions, planned future outputs and reviewer issuance/rewind
+rules. Legacy job-only APIs still require existing references. Do not issue the
+reviewer token to the coding worker or treat a coder-side timestamp as renewal.
 
 Artifact schema: `artifact.schema.json`; phase-specific outputs pin committed
 regular Git blobs. Current-head checks precede cast/review/product/observe exits.
