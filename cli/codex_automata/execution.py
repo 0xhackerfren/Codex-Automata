@@ -12,7 +12,7 @@ DEFAULT_OUTPUT_LIMIT = 1048576
 MAX_OUTPUT_LIMIT = 16777216
 
 
-def run_check(argv, cwd, timeout, output_limit=DEFAULT_OUTPUT_LIMIT):
+def run_check(argv, cwd, timeout, output_limit=DEFAULT_OUTPUT_LIMIT, env=None):
     if type(output_limit) is not int or not 1 <= output_limit <= MAX_OUTPUT_LIMIT:
         raise ValueError('Invalid command output limit')
     chunks = queue.Queue(maxsize=4)
@@ -61,7 +61,7 @@ def run_check(argv, cwd, timeout, output_limit=DEFAULT_OUTPUT_LIMIT):
     try:
         process = subprocess.Popen(argv, cwd=cwd, stdin=subprocess.DEVNULL,
                                    stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                                   shell=False, start_new_session=os.name == 'posix')
+                                   shell=False, start_new_session=os.name == 'posix', env=env)
         reader = threading.Thread(target=read_output, daemon=True)
         reader.start()
         eof = False

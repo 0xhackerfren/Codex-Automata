@@ -29,6 +29,17 @@ Tests use real disposable Git repositories, SQLite state and subprocess checks.
 | Unapproved/unqualified/unknown model | test_unapproved_unknown_unavailable_and_security_fail_closed | Capability thresholds, approval and explicit availability fail closed |
 | Benchmark accepts unauthorized patch or confuses fixtures with model results | benchmark tests | Hidden trusted oracles, scope validation, pending live results |
 
+## Evidence/lifecycle follow-up: CLI 0.6.2
+
+The subsequent adversarial pass reproduced hidden-worktree completion, blocked
+legitimate phase authoring and stale reviewer issuance accepted as fresh. The
+[correction contract](evidence-lifecycle-fixes.md) describes default raw-blob
+snapshots, physical tracked-content checks, explicit compatibility mode,
+phase-owned future outputs and timestamped recovery-aware reviewer attestations.
+`cli/tests/test_adversarial_fixes.py` contains the positive/negative regressions.
+This remains a single-agent review; no OS isolation or live-model effectiveness
+claim is added.
+
 ## Remaining boundaries
 
 - OS/process isolation is external. An agent with arbitrary shell or database

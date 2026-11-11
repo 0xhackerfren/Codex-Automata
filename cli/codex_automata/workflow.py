@@ -11,6 +11,7 @@ from jsonschema import Draft202012Validator
 from .control import Controller, ControlError, require, git, validate_job, safe_path, canonical
 from .isolation import ContextController, METHODOLOGY, verify_installation, under
 from .execution import run_check, DEFAULT_OUTPUT_LIMIT
+from .snapshot import verify_worktree, committed_snapshot, snapshot_unchanged, check_environment
 
 
 def contract(name):
@@ -66,7 +67,9 @@ def blob(repo, head, path):
 
 def clean_head(repo):
     require(not git(repo, 'status', '--porcelain', '--untracked-files=all'), 'Clean committed worktree required')
-    return git(repo, 'rev-parse', 'HEAD')
+    head = git(repo, 'rev-parse', 'HEAD')
+    verify_worktree(repo, head)
+    return head
 
 
 class Workflow:
@@ -80,6 +83,9 @@ class Workflow:
             CREATE TABLE IF NOT EXISTS approved_plans (digest TEXT PRIMARY KEY, task_id TEXT NOT NULL, packet_digest TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS review_attestations (task_id TEXT NOT NULL, artifact_digest TEXT NOT NULL, reviewer TEXT NOT NULL,
                 PRIMARY KEY(task_id,artifact_digest));
+            CREATE TABLE IF NOT EXISTS review_attestation_history (sequence INTEGER PRIMARY KEY AUTOINCREMENT,
+                task_id TEXT NOT NULL, artifact_digest TEXT NOT NULL, reviewer TEXT NOT NULL,
+                issued_at TEXT NOT NULL, generation INTEGER NOT NULL);
             CREATE TABLE IF NOT EXISTS workflows (id TEXT PRIMARY KEY, plan TEXT NOT NULL,
                 phase_index INTEGER NOT NULL DEFAULT 0, artifacts TEXT NOT NULL DEFAULT '[]', methodology_digest TEXT NOT NULL);
             CREATE TABLE IF NOT EXISTS recoveries (sequence INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -87,6 +93,37 @@ class Workflow:
             CREATE TABLE IF NOT EXISTS executions (sequence INTEGER PRIMARY KEY AUTOINCREMENT,
                 job_id TEXT NOT NULL, payload TEXT NOT NULL);
         ''')
+        self.c._begin()
+        try:
+            columns = {r['name'] for r in self.db.execute('PRAGMA table_info(review_attestations)')}
+            for name, declaration in (('issued_at', 'TEXT'), ('generation', 'INTEGER')):
+                if name not in columns:
+                    self.db.execute('ALTER TABLE review_attestations ADD COLUMN ' + name + ' ' + declaration)
+            self.db.execute('COMMIT')
+        except BaseException:
+            self.db.execute('ROLLBACK')
+            raise
+
+    def _generation(self, task):
+        return self.db.execute('SELECT count(*) FROM recoveries WHERE job_id=?', (task,)).fetchone()[0]
+
+    @staticmethod
+    def _owners(job):
+        return {path: phase for field, phase in (('specs', 'specify'), ('contracts', 'sdk'), ('molds', 'mold'))
+                for path in job[field]}
+
+    def _validate_plan_job(self, job, plan, current_base=True):
+        validate_schema('plan', plan)
+        validate_job(job, current_base=current_base, planned_outputs=plan.get('planned_outputs'))
+        refs = job['specs'] + job['contracts'] + job['molds']
+        require(len(refs) == len(set(refs)), 'Artifact phase ownership must be unambiguous')
+        owners = self._owners(job)
+        for phase, paths in plan.get('planned_outputs', {}).items():
+            require(phase in PROFILES[plan['profile']]['phases'], 'Planned output phase is absent from profile')
+            for path in paths:
+                safe_path(path)
+                require(owners.get(path) == phase and under(path, job['write_paths']),
+                        'Planned output must match job references, phase and write scope')
 
     @staticmethod
     def policy_digest():
@@ -122,14 +159,23 @@ class Workflow:
         row = self.db.execute('SELECT digest FROM context_authority WHERE id=1').fetchone()
         import secrets
         require(row and secrets.compare_digest(row['digest'], Controller.digest(authority)), 'Operator plan approval required')
-        validate_job(job)
-        validate_schema('plan', plan)
+        self._validate_plan_job(job, plan)
         require(plan['packet_digest'] == Controller.digest(job), 'Plan packet mismatch')
         self.db.execute('INSERT OR IGNORE INTO approved_plans VALUES(?,?,?)',
                         (Controller.digest(plan), job['id'], Controller.digest(job)))
         return dict(approved_plan_digest=Controller.digest(plan), task_id=job['id'])
 
     def attest_review(self, task, reviewer_token, artifact):
+        self.c._begin()
+        try:
+            result = self._attest_review(task, reviewer_token, artifact)
+            self.db.execute('COMMIT')
+            return result
+        except BaseException:
+            self.db.execute('ROLLBACK')
+            raise
+
+    def _attest_review(self, task, reviewer_token, artifact):
         grant = self.context._grant(reviewer_token)
         require(grant['task_id'] == task and artifact.get('review', {}).get('reviewer') == grant['actor'],
                 'Reviewer grant does not match artifact identity')
@@ -141,13 +187,19 @@ class Workflow:
         require(artifact['phase'] == 'review' and artifact['head_sha'] == clean_head(job['repository'])
                 and artifact['task_id'] == task and artifact['packet_digest'] == Controller.digest(job),
                 'Review artifact is stale or mismatched')
-        self.db.execute('INSERT OR IGNORE INTO review_attestations VALUES(?,?,?)',
-                        (task, Controller.digest(artifact), grant['actor']))
-        return dict(recorded=True, reviewer=grant['actor'], artifact_digest=Controller.digest(artifact))
+        issued_at = datetime.now(timezone.utc).isoformat()
+        generation = self._generation(task)
+        self.db.execute('INSERT INTO review_attestations(task_id,artifact_digest,reviewer,issued_at,generation) '
+                        'VALUES(?,?,?,?,?) ON CONFLICT(task_id,artifact_digest) DO UPDATE SET '
+                        'reviewer=excluded.reviewer,issued_at=excluded.issued_at,generation=excluded.generation',
+                        (task, Controller.digest(artifact), grant['actor'], issued_at, generation))
+        self.db.execute('INSERT INTO review_attestation_history(task_id,artifact_digest,reviewer,issued_at,generation) VALUES(?,?,?,?,?)',
+                        (task, Controller.digest(artifact), grant['actor'], issued_at, generation))
+        return dict(recorded=True, reviewer=grant['actor'], artifact_digest=Controller.digest(artifact),
+                    issued_at=issued_at, generation=generation)
 
     def start(self, job, plan, owner):
-        validate_job(job)
-        validate_schema('plan', plan)
+        self._validate_plan_job(job, plan)
         require(plan['packet_digest'] == Controller.digest(job), 'Plan packet mismatch')
         approval = self.db.execute('SELECT * FROM approved_plans WHERE digest=?', (Controller.digest(plan),)).fetchone()
         require(approval and approval['task_id'] == job['id'] and approval['packet_digest'] == Controller.digest(job),
@@ -205,8 +257,21 @@ class Workflow:
                     packet_digest=Controller.digest(job), plan_digest=Controller.digest(plan))
 
     def _pins(self, job, artifacts, head):
+        owners = self._owners(job)
+        phase_order = list(PHASE_INSTRUCTIONS)
         for record in artifacts:
-            for ref in record['artifact']['inputs'] + record['artifact']['outputs']:
+            artifact = record['artifact']
+            refs = list(artifact['inputs'])
+            for ref in artifact['outputs']:
+                owner = owners.get(ref['path'])
+                require(blob(job['repository'], artifact['head_sha'], ref['path']) == ref['blob'],
+                        'Invalid historical output reference: ' + ref['path'])
+                # Early output is historical evidence; its owning phase freezes
+                # the final version. Inputs remain immutable until rewind.
+                if owner and phase_order.index(artifact['phase']) < phase_order.index(owner):
+                    continue
+                refs.append(ref)
+            for ref in refs:
                 require(blob(job['repository'], head, ref['path']) == ref['blob'], 'Stale artifact reference: ' + ref['path'])
 
     def _scope(self, job, plan, head, owner):
@@ -262,12 +327,26 @@ class Workflow:
         job, plan, row, phase, check, head, run_id = self._prepare_execution(task, owner, token, name, expect)
         repo = job['repository']
         start = time.monotonic()
-        execution = run_check(check['argv'], repo, check['timeout'],
-                              check.get('output_limit_bytes', DEFAULT_OUTPUT_LIMIT))
+        execution_mode = plan.get('execution_mode', 'committed-snapshot')
+        if execution_mode == 'committed-snapshot':
+            with committed_snapshot(repo, head, self.c.path.parent) as (snapshot, entries):
+                execution = run_check(check['argv'], snapshot, check['timeout'],
+                                      check.get('output_limit_bytes', DEFAULT_OUTPUT_LIMIT), check_environment(snapshot))
+                snapshot_clean = snapshot_unchanged(snapshot, entries)
+        else:
+            # Explicitly approved compatibility mode retains ignored dependencies
+            # and Git metadata. Its evidence must never claim snapshot isolation.
+            execution = run_check(check['argv'], repo, check['timeout'],
+                                  check.get('output_limit_bytes', DEFAULT_OUTPUT_LIMIT), check_environment(repo))
+            snapshot_clean = True
         code, failure = execution['exit_code'], execution['failure']
-        unchanged = git(repo, 'rev-parse', 'HEAD') == head and not git(repo, 'status', '--porcelain', '--untracked-files=all')
+        try:
+            unchanged = clean_head(repo) == head and snapshot_clean
+        except (ControlError, OSError):
+            unchanged = False
         receipt = dict(schema_version=1, methodology_version=METHODOLOGY, source='local-executor',
                        run_id=run_id,
+                       execution_mode=execution_mode,
                        task_id=task, packet_digest=Controller.digest(job), plan_digest=Controller.digest(plan),
                        phase=phase, name=name, role=check['role'], tier=check['tier'], argv=check['argv'],
                        head_sha=head, exit_code=code, expected=expect, failure=failure, unchanged=unchanged,
@@ -399,9 +478,10 @@ class Workflow:
                     require(review['kind'] == 'independent' and review['reviewer'] != owner,
                             'Independent review required by risk/protected change policy')
                     self.context.evaluate(job['repository'], task, review['reviewer'], 'file:read', job['specs'][0])
-                    attestation = self.db.execute('SELECT reviewer FROM review_attestations WHERE task_id=? AND artifact_digest=?',
+                    attestation = self.db.execute('SELECT * FROM review_attestations WHERE task_id=? AND artifact_digest=?',
                                                   (task, Controller.digest(artifact))).fetchone()
                     require(attestation and attestation['reviewer'] == review['reviewer'], 'Reviewer-token attestation required')
+                    self._attestation_fresh(task, plan, attestation)
                 else:
                     require(review['kind'] == 'self' and review['reviewer'] == owner,
                             'Single-agent review must be labeled self')
@@ -412,6 +492,10 @@ class Workflow:
                 require(reviews and reviews[-1]['artifact']['head_sha'] == head, 'Current-head review required')
                 age = datetime.now(timezone.utc) - datetime.fromisoformat(reviews[-1]['recorded_at'])
                 require(age.total_seconds() <= plan['review_max_age_hours'] * 3600, 'Review expired')
+                if reviews[-1]['artifact']['review']['kind'] == 'independent':
+                    attestation = self.db.execute('SELECT * FROM review_attestations WHERE task_id=? AND artifact_digest=?',
+                                                  (task, Controller.digest(reviews[-1]['artifact']))).fetchone()
+                    self._attestation_fresh(task, plan, attestation)
             artifacts.append(dict(artifact=artifact, recorded_at=datetime.now(timezone.utc).isoformat()))
             receipt = None
             if phase == 'observe':
@@ -431,6 +515,17 @@ class Workflow:
         except Exception:
             self.db.execute('ROLLBACK')
             raise
+
+    def _attestation_fresh(self, task, plan, attestation):
+        require(attestation and attestation['issued_at'] and attestation['generation'] == self._generation(task),
+                'Fresh reviewer-token attestation required after recovery')
+        try:
+            issued = datetime.fromisoformat(attestation['issued_at'])
+            require(issued.tzinfo is not None, 'Reviewer timestamp needs timezone')
+        except (TypeError, ValueError) as exc:
+            raise ControlError('Malformed reviewer attestation timestamp') from exc
+        age = datetime.now(timezone.utc) - issued
+        require(0 <= age.total_seconds() <= plan['review_max_age_hours'] * 3600, 'Reviewer attestation expired or future-dated')
 
     def rewind(self, task, owner, token, phase, reason):
         require(isinstance(reason, str) and reason.strip(), 'Recovery reason required')
@@ -455,7 +550,7 @@ class Workflow:
     def reclaim(self, task, owner):
         state, job, plan, row, _ = self._load(task)
         self.c._no_running_command(task)
-        validate_job(job, current_base=False)
+        self._validate_plan_job(job, plan, current_base=False)
         decision = self.context.evaluate(job['repository'], task, owner, 'check:run')
         require(decision['context'] == 'DEVELOP', 'Recovery requires DEVELOP')
         head = clean_head(job['repository'])
@@ -514,6 +609,12 @@ class Workflow:
         excerpts = {e['path']: e for e in plan.get('context_excerpts', [])}
         for path in dict.fromkeys(job['specs'] + job['contracts'] + job['molds'] + plan['context_paths'] + list(excerpts)):
             self.context.evaluate(job['repository'], task, owner, 'file:read', path)
+            if not git(job['repository'], 'ls-tree', head, '--', path):
+                owning_phase = self._owners(job).get(path)
+                require(owning_phase and path in plan.get('planned_outputs', {}).get(owning_phase, [])
+                        and phases.index(phase) <= phases.index(owning_phase), 'Missing required source: ' + path)
+                sources.append(dict(path=path, status='planned-output', owning_phase=owning_phase, trust='untrusted-source-data'))
+                continue
             revision = blob(job['repository'], head, path)
             size = int(git(job['repository'], 'cat-file', '-s', revision))
             require(size <= (1048576 if path in excerpts else plan['context_budget']), 'Source exceeds context byte budget: ' + path)

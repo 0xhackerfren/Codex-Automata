@@ -144,6 +144,17 @@ receipts; resolve the environment failure before retry. The runtime must stop an
 inspect processes/side effects before asserting `--confirm-stopped`. See
 [execution recovery](docs/development/execution-recovery-spec.md).
 
+CLI 0.6.2 defaults to a separate raw-blob commit snapshot for every check. Supply
+dependency bootstrap in the approved command or a reviewed dependency adapter;
+ignored dependencies and `.git` are absent. Exact-plan `verified-worktree` mode
+supports compatibility while retaining tracked-content checks and flag rejection;
+its receipt does not claim ignored-source exclusion. Process environment secrets
+and import paths are not inherited. Neither mode is an OS sandbox or a dependency
+attestation. See [evidence and lifecycle corrections](docs/development/evidence-lifecycle-fixes.md)
+for size/path restrictions, planned future outputs and reviewer issuance/rewind
+rules. Legacy job-only APIs still require existing references. Do not issue the
+reviewer token to the coding worker or treat a coder-side timestamp as renewal.
+
 Artifact schema: `artifact.schema.json`; phase-specific outputs pin committed
 regular Git blobs. Current-head checks precede cast/review/product/observe exits.
 All prior contract/mold pins must remain unchanged. Existing protected artifacts

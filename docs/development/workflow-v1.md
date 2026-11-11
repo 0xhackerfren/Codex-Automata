@@ -69,6 +69,25 @@ codex-automata workflow rewind LOCAL-1 --state /secure/control.sqlite --owner co
 The operator approves the exact plan digest with `workflow approve --authority-file ...` before `workflow start`. The operator freezes exact argv, timeout, role and gate tier in the plan. No task
 text is evaluated as a command. Command execution is real code execution and
 requires appropriate process isolation, reviewed commands and controlled tools.
+By default each command runs in a fresh temporary copy of the exact commit's raw
+regular blobs. Ignored files, Git metadata, checkout/export filters and inherited
+import settings are excluded. The environment retains OS executable lookup,
+locale and temporary-directory settings; HOME/USERPROFILE point to the execution
+directory. Tracked files are content-checked after execution and the original
+worktree is verified before/after and at transitions. Hidden index flags are
+rejected, including `assume-unchanged` and `skip-worktree`. Git-declared text
+newline normalization is allowed; raw snapshots retain the committed bytes.
+
+Commands must bootstrap their required dependencies within each snapshot or use
+an external reviewed dependency adapter. For tools needing existing ignored
+dependencies or `.git`, the approved plan may explicitly select
+`"execution_mode": "verified-worktree"`. It runs in the original repository with
+the same tracked-content checks and a minimal environment, and labels receipts
+accordingly. It does not exclude ignored sources/dependencies. Neither mode pins
+host-installed packages or prevents access to other host paths. There is no
+automatic compatibility fallback. Snapshot limits are 64 MiB per blob and 256 MiB
+per tree; symlinks/submodules and custom clean-filter transformations need an
+explicitly reviewed adapter. See the [correction contract](evidence-lifecycle-fixes.md).
 Output streams through a bounded pipe queue without disk spooling. Each approved
 check may set `output_limit_bytes` (default 1 MiB, range 1 byte to 16 MiB). A further
 byte fails with `output-limit`, including for expected red molds. Hashes and byte
@@ -118,13 +137,39 @@ Workflow jobs cannot use legacy `job complete` to bypass execution receipts.
 All declared acceptance criteria map to named checks. Existing spec/SDK/test files
 need an explicit `approved_changes` path in the trusted plan to change, even when
 write scope includes them; any such exception forces independent review. New
-molds may be authored before freezing; pinned outputs cannot silently drift.
+outputs may be declared in the approved plan before they exist:
+
+```json
+{
+  "planned_outputs": {
+    "specify": ["docs/new-feature.md"],
+    "sdk": ["sdk/new-api.py"],
+    "mold": ["tests/test_new_api.py"]
+  }
+}
+```
+
+This is a plan fragment; the full plan still needs its other required fields.
+Each path must match its job reference category and write scope, with the owning
+phase present in the profile. `workflow draft --planned-output sdk sdk/new-api.py`
+can emit future references; the matching approved plan is still required. Legacy
+job-only APIs continue to require existing versioned references. Missing planned
+sources are labeled as such in context, without invented contents.
+
+Intake/architecture provisional outputs may evolve during their owning
+specification, SDK or mold phase. That phase pins the final artifact. Historical
+output references remain verifiable at their original commits; frozen downstream
+references cannot silently drift. Inputs remain pinned until rewind.
 Legitimate amendments return through the relevant phases using `rewind` while
 preserving superseded artifacts in the recovery journal. Changing frozen scope
 or policy requires a newly reviewed plan/job and preserved failure lineage.
 
 After review, a new head requires rechecking and review at the new head. The plan
-sets a review lifetime (1–168 hours). Completion verifies head ancestry into the
+sets a review lifetime (1–168 hours). Independent approval age starts at the
+reviewer's attestation, not the coder's submission time. Every rewind invalidates
+prior attestations; renewal requires the separate reviewer token and preserves
+issuance history. Legacy undated and future-dated attestations fail closed.
+Completion verifies head ancestry into the
 packet's integration branch and stores `completed-local`, `deployed: false` and
 integration SHA for existing dependency checks. It never merges or deploys.
 

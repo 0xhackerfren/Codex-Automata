@@ -8,6 +8,23 @@ Types of changes: **Added**, **Changed**, **Deprecated**, **Removed**, **Fixed**
 
 ## [Unreleased]
 
+### Evidence and lifecycle corrections: CLI 0.6.2
+
+- Default workflow execution uses fresh raw-blob commit snapshots with a minimal
+  environment. Content verification and rejection of hidden Git index flags
+  prevent dirty-worktree completion. Receipts identify the actual execution mode.
+  An exact-plan `verified-worktree` compatibility mode supports Git-aware tools
+  and ignored dependencies while retaining tracked-content checks.
+- Added phase-owned `planned_outputs` for future specifications, SDK and molds;
+  provisional outputs can evolve before their owning phase freezes them. Existing
+  protected changes still require operator approval and independent review.
+- Reviewer attestations carry issuance time and recovery generation. Expired,
+  future-dated, legacy undated and pre-rewind approvals fail closed. Renewal needs
+  the separate reviewer token and retains issuance history.
+- Active jobs require their original release or reviewed migration. Snapshots do
+  not pin external dependencies or provide OS isolation; symlinks, submodules,
+  custom clean-filter transformations and oversized trees need reviewed adapters.
+
 ### Bounded workflow execution: CLI 0.6.1
 
 - Durable command intents prevent overlapping checks and survive controller

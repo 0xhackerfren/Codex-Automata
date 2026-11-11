@@ -173,6 +173,43 @@
           }
         }
       }
+    },
+    "planned_outputs": {
+      "type": "object",
+      "properties": {
+        "specify": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "sdk": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "mold": {
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "execution_mode": {
+      "enum": [
+        "committed-snapshot",
+        "verified-worktree"
+      ],
+      "default": "committed-snapshot"
     }
   },
   "required": [

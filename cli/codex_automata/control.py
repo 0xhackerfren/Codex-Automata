@@ -32,7 +32,8 @@ def canonical(value):
 def git(repo, *args):
     try:
         return subprocess.check_output(['git', '-C', str(repo), *args],
-                                       stderr=subprocess.DEVNULL, text=True).strip()
+                                       stderr=subprocess.DEVNULL, text=True,
+                                       env=dict(os.environ, GIT_NO_REPLACE_OBJECTS='1')).strip()
     except (OSError, subprocess.CalledProcessError) as exc:
         raise ControlError('Git observation failed: ' + ' '.join(args[:2])) from exc
 
@@ -56,7 +57,7 @@ def string_list(obj, field, required=True):
     return value
 
 
-def validate_job(job, current_base=True):
+def validate_job(job, current_base=True, planned_outputs=None):
     require(isinstance(job, dict) and type(job.get('schema_version')) is int
             and job['schema_version'] == 1, 'Unsupported job schema')
     allowed = {'schema_version', 'id', 'repository', 'branch', 'base_sha', 'phase',
@@ -94,6 +95,11 @@ def validate_job(job, current_base=True):
             safe_path(path)
             # Only a regular tracked blob at the frozen revision qualifies.
             entry = git(repo, 'ls-tree', job['base_sha'], '--', path)
+            phase = {'specs': 'specify', 'contracts': 'sdk', 'molds': 'mold'}[field]
+            if not entry and planned_outputs and path in planned_outputs.get(phase, []):
+                require(any(path == p or path.startswith(p + '/') for p in paths),
+                        'Planned output exceeds job write scope')
+                continue
             require(entry.startswith(('100644 blob ', '100755 blob ')),
                     field + ' reference is not a versioned regular file: ' + path)
     return job

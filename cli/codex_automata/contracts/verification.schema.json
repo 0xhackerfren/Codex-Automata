@@ -97,6 +97,12 @@
     "run_id": {
       "type": "string",
       "pattern": "^[0-9a-f]{48}$"
+    },
+    "execution_mode": {
+      "enum": [
+        "committed-snapshot",
+        "verified-worktree"
+      ]
     }
   },
   "required": [

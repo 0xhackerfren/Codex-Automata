@@ -21,6 +21,8 @@ def add_parser(subparsers):
     draft.add_argument('--write-path', action='append', required=True)
     draft.add_argument('--acceptance', action='append', required=True)
     draft.add_argument('--branch', default='main')
+    draft.add_argument('--planned-output', nargs=2, action='append', default=[], metavar=('PHASE', 'PATH'),
+                       help='Future reference; matching planned_outputs is required in the approved plan')
     schema = commands.add_parser('contract', help='Print the pinned machine-readable definition or schema')
     schema.add_argument('name', choices=['profiles', 'job', 'project', 'grant', 'plan', 'artifact', 'verification', 'checkpoint', 'completion', 'model', 'benchmark'])
     approve = commands.add_parser('approve', help='Operator-only: freeze the exact plan digest')
@@ -80,7 +82,11 @@ def run(args):
                           contracts=args.contract, molds=args.mold, policy_id='local-manual',
                           data_class='private', max_attempts=3)
             from .control import validate_job
-            validate_job(result)
+            planned = {}
+            for phase, path in args.planned_output:
+                require(phase in ('specify', 'sdk', 'mold'), 'Unknown planned output phase')
+                planned.setdefault(phase, []).append(path)
+            validate_job(result, planned_outputs=planned)
         elif action == 'contract':
             result = contract('profiles.json' if args.name == 'profiles' else args.name + '.schema.json')
         else:
